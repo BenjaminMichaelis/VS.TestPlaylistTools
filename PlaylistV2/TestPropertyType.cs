@@ -1,4 +1,4 @@
-namespace PlaylistV2;
+namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Defines the types of properties that can be used in property rules

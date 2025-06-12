@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace PlaylistV1
+namespace VS.TestPlaylistTools.PlaylistV1
 {
     /// <summary>
     /// Represents a Visual Studio Test Playlist Version 1.0

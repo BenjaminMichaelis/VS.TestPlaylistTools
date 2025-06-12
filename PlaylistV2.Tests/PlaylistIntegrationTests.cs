@@ -3,7 +3,7 @@ using System.IO;
 using System.Xml;
 using Xunit;
 
-namespace PlaylistV2.Tests;
+namespace VS.TestPlaylistTools.PlaylistV2.Tests;
 
 /// <summary>
 /// Integration tests that validate the complete parsing and generation workflow

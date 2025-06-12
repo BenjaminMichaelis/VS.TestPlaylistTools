@@ -1,9 +1,4 @@
-using System;
-using System.IO;
-using System.Linq;
-using Xunit;
-
-namespace PlaylistV2.Tests;
+namespace VS.TestPlaylistTools.PlaylistV2.Tests;
 
 /// <summary>
 /// Tests for generating playlist XML files
@@ -70,7 +65,7 @@ public class PlaylistBuilderTests
         Assert.Contains($"Name=\"Project\" Value=\"{projectName}\"", xml);
         Assert.Contains($"Name=\"Namespace\" Value=\"{namespaceName}\"", xml);
         Assert.Contains($"Name=\"Class\" Value=\"{className}\"", xml);
-        
+
         foreach (var (testName, displayName) in tests)
         {
             Assert.Contains($"Name=\"TestWithNormalizedFullyQualifiedName\" Value=\"{testName}\"", xml);

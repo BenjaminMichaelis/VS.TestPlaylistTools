@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace PlaylistV2;
+namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Provides functionality to build and serialize Visual Studio Test Playlist V2 format XML files.

@@ -1,18 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace PlaylistV2;
+namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Provides parsing and validation for Visual Studio Test Playlist V2 format XML files.
 /// </summary>
 public static class PlaylistV2Parser
 {
+    /// <summary>
+    /// Parses a playlist from an XML string.
+    /// </summary>
+    /// <param name="xml">The XML string containing the playlist data.</param>
+    /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromString(string xml)
     {
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
@@ -20,6 +21,11 @@ public static class PlaylistV2Parser
         return FromStream(reader);
     }
 
+    /// <summary>
+    /// Parses a playlist from a TextReader.
+    /// </summary>
+    /// <param name="reader">The TextReader containing the playlist data.</param>
+    /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromStream(TextReader reader)
     {
         using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings
@@ -36,6 +42,11 @@ public static class PlaylistV2Parser
         return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
     }
 
+    /// <summary>
+    /// Parses a playlist from a file.
+    /// </summary>
+    /// <param name="filePath">The path to the playlist file.</param>
+    /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromFile(string filePath)
     {
         ArgumentNullException.ThrowIfNull(filePath);
@@ -43,15 +54,25 @@ public static class PlaylistV2Parser
         return FromStream(reader);
     }
 
+    /// <summary>
+    /// Parses a playlist from an XML reader.
+    /// </summary>
+    /// <param name="xmlReader">The XML reader containing the playlist data.</param>
+    /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromXmlReader(XmlReader xmlReader)
     {
         ArgumentNullException.ThrowIfNull(xmlReader);
         if (!xmlReader.IsStartElement("Playlist"))
             throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
+        var serializer = new XmlSerializer(typeof(PlaylistRoot));
         return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
     }
 
+    /// <summary>
+    /// Validates if the provided XML content is a valid Playlist V2 format.
+    /// </summary>
+    /// <param name="xmlContent">The XML content to validate.</param>
+    /// <returns>True if the XML is a valid Playlist V2 format; otherwise, false.</returns>
     public static bool IsValidPlaylist(string xmlContent)
     {
         if (string.IsNullOrWhiteSpace(xmlContent))

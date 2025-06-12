@@ -1,10 +1,8 @@
-using System;
-using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace PlaylistV1
+namespace VS.TestPlaylistTools.PlaylistV1
 {
     /// <summary>
     /// Provides functionality to parse Visual Studio Test Playlist V1 format XML files.

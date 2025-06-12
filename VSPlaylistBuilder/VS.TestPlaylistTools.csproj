@@ -2,11 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Deterministic>true</Deterministic>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
 
 <!--  <ItemGroup Label="NuGet">
@@ -26,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlaylistV1\PlaylistV1.csproj" />
-    <ProjectReference Include="..\PlaylistV2\PlaylistV2.csproj" />
+    <ProjectReference Include="..\PlaylistV1\VS.TestPlaylistTools.PlaylistV1.csproj" />
+    <ProjectReference Include="..\PlaylistV2\VS.TestPlaylistTools.PlaylistV2.csproj" />
   </ItemGroup>
 </Project>

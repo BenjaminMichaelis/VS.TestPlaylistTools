@@ -1,12 +1,6 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using PlaylistV1;
-using Xunit;
 using System.Xml;
 
-namespace PlaylistV1.Tests
+namespace VS.TestPlaylistTools.PlaylistV1.Tests
 {
     public class PlaylistV1IntegrationTests
     {

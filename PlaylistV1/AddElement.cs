@@ -1,7 +1,6 @@
-using System;
 using System.Xml.Serialization;
 
-namespace PlaylistV1
+namespace VS.TestPlaylistTools.PlaylistV1
 {
     /// <summary>
     /// Represents a test element in a V1 playlist.

@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
 
+    <IsPublishable>false</IsPublishable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
@@ -13,16 +12,18 @@
     <PackageReference Include="coverlet.collector" />
     <PackageReference Include="IntelliTect.Multitool" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Moq.AutoMock" />
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlaylistV2\PlaylistV2.csproj" />
+    <ProjectReference Include="..\VSPlaylistBuilder\VS.TestPlaylistTools.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
+    <Using Include="Moq.AutoMock" />
   </ItemGroup>
-
 </Project>

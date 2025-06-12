@@ -1,4 +1,4 @@
-namespace PlaylistV2;
+namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Base class for all playlist rules

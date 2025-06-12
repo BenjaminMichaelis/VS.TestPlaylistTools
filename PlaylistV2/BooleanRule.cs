@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace PlaylistV2;
+namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Represents a boolean logic rule that can contain other rules

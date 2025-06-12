@@ -1,31 +1,27 @@
-using System;
-using System.IO;
-using PlaylistV1;
-using PlaylistV2;
-using VSPlaylistBuilder;
-using Xunit;
-
-namespace VSPlaylistBuilder.Tests
+namespace VS.TestPlaylistTools.Tests
 {
     public class PlaylistLoaderTests
     {
-        public static IEnumerable<object[]> SampleV1PlaylistFiles()
+        public static TheoryData<string> SampleV1PlaylistFiles()
         {
-            // Adjust the path as needed for your test data location
+            var data = new TheoryData<string>();
             var dir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV1.Tests", "SamplePlaylists");
             foreach (var file in Directory.GetFiles(dir, "*.playlist"))
             {
-                yield return new object[] { file };
+                data.Add(file);
             }
+            return data;
         }
 
-        public static IEnumerable<object[]> SampleV2PlaylistFiles()
+        public static TheoryData<string> SampleV2PlaylistFiles()
         {
+            var data = new TheoryData<string>();
             var dir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV2.Tests", "SamplePlaylists");
             foreach (var file in Directory.GetFiles(dir, "*.playlist"))
             {
-                yield return new object[] { file};
+                data.Add(file);
             }
+            return data;
         }
 
         [Theory]
@@ -38,7 +34,6 @@ namespace VSPlaylistBuilder.Tests
 
             Assert.NotNull(result);
             var playlist = Assert.IsType<PlaylistV1.PlaylistRoot>(result);
-            // Assuming result has a Version property
             Assert.Equal("1.0", playlist.Version);
         }
 
@@ -51,7 +46,6 @@ namespace VSPlaylistBuilder.Tests
 
             Assert.NotNull(result);
             var playlist = Assert.IsType<PlaylistV2.PlaylistRoot>(result);
-            // Assuming result has a Version property
             Assert.Equal("2.0", playlist.Version);
         }
     }

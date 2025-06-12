@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
 
-namespace PlaylistV2;
+namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Represents a property-based rule that matches against test properties

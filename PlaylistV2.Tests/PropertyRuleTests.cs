@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace PlaylistV2.Tests;
+namespace VS.TestPlaylistTools.PlaylistV2.Tests;
 
 /// <summary>
 /// Tests for PropertyRule class

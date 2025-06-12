@@ -1,9 +1,4 @@
-using System;
-using System.IO;
-using System.Xml;
-using Xunit;
-
-namespace PlaylistV2.Tests;
+namespace VS.TestPlaylistTools.PlaylistV2.Tests;
 
 /// <summary>
 /// Tests for parsing existing playlist XML files
@@ -23,7 +18,7 @@ public class PlaylistParserTests
         Assert.NotNull(playlist);
         Assert.Equal("2.0", playlist.Version);
         Assert.Single(playlist.Rules);
-        
+
         var includeRule = Assert.IsType<BooleanRule>(playlist.Rules[0]);
         Assert.Equal("Includes", includeRule.Name);
         Assert.Equal(BooleanRuleKind.Any, includeRule.Match);
@@ -42,7 +37,7 @@ public class PlaylistParserTests
         Assert.NotNull(playlist);
         Assert.Equal("2.0", playlist.Version);
         Assert.Single(playlist.Rules);
-        
+
         var includeRule = Assert.IsType<BooleanRule>(playlist.Rules[0]);
         Assert.Equal("Includes", includeRule.Name);
         Assert.Equal(BooleanRuleKind.Any, includeRule.Match);

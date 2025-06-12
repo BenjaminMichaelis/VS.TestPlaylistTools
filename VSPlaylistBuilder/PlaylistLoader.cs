@@ -1,10 +1,9 @@
-using System;
-using System.IO;
 using System.Xml;
-using PlaylistV1; // Reference to PlaylistV1Parser
-using PlaylistV2; // Reference to PlaylistV2 parser/model
 
-namespace VSPlaylistBuilder
+using VS.TestPlaylistTools.PlaylistV1;
+using VS.TestPlaylistTools.PlaylistV2;
+
+namespace VS.TestPlaylistTools
 {
     /// <summary>
     /// Provides unified loading for both V1 and V2 playlist files.
