@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Xml;
 using System.Xml.Serialization;
 
-namespace PlaylistV1.Models
+namespace PlaylistV1
 {
     /// <summary>
     /// Represents a Visual Studio Test Playlist Version 1.0
@@ -20,7 +21,7 @@ namespace PlaylistV1.Models
         /// The collection of tests to be included in this playlist.
         /// </summary>
         [XmlElement("Add")]
-        public List<AddElement> Tests { get; set; } = new List<AddElement>();
+        public List<AddElement> Tests { get; set; } = [];
 
         /// <summary>
         /// Initializes a new instance of the PlaylistV1 class.
@@ -35,8 +36,7 @@ namespace PlaylistV1.Models
         /// <param name="testNames">The test names to include in the playlist.</param>
         public PlaylistRoot(IEnumerable<string> testNames)
         {
-            if (testNames == null)
-                throw new ArgumentNullException(nameof(testNames));
+            ArgumentNullException.ThrowIfNull(testNames);
 
             foreach (var testName in testNames)
             {
@@ -73,5 +73,34 @@ namespace PlaylistV1.Models
         /// Gets the count of tests in the playlist.
         /// </summary>
         public int TestCount => Tests.Count;
+
+        /// <summary>
+        /// Serializes the playlist to XML string
+        /// </summary>
+        public override string ToString()
+        {
+            using var stringWriter = new StringWriter();
+            Serialize(stringWriter);
+            return stringWriter.ToString();
+        }
+
+        /// <summary>
+        /// Serializes the playlist to a TextWriter
+        /// </summary>
+        public void Serialize(TextWriter writer)
+        {
+            using var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings
+            {
+                OmitXmlDeclaration = true,
+                CloseOutput = false,
+                Indent = true
+            });
+
+            var namespaces = new XmlSerializerNamespaces();
+            namespaces.Add(string.Empty, string.Empty);
+
+            var serializer = new XmlSerializer(typeof(PlaylistRoot));
+            serializer.Serialize(xmlWriter, this, namespaces);
+        }
     }
 }

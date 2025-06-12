@@ -21,7 +21,7 @@ public class PlaylistGenerationTests
         var displayName = "PlaylistV2.Tests.PlaylistIntegrationTests.CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml";
 
         // Act
-        var playlist = Playlist.CreateHierarchicalPlaylist(
+        var playlist = PlaylistV2Builder.CreateHierarchicalPlaylist(
             projectName, namespaceName, className, testName, displayName);
         var xml = playlist.ToString();
 
@@ -39,9 +39,9 @@ public class PlaylistGenerationTests
         Assert.Contains($"Name=\"DisplayName\" Value=\"{displayName}\"", xml);
 
         // Ensure the generated XML can be parsed back
-        var reparsedPlaylist = Playlist.FromString(xml);
+        var reparsedPlaylist = PlaylistParser.FromString(xml);
         Assert.NotNull(reparsedPlaylist);
-        Assert.Equal("2.0", reparsedPlaylist.Root.Version);
+        Assert.Equal("2.0", reparsedPlaylist.Version);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class PlaylistGenerationTests
         };
 
         // Act
-        var playlist = Playlist.CreateHierarchicalPlaylist(
+        var playlist = PlaylistV2Builder.CreateHierarchicalPlaylist(
             projectName, namespaceName, className, tests);
         var xml = playlist.ToString();
 
@@ -80,9 +80,9 @@ public class PlaylistGenerationTests
         }
 
         // Ensure the generated XML can be parsed back
-        var reparsedPlaylist = Playlist.FromString(xml);
+        var reparsedPlaylist = PlaylistParser.FromString(xml);
         Assert.NotNull(reparsedPlaylist);
-        Assert.Equal("2.0", reparsedPlaylist.Root.Version);
+        Assert.Equal("2.0", reparsedPlaylist.Version);
     }
 
     [Fact]
@@ -115,8 +115,8 @@ public class PlaylistGenerationTests
         );
 
         // Act
-        var playlist = new Playlist();
-        playlist.Root.Rules.Add(rule);
+        var playlist = new PlaylistV2Root();
+        playlist.Rules.Add(rule);
         var xml = playlist.ToString();
 
         // Assert

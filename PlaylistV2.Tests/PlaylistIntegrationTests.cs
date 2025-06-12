@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Xml;
-
 using Xunit;
 
 namespace PlaylistV2.Tests;
@@ -24,14 +23,14 @@ public class PlaylistIntegrationTests
         var displayName = "PlaylistV2.Tests.PlaylistIntegrationTests.CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml";
 
         // Act
-        var playlist = Playlist.CreateHierarchicalPlaylist(
+        var playlist = PlaylistV2Builder.CreateHierarchicalPlaylist(
             projectName, namespaceName, className, testName, displayName);
         var generatedXml = playlist.ToString();
 
         // Assert - Generated XML should be valid and parseable
         Assert.NotNull(generatedXml);
-        var reparsedPlaylist = Playlist.FromString(generatedXml);
-        Assert.Equal("2.0", reparsedPlaylist.Root.Version);
+        var reparsedPlaylist = PlaylistParser.FromString(generatedXml);
+        Assert.Equal("2.0", reparsedPlaylist.Version);
 
         // The generated XML should have similar structure to Sample1.playlist
         Assert.Contains("Version=\"2.0\"", generatedXml);
@@ -70,28 +69,28 @@ public class PlaylistIntegrationTests
     {
         // Arrange
         var sampleXml = File.ReadAllText(sampleFilePath);
-        var samplePlaylist = Playlist.FromString(sampleXml);
+        var samplePlaylist = PlaylistParser.FromString(sampleXml);
 
         // Act - Extract structure information from the sample
-        Assert.Single(samplePlaylist.Root.Rules);
-        var includeRule = Assert.IsType<BooleanRule>(samplePlaylist.Root.Rules[0]);
+        Assert.Single(samplePlaylist.Rules);
+        var includeRule = Assert.IsType<BooleanRule>(samplePlaylist.Rules[0]);
         Assert.Equal("Includes", includeRule.Name);
         Assert.Equal(BooleanRuleKind.Any, includeRule.Match);
 
         // The structure should be parseable and re-serializable
         var regeneratedXml = samplePlaylist.ToString();
-        var reparsedPlaylist = Playlist.FromString(regeneratedXml);
+        var reparsedPlaylist = PlaylistParser.FromString(regeneratedXml);
         
         // Assert
-        Assert.Equal(samplePlaylist.Root.Version, reparsedPlaylist.Root.Version);
-        Assert.Equal(samplePlaylist.Root.Rules.Count, reparsedPlaylist.Root.Rules.Count);
+        Assert.Equal(samplePlaylist.Version, reparsedPlaylist.Version);
+        Assert.Equal(samplePlaylist.Rules.Count, reparsedPlaylist.Rules.Count);
     }
 
     [Fact]
     public void Playlist_EmptyPlaylist_CreatesValidXml()
     {
         // Arrange
-        var playlist = new Playlist();
+        var playlist = new PlaylistV2Builder.Builder().Build();
 
         // Act
         var xml = playlist.ToString();
@@ -104,18 +103,19 @@ public class PlaylistIntegrationTests
         Assert.True(xml.Contains("</Playlist>") || xml.Contains("/>"));
 
         // Should be parseable
-        var reparsedPlaylist = Playlist.FromString(xml);
-        Assert.Equal("2.0", reparsedPlaylist.Root.Version);
-        Assert.Empty(reparsedPlaylist.Root.Rules);
+        var reparsedPlaylist = PlaylistParser.FromString(xml);
+        Assert.Equal("2.0", reparsedPlaylist.Version);
+        Assert.Empty(reparsedPlaylist.Rules);
     }
 
     [Fact]
     public void Playlist_WithDirectRules_SerializesCorrectly()
     {
         // Arrange
-        var playlist = new Playlist();
-        playlist.Root.Rules.Add(PropertyRule.Solution());
-        playlist.Root.Rules.Add(PropertyRule.Project("TestProject"));
+        var playlistBuilder = new PlaylistV2Builder.Builder();
+        playlistBuilder.AddRule(PropertyRule.Solution());
+        playlistBuilder.AddRule(PropertyRule.Project("TestProject"));
+        var playlist = playlistBuilder.Build();
 
         // Act
         var xml = playlist.ToString();
@@ -123,9 +123,7 @@ public class PlaylistIntegrationTests
         // Assert
         Assert.Contains("Name=\"Solution\"", xml);
         Assert.Contains("Name=\"Project\" Value=\"TestProject\"", xml);
-
-        // Should be parseable
-        var reparsedPlaylist = Playlist.FromString(xml);
-        Assert.Equal(2, reparsedPlaylist.Root.Rules.Count);
+        var reparsedPlaylist = PlaylistParser.FromString(xml);
+        Assert.Equal(2, reparsedPlaylist.Rules.Count);
     }
 }

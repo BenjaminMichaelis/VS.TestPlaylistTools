@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace PlaylistV1.Models
+namespace PlaylistV1
 {
     /// <summary>
     /// Represents a test element in a V1 playlist.

@@ -4,7 +4,6 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using PlaylistV1.Models;
 
 namespace PlaylistV1
 {
@@ -41,8 +40,7 @@ namespace PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist is null.</exception>
         public static string ToXmlString(PlaylistRoot playlist)
         {
-            if (playlist == null)
-                throw new ArgumentNullException(nameof(playlist));
+            ArgumentNullException.ThrowIfNull(playlist);
 
             using var stringWriter = new StringWriter();
             WriteToTextWriter(playlist, stringWriter);
@@ -57,10 +55,8 @@ namespace PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist or filePath is null.</exception>
         public static void SaveToFile(PlaylistRoot playlist, string filePath)
         {
-            if (playlist == null)
-                throw new ArgumentNullException(nameof(playlist));
-            if (filePath == null)
-                throw new ArgumentNullException(nameof(filePath));
+            ArgumentNullException.ThrowIfNull(playlist);
+            ArgumentNullException.ThrowIfNull(filePath);
 
             // Ensure directory exists
             var directory = Path.GetDirectoryName(filePath);
@@ -81,20 +77,10 @@ namespace PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist or writer is null.</exception>
         public static void WriteToTextWriter(PlaylistRoot playlist, TextWriter writer)
         {
-            if (playlist == null)
-                throw new ArgumentNullException(nameof(playlist));
-            if (writer == null)
-                throw new ArgumentNullException(nameof(writer));
+            ArgumentNullException.ThrowIfNull(playlist);
+            ArgumentNullException.ThrowIfNull(writer);
 
-            using var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings
-            {
-                OmitXmlDeclaration = true,
-                Indent = true,
-                IndentChars = "    ",
-                CheckCharacters = false
-            });
-
-            WriteToXmlWriter(playlist, xmlWriter);
+            playlist.Serialize(writer);
         }
 
         /// <summary>
@@ -105,10 +91,8 @@ namespace PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist or xmlWriter is null.</exception>
         public static void WriteToXmlWriter(PlaylistRoot playlist, XmlWriter xmlWriter)
         {
-            if (playlist == null)
-                throw new ArgumentNullException(nameof(playlist));
-            if (xmlWriter == null)
-                throw new ArgumentNullException(nameof(xmlWriter));
+            ArgumentNullException.ThrowIfNull(playlist);
+            ArgumentNullException.ThrowIfNull(xmlWriter);
 
             // Create XML serializer namespaces to avoid default namespaces
             var namespaces = new XmlSerializerNamespaces();

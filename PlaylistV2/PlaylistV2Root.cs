@@ -10,8 +10,8 @@ namespace PlaylistV2;
 /// <summary>
 /// Represents the root of a V2 format playlist
 /// </summary>
-[XmlRoot(ElementName = "Playlist")]
-public class PlaylistRoot
+[XmlRoot("Playlist")]
+public class PlaylistV2Root
 {
     /// <summary>
     /// The playlist version (always "2.0" for V2 format)
@@ -24,56 +24,21 @@ public class PlaylistRoot
     /// </summary>
     [XmlElement("Property", Type = typeof(PropertyRule))]
     [XmlElement("Rule", Type = typeof(BooleanRule))]
-    public List<Rule> Rules { get; } = new List<Rule>();
+    public List<Rule> Rules { get; } = [];
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public PlaylistRoot()
+    public PlaylistV2Root()
     {
     }
 
     /// <summary>
     /// Constructor with rules
     /// </summary>
-    public PlaylistRoot(IEnumerable<Rule> rules)
+    public PlaylistV2Root(IEnumerable<Rule> rules)
     {
         Rules.AddRange(rules);
-    }
-
-    /// <summary>
-    /// Parses a playlist from XML string
-    /// </summary>
-    public static PlaylistRoot FromString(string xml)
-    {
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
-        using var reader = new StreamReader(stream);
-        return FromStream(reader);
-    }
-
-    /// <summary>
-    /// Parses a playlist from a TextReader
-    /// </summary>
-    public static PlaylistRoot FromStream(TextReader reader)
-    {
-        using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings
-        {
-            CloseInput = false
-        });
-
-        if (!xmlReader.IsStartElement("Playlist"))
-        {
-            throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
-        }
-
-        var version = xmlReader.GetAttribute("Version");
-        if (version == "1.0")
-        {
-            throw new NotSupportedException("Playlist V1 format is not supported by this parser");
-        }
-
-        var serializer = new XmlSerializer(typeof(PlaylistRoot));
-        return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
     }
 
     /// <summary>
@@ -101,7 +66,7 @@ public class PlaylistRoot
         var namespaces = new XmlSerializerNamespaces();
         namespaces.Add(string.Empty, string.Empty);
 
-        var serializer = new XmlSerializer(typeof(PlaylistRoot));
+        var serializer = new XmlSerializer(typeof(PlaylistV2Root));
         serializer.Serialize(xmlWriter, this, namespaces);
     }
 }

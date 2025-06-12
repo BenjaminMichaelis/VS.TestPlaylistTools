@@ -3,7 +3,6 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using PlaylistV1.Models;
 
 namespace PlaylistV1
 {
@@ -19,14 +18,13 @@ namespace PlaylistV1
         /// <returns>A PlaylistV1 object representing the parsed playlist.</returns>
         /// <exception cref="ArgumentNullException">Thrown when xmlContent is null.</exception>
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
-        public static PlaylistRoot ParseFromString(string xmlContent)
+        public static PlaylistRoot FromString(string xmlContent)
         {
-            if (xmlContent == null)
-                throw new ArgumentNullException(nameof(xmlContent));
+            ArgumentNullException.ThrowIfNull(xmlContent);
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlContent));
             using var reader = new StreamReader(stream);
-            return Parse(reader);
+            return FromStream(reader);
         }
 
         /// <summary>
@@ -37,16 +35,15 @@ namespace PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when filePath is null.</exception>
         /// <exception cref="FileNotFoundException">Thrown when the file does not exist.</exception>
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
-        public static PlaylistRoot ParseFromFile(string filePath)
+        public static PlaylistRoot FromFile(string filePath)
         {
-            if (filePath == null)
-                throw new ArgumentNullException(nameof(filePath));
+            ArgumentNullException.ThrowIfNull(filePath);
 
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Playlist file not found: {filePath}");
 
             using var reader = new StreamReader(filePath);
-            return Parse(reader);
+            return FromStream(reader);
         }
 
         /// <summary>
@@ -55,10 +52,9 @@ namespace PlaylistV1
         /// <param name="reader">The TextReader containing the XML content.</param>
         /// <returns>A PlaylistV1 object representing the parsed playlist.</returns>
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
-        public static PlaylistRoot Parse(TextReader reader)
+        public static PlaylistRoot FromStream(TextReader reader)
         {
-            if (reader == null)
-                throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
 
             try
             {
@@ -103,14 +99,14 @@ namespace PlaylistV1
         /// </summary>
         /// <param name="xmlContent">The XML content to validate.</param>
         /// <returns>True if the content is a valid V1 playlist; otherwise, false.</returns>
-        public static bool IsValidV1Playlist(string xmlContent)
+        public static bool IsValidPlaylist(string xmlContent)
         {
             if (string.IsNullOrWhiteSpace(xmlContent))
                 return false;
 
             try
             {
-                ParseFromString(xmlContent);
+                FromString(xmlContent);
                 return true;
             }
             catch

@@ -27,7 +27,7 @@ public class BooleanRule : Rule
     /// </summary>
     [XmlElement("Property", Type = typeof(PropertyRule))]
     [XmlElement("Rule", Type = typeof(BooleanRule))]
-    public List<Rule> Rules { get; } = new List<Rule>();
+    public List<Rule> Rules { get; } = [];
 
     /// <summary>
     /// Default constructor for XML serialization

@@ -18,7 +18,7 @@ namespace VSPlaylistBuilder
         /// <returns>Parsed playlist object (PlaylistV1 or PlaylistV2).</returns>
         public static object Load(string filePath)
         {
-            if (filePath == null) throw new ArgumentNullException(nameof(filePath));
+            ArgumentNullException.ThrowIfNull(filePath);
             using var reader = new StreamReader(filePath);
             return Load(reader);
         }
@@ -30,7 +30,7 @@ namespace VSPlaylistBuilder
         /// <returns>Parsed playlist object (PlaylistV1 or PlaylistV2).</returns>
         public static object Load(TextReader reader)
         {
-            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
             using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
             if (!xmlReader.ReadToFollowing("Playlist"))
                 throw new InvalidDataException("Root <Playlist> element not found.");
@@ -41,11 +41,11 @@ namespace VSPlaylistBuilder
             // Dispatch to correct parser
             if (version.StartsWith('1'))
             {
-                return PlaylistV1Parser.Parse(reader);
+                return PlaylistV1Parser.FromStream(reader);
             }
             else if (version.StartsWith('2'))
             {
-                return Playlist.FromString(reader.ReadToEnd());
+                return PlaylistParser.FromStream(reader);
             }
             else
             {
