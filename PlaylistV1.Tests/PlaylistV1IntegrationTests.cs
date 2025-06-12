@@ -28,21 +28,32 @@ namespace PlaylistV1.Tests
         public void TestRoundTripConversion_FromPlaylistFile(string filePath)
         {
             var originalContent = File.ReadAllText(filePath);
+
+            // Parse original
             var playlist = PlaylistV1Parser.FromString(originalContent);
-            var rebuiltContent = PlaylistV1Builder.ToXmlString(playlist);
+            Assert.Equal("1.0", playlist.Version);
+
+            // Serialize back to XML
+            var regeneratedXml = playlist.ToString();
+
+            // Parse regenerated XML
+            var reparsedPlaylist = PlaylistV1Parser.FromString(regeneratedXml);
+            Assert.Equal("1.0", reparsedPlaylist.Version);
 
             XmlDocument originalDoc = new();
-            originalDoc.LoadXml(originalContent);
+            var streamReader = new StringReader(originalContent);
+            XmlReader xmlReader = XmlReader.Create(streamReader, new XmlReaderSettings { IgnoreWhitespace = true, IgnoreComments = true });
+            originalDoc.Load(xmlReader);
             originalDoc.PreserveWhitespace = false;
             originalDoc.Normalize();
 
             XmlDocument rebuiltDoc = new();
-            rebuiltDoc.LoadXml(rebuiltContent);
+            rebuiltDoc.LoadXml(regeneratedXml);
             rebuiltDoc.PreserveWhitespace = false;
             rebuiltDoc.Normalize();
             Assert.Equal(originalDoc.OuterXml, rebuiltDoc.OuterXml);
 
-            var reparsedPlaylist = PlaylistV1Parser.FromString(rebuiltContent);
+            Assert.Equal(playlist.Version, reparsedPlaylist.Version);
             Assert.Equal(playlist.TestCount, reparsedPlaylist.TestCount);
             var originalTests = playlist.Tests.Select(t => t.Test).OrderBy(t => t).ToArray();
             var reparsedTests = reparsedPlaylist.Tests.Select(t => t.Test).OrderBy(t => t).ToArray();

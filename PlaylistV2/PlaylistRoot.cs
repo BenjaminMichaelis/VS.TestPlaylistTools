@@ -11,13 +11,23 @@ namespace PlaylistV2;
 /// Represents the root of a V2 format playlist
 /// </summary>
 [XmlRoot("Playlist")]
-public class PlaylistV2Root
+public class PlaylistRoot
 {
     /// <summary>
     /// The playlist version (always "2.0" for V2 format)
     /// </summary>
     [XmlAttribute]
-    public string Version { get; set; } = "2.0";
+    public string Version
+    {
+        get => _version;
+        set
+        {
+            if (value != "2.0")
+                throw new InvalidOperationException($"Playlist V2 must have Version=2.0, but got {value}.");
+            _version = value;
+        }
+    }
+    private string _version = "2.0";
 
     /// <summary>
     /// The rules contained in this playlist
@@ -29,14 +39,14 @@ public class PlaylistV2Root
     /// <summary>
     /// Default constructor
     /// </summary>
-    public PlaylistV2Root()
+    public PlaylistRoot()
     {
     }
 
     /// <summary>
     /// Constructor with rules
     /// </summary>
-    public PlaylistV2Root(IEnumerable<Rule> rules)
+    public PlaylistRoot(IEnumerable<Rule> rules)
     {
         Rules.AddRange(rules);
     }
@@ -66,7 +76,7 @@ public class PlaylistV2Root
         var namespaces = new XmlSerializerNamespaces();
         namespaces.Add(string.Empty, string.Empty);
 
-        var serializer = new XmlSerializer(typeof(PlaylistV2Root));
+        var serializer = new XmlSerializer(typeof(PlaylistRoot));
         serializer.Serialize(xmlWriter, this, namespaces);
     }
 }

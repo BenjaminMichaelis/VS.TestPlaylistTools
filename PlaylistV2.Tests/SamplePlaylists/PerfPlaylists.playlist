@@ -1,0 +1,12 @@
+<!--https://github.com/kendrahavens/DevIntersection2020/blob/15341b72af983b0fdef5d067ca22e1cc30ff96c7/PerfPlaylists.playlist#L4-->
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Property Name="Project" Value="NET5BenchmarkTests (netcoreapp3.1)" />
+        <Property Name="Project" Value="NET5BenchmarkTests (net5.0)" />
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

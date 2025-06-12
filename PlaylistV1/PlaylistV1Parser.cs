@@ -60,7 +60,6 @@ namespace PlaylistV1
             {
                 using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings
                 {
-                    CloseInput = false,
                     IgnoreWhitespace = true,
                     IgnoreComments = true
                 });
@@ -69,13 +68,6 @@ namespace PlaylistV1
                 if (!xmlReader.IsStartElement("Playlist"))
                 {
                     throw new InvalidDataException("Root element must be 'Playlist'.");
-                }
-
-                // Validate that this is version 1.0
-                var version = xmlReader.GetAttribute("Version");
-                if (!string.Equals(version, "1.0", StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new NotSupportedException($"Only Playlist version 1.0 is supported. Found version: {version ?? "null"}");
                 }
 
                 // Use XML serialization to deserialize the playlist
@@ -87,10 +79,6 @@ namespace PlaylistV1
             catch (XmlException ex)
             {
                 throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidDataException($"Invalid playlist format: {ex.Message}", ex);
             }
         }
 

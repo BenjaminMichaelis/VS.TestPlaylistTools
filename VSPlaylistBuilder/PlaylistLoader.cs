@@ -20,16 +20,6 @@ namespace VSPlaylistBuilder
         {
             ArgumentNullException.ThrowIfNull(filePath);
             using var reader = new StreamReader(filePath);
-            return Load(reader);
-        }
-
-        /// <summary>
-        /// Loads a playlist from a TextReader and returns the parsed object (V1 or V2).
-        /// </summary>
-        /// <param name="reader">TextReader for the playlist XML.</param>
-        /// <returns>Parsed playlist object (PlaylistV1 or PlaylistV2).</returns>
-        public static object Load(TextReader reader)
-        {
             ArgumentNullException.ThrowIfNull(reader);
             using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
             if (!xmlReader.ReadToFollowing("Playlist"))
@@ -37,15 +27,14 @@ namespace VSPlaylistBuilder
             var version = xmlReader.GetAttribute("Version");
             if (string.IsNullOrWhiteSpace(version))
                 throw new InvalidDataException("Playlist <Playlist> element missing Version attribute.");
-            xmlReader.MoveToElement();
             // Dispatch to correct parser
             if (version.StartsWith('1'))
             {
-                return PlaylistV1Parser.FromStream(reader);
+                return PlaylistV1Parser.FromFile(filePath);
             }
             else if (version.StartsWith('2'))
             {
-                return PlaylistParser.FromStream(reader);
+                return PlaylistV2Parser.FromFile(filePath);
             }
             else
             {

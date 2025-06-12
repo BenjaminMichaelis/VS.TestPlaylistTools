@@ -1,0 +1,10 @@
+<!--https://github.com/microsoft/PowerPlatform-DataverseServiceClient/blob/e5c182bff573ac2ce759720c0f3f66ece39ed09c/src/GeneralTools/DataverseClient/UnitTests/ConnectonTests.playlist-->
+<Playlist Version="1.0">
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitO365Instance" />
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitForConnectionStringOAuthSkipFalse" />
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitForConnectionStringOAuth" />
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitOAuthForOnline" />
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitOAuthForOnPremise" />
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitForConnectionStringForCertificate" />
+    <Add Test="Microsoft.Xrm.Tooling.Connector.UnitTests.CrmServiceClientTest.InitForConnectionStringOAuthBasic" />
+</Playlist>

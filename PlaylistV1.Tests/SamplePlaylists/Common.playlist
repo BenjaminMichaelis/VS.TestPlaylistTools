@@ -1,0 +1,2 @@
+<!--https://github.com/mpostol/OPC-UA-OOI/blob/fb227e938ce167e74a905ba09fa597832618e843/Common.playlist-->
+<Playlist Version="1.0"><Add Test="UAOOI.Common.Infrastructure.UnitTest.TraceSourceBaseUnitTest.CreationStateTestMethod" /><Add Test="UAOOI.Common.Infrastructure.UnitTest.TraceSourceBaseUnitTest.LogFileExistsTest" /><Add Test="UAOOI.Common.Infrastructure.UnitTest.TraceSourceBaseUnitTest.AssemblyTraceEventTestMethod" /></Playlist>

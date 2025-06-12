@@ -1,3 +1,4 @@
+<!--https://dailydotnettips.com/create-and-run-subset-of-unit-test-using-playlist-in-visual-studio/-->
 <Playlist Version="1.0">
     <Add Test="MyTestClass.Tests.CustomLogicTests.ValidateCoreLogicTest" />
     <Add Test="MyTestClass.Tests.CustomLogicTests.CalculateDetailsTest" />

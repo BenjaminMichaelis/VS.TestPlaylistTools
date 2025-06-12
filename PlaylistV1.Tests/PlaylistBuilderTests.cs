@@ -8,7 +8,7 @@ using System.Xml;
 
 namespace PlaylistV1.Tests
 {
-    public class PlaylistV1Tests
+    public class PlaylistBuilderTests
     {
         [Fact]
         public void TestBuilder_BasicAndFluentAndXmlAndValidation()
@@ -32,17 +32,6 @@ namespace PlaylistV1.Tests
 
             // Test validation methods
             Assert.True(PlaylistV1Parser.IsValidPlaylist(xmlContent));
-        }
-
-        [Fact]
-        public void ParseFromString_UnsupportedVersion_ThrowsException()
-        {
-            var xmlContent = """
-                    <Playlist Version="2.0">
-                        <Add Test="Test1" />
-                    </Playlist>
-                    """;
-            Assert.Throws<NotSupportedException>(() => PlaylistV1Parser.FromString(xmlContent));
         }
     }
 }

@@ -1,0 +1,6 @@
+<!--https://github.com/abravodev/winforms-mvvm/blob/cb5204dbc67e4735d12084b55fc656e1f8489074/UnitTests.playlist#L3-->
+<Playlist Version="2.0">
+	<Rule Name="Includes" Match="Any">
+		<Property Name="Trait" Value="UnitTests" />
+	</Rule>
+</Playlist>

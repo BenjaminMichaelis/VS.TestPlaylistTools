@@ -1,0 +1,6 @@
+<!--https://stackoverflow.com/questions/54794328/where-is-the-visual-studio-test-playlist-schema-->
+<Playlist Version="2.0">
+    <Rule Name="Includes" Match="Not">
+        <Property Name="Project" Value="Project.To.Exclude.Goes.Here" />
+    </Rule>
+</Playlist>

@@ -29,7 +29,7 @@ public class PlaylistIntegrationTests
 
         // Assert - Generated XML should be valid and parseable
         Assert.NotNull(generatedXml);
-        var reparsedPlaylist = PlaylistParser.FromString(generatedXml);
+        var reparsedPlaylist = PlaylistV2Parser.FromString(generatedXml);
         Assert.Equal("2.0", reparsedPlaylist.Version);
 
         // The generated XML should have similar structure to Sample1.playlist
@@ -65,65 +65,37 @@ public class PlaylistIntegrationTests
 
     [Theory]
     [MemberData(nameof(SamplePlaylistFiles))]
-    public void CompareGeneratedWithSample_StructureShouldBeEquivalent(string sampleFilePath)
+    public void TestRoundTripConversion_FromPlaylistFiles(string filePath)
     {
-        // Arrange
-        var sampleXml = File.ReadAllText(sampleFilePath);
-        var samplePlaylist = PlaylistParser.FromString(sampleXml);
+        // Read original XML
+        var originalContent = File.ReadAllText(filePath);
 
-        // Act - Extract structure information from the sample
-        Assert.Single(samplePlaylist.Rules);
-        var includeRule = Assert.IsType<BooleanRule>(samplePlaylist.Rules[0]);
-        Assert.Equal("Includes", includeRule.Name);
-        Assert.Equal(BooleanRuleKind.Any, includeRule.Match);
+        // Parse original
+        var playlist = PlaylistV2Parser.FromString(originalContent);
+        Assert.Equal("2.0", playlist.Version);
 
-        // The structure should be parseable and re-serializable
-        var regeneratedXml = samplePlaylist.ToString();
-        var reparsedPlaylist = PlaylistParser.FromString(regeneratedXml);
-        
-        // Assert
-        Assert.Equal(samplePlaylist.Version, reparsedPlaylist.Version);
-        Assert.Equal(samplePlaylist.Rules.Count, reparsedPlaylist.Rules.Count);
-    }
+        // Serialize back to XML
+        var regeneratedXml = playlist.ToString();
 
-    [Fact]
-    public void Playlist_EmptyPlaylist_CreatesValidXml()
-    {
-        // Arrange
-        var playlist = new PlaylistV2Builder.Builder().Build();
-
-        // Act
-        var xml = playlist.ToString();
-
-        // Assert
-        Assert.NotNull(xml);
-        Assert.Contains("Version=\"2.0\"", xml);
-        Assert.Contains("<Playlist", xml);
-        // Empty playlist creates a self-closing tag
-        Assert.True(xml.Contains("</Playlist>") || xml.Contains("/>"));
-
-        // Should be parseable
-        var reparsedPlaylist = PlaylistParser.FromString(xml);
+        // Parse regenerated XML
+        var reparsedPlaylist = PlaylistV2Parser.FromString(regeneratedXml);
         Assert.Equal("2.0", reparsedPlaylist.Version);
-        Assert.Empty(reparsedPlaylist.Rules);
-    }
 
-    [Fact]
-    public void Playlist_WithDirectRules_SerializesCorrectly()
-    {
-        // Arrange
-        var playlistBuilder = new PlaylistV2Builder.Builder();
-        playlistBuilder.AddRule(PropertyRule.Solution());
-        playlistBuilder.AddRule(PropertyRule.Project("TestProject"));
-        var playlist = playlistBuilder.Build();
+        // Compare normalized XML
+        XmlDocument originalDoc = new();
+        var streamReader = new StringReader(originalContent);
+        XmlReader xmlReader = XmlReader.Create(streamReader, new XmlReaderSettings { IgnoreWhitespace = true, IgnoreComments = true });
+        originalDoc.Load(xmlReader);
+        originalDoc.PreserveWhitespace = false;
+        originalDoc.Normalize();
 
-        // Act
-        var xml = playlist.ToString();
+        XmlDocument regeneratedDoc = new();
+        regeneratedDoc.LoadXml(regeneratedXml);
+        regeneratedDoc.PreserveWhitespace = false;
+        regeneratedDoc.Normalize();
+        Assert.Equal(originalDoc.OuterXml, regeneratedDoc.OuterXml);
 
-        // Assert
-        Assert.Contains("Name=\"Solution\"", xml);
-        Assert.Contains("Name=\"Project\" Value=\"TestProject\"", xml);
-        var reparsedPlaylist = PlaylistParser.FromString(xml);
-        Assert.Equal(2, reparsedPlaylist.Rules.Count);
+        Assert.Equal(playlist.Version, reparsedPlaylist.Version);
+        Assert.Equal(playlist.Rules.Count, reparsedPlaylist.Rules.Count);
     }
 }

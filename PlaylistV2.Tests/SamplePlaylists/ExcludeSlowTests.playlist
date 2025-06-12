@@ -1,0 +1,8 @@
+<!--https://github.com/microsoft/SizeBench/blob/2bccb34c091107840b59f6f497f7fb9b8231b644/src/ExcludeSlowTests.playlist#L4-->
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="Not">
+      <Property Name="Trait" Value="SlowTests" />
+    </Rule>
+  </Rule>
+</Playlist>

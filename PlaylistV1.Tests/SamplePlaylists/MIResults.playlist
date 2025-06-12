@@ -1,0 +1,2 @@
+<!--https://github.com/microsoft/MIEngine/blob/cb12caa07b1f86c0c99e1ec7322b1bc0cc27e8ee/src/MICoreUnitTests/MIResults.playlist-->
+<Playlist Version="1.0"><Add Test="MICoreUnitTests.MIResultsTests.TestParseCStringEmpty" /><Add Test="MICoreUnitTests.MIResultsTests.TestParseCStringNull" /><Add Test="MICoreUnitTests.MIResultsTests.TestParseCString" /><Add Test="MICoreUnitTests.MIResultsTests.TestParseResultList" /><Add Test="MICoreUnitTests.MIResultsTests.TestParseResultListConstValues" /></Playlist>

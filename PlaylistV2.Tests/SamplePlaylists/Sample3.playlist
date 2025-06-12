@@ -1,0 +1,184 @@
+<Playlist Version="2.0">
+    <Rule Name="Includes" Match="Any">
+        <Rule Match="All">
+            <Property Name="Solution" />
+            <Rule Match="Any">
+                <Rule Match="All">
+                    <Property Name="Project" Value="PlaylistV1.Tests" />
+                    <Rule Match="Any">
+                        <Rule Match="All">
+                            <Property Name="Namespace" Value="PlaylistV1.Tests" />
+                            <Rule Match="Any">
+                                <Rule Match="All">
+                                    <Property Name="Class" Value="PlaylistV1Tests" />
+                                    <Rule Match="Any">
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="PlaylistV1.Tests.PlaylistV1Tests.ParseFromString_UnsupportedVersion_ThrowsException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="PlaylistV1.Tests.PlaylistV1Tests.ParseFromString_UnsupportedVersion_ThrowsException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="PlaylistV1.Tests.PlaylistV1Tests.TestRoundTripConversion_FromPlaylistFile" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="PlaylistV1.Tests.PlaylistV1Tests.TestRoundTripConversion_FromPlaylistFile(filePath: &quot;D:\\crispy-giggle\\PlaylistV1.Tests\\SamplePlaylis&quot;···)" />
+                                            </Rule>
+                                        </Rule>
+                                    </Rule>
+                                </Rule>
+                            </Rule>
+                        </Rule>
+                    </Rule>
+                </Rule>
+                <Rule Match="All">
+                    <Property Name="Project" Value="PlaylistV2.Tests" />
+                    <Rule Match="Any">
+                        <Rule Match="All">
+                            <Property Name="Namespace" Value="PlaylistV2.Tests" />
+                            <Rule Match="Any">
+                                <Rule Match="All">
+                                    <Property Name="Class" Value="UnitTest1" />
+                                    <Rule Match="Any">
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="PlaylistV2.Tests.UnitTest1.Test1" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="PlaylistV2.Tests.UnitTest1.Test1" />
+                                            </Rule>
+                                        </Rule>
+                                    </Rule>
+                                </Rule>
+                            </Rule>
+                        </Rule>
+                    </Rule>
+                </Rule>
+                <Rule Match="All">
+                    <Property Name="Project" Value="VSPlaylistBuilder.Tests" />
+                    <Rule Match="Any">
+                        <Rule Match="All">
+                            <Property Name="Namespace" Value="VSPlaylistBuilder.Tests" />
+                            <Rule Match="Any">
+                                <Rule Match="All">
+                                    <Property Name="Class" Value="PlaylistTests" />
+                                    <Rule Match="Any">
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithNullRule_ThrowsArgumentNullException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithNullRule_ThrowsArgumentNullException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithTraitRuleWithNullValue_ThrowsArgumentException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithTraitRuleWithNullValue_ThrowsArgumentException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithTraitRuleWithoutValue_ThrowsArgumentException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithTraitRuleWithoutValue_ThrowsArgumentException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithTraitRuleWithValidValue_AddsSuccessfully" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.AddRule_WithTraitRuleWithValidValue_AddsSuccessfully" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.Playlist_DefaultConstructor_SetsVersion" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.Playlist_DefaultConstructor_SetsVersion" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithEmptyPath_ThrowsArgumentException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithEmptyPath_ThrowsArgumentException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithInvalidPath_ThrowsInvalidOperationException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithInvalidPath_ThrowsInvalidOperationException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithNullPath_ThrowsArgumentNullException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithNullPath_ThrowsArgumentNullException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithValidPath_CreatesXmlFile" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.PlaylistTests.SaveToFile_WithValidPath_CreatesXmlFile" />
+                                            </Rule>
+                                        </Rule>
+                                    </Rule>
+                                </Rule>
+                                <Rule Match="All">
+                                    <Property Name="Class" Value="RuleEntryTests" />
+                                    <Rule Match="Any">
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddSubRule_WithNullRule_ThrowsArgumentNullException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddSubRule_WithNullRule_ThrowsArgumentNullException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddSubRule_WithValidRule_AddsToSubRules" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddSubRule_WithValidRule_AddsToSubRules" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddTest_WithEmptyName_ThrowsArgumentException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddTest_WithEmptyName_ThrowsArgumentException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddTest_WithNullName_ThrowsArgumentNullException" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddTest_WithNullName_ThrowsArgumentNullException" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddTest_WithValidName_AddsTestEntry" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.AddTest_WithValidName_AddsTestEntry" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.RuleEntry_DefaultConstructor_InitializesProperties" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.RuleEntryTests.RuleEntry_DefaultConstructor_InitializesProperties" />
+                                            </Rule>
+                                        </Rule>
+                                    </Rule>
+                                </Rule>
+                                <Rule Match="All">
+                                    <Property Name="Class" Value="TestEntryTests" />
+                                    <Rule Match="Any">
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.TestEntryTests.TestEntry_DefaultConstructor_InitializesProperties" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.TestEntryTests.TestEntry_DefaultConstructor_InitializesProperties" />
+                                            </Rule>
+                                        </Rule>
+                                        <Rule Match="All">
+                                            <Property Name="TestWithNormalizedFullyQualifiedName" Value="VSPlaylistBuilder.Tests.TestEntryTests.TestEntry_SetFullyQualifiedName_UpdatesProperty" />
+                                            <Rule Match="Any">
+                                                <Property Name="DisplayName" Value="VSPlaylistBuilder.Tests.TestEntryTests.TestEntry_SetFullyQualifiedName_UpdatesProperty" />
+                                            </Rule>
+                                        </Rule>
+                                    </Rule>
+                                </Rule>
+                            </Rule>
+                        </Rule>
+                    </Rule>
+                </Rule>
+            </Rule>
+        </Rule>
+    </Rule>
+</Playlist>

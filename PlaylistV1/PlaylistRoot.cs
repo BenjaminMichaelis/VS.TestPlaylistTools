@@ -15,7 +15,17 @@ namespace PlaylistV1
         /// The version of the playlist format. Always "1.0" for V1 playlists.
         /// </summary>
         [XmlAttribute("Version")]
-        public string Version { get; set; } = "1.0";
+        public string Version
+        {
+            get => _version;
+            set
+            {
+                if (value != "1.0")
+                    throw new InvalidOperationException($"Playlist V1 must have Version=1.0, but got {value}.");
+                _version = value;
+            }
+        }
+        private string _version = "1.0";
 
         /// <summary>
         /// The collection of tests to be included in this playlist.

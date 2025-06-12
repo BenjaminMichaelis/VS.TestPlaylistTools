@@ -15,15 +15,15 @@ public static class PlaylistV2Builder
     /// <summary>
     /// Creates a new playlist with the specified rules.
     /// </summary>
-    public static PlaylistV2Root Create(IEnumerable<Rule>? rules = null)
+    public static PlaylistRoot Create(IEnumerable<Rule>? rules = null)
     {
-        return new PlaylistV2Root(rules ?? Array.Empty<Rule>());
+        return new PlaylistRoot(rules ?? Array.Empty<Rule>());
     }
 
     /// <summary>
     /// Serializes a playlist to XML string.
     /// </summary>
-    public static string ToXmlString(PlaylistV2Root playlist)
+    public static string ToXmlString(PlaylistRoot playlist)
     {
         ArgumentNullException.ThrowIfNull(playlist);
         return playlist.ToString();
@@ -32,7 +32,7 @@ public static class PlaylistV2Builder
     /// <summary>
     /// Saves a playlist to a file.
     /// </summary>
-    public static void SaveToFile(PlaylistV2Root playlist, string filePath)
+    public static void SaveToFile(PlaylistRoot playlist, string filePath)
     {
         ArgumentNullException.ThrowIfNull(playlist);
         ArgumentNullException.ThrowIfNull(filePath);
@@ -48,7 +48,7 @@ public static class PlaylistV2Builder
     /// <summary>
     /// Writes a playlist to a TextWriter.
     /// </summary>
-    public static void WriteToTextWriter(PlaylistV2Root playlist, TextWriter writer)
+    public static void WriteToTextWriter(PlaylistRoot playlist, TextWriter writer)
     {
         ArgumentNullException.ThrowIfNull(playlist);
         ArgumentNullException.ThrowIfNull(writer);
@@ -58,20 +58,20 @@ public static class PlaylistV2Builder
     /// <summary>
     /// Writes a playlist to an XmlWriter.
     /// </summary>
-    public static void WriteToXmlWriter(PlaylistV2Root playlist, XmlWriter xmlWriter)
+    public static void WriteToXmlWriter(PlaylistRoot playlist, XmlWriter xmlWriter)
     {
         ArgumentNullException.ThrowIfNull(playlist);
         ArgumentNullException.ThrowIfNull(xmlWriter);
         var namespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
         namespaces.Add(string.Empty, string.Empty);
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistV2Root));
+        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
         serializer.Serialize(xmlWriter, playlist, namespaces);
     }
 
     /// <summary>
     /// Creates a hierarchical playlist structure for a specific test
     /// </summary>
-    public static PlaylistV2Root CreateHierarchicalPlaylist(
+    public static PlaylistRoot CreateHierarchicalPlaylist(
         string projectName,
         string namespaceName,
         string className,
@@ -108,13 +108,13 @@ public static class PlaylistV2Builder
             )
         );
         rules.Add(includeRule);
-        return new PlaylistV2Root(rules);
+        return new PlaylistRoot(rules);
     }
 
     /// <summary>
     /// Creates a hierarchical playlist structure for multiple tests
     /// </summary>
-    public static PlaylistV2Root CreateHierarchicalPlaylist(
+    public static PlaylistRoot CreateHierarchicalPlaylist(
         string projectName,
         string namespaceName,
         string className,
@@ -151,7 +151,7 @@ public static class PlaylistV2Builder
             )
         );
         rules.Add(includeRule);
-        return new PlaylistV2Root(rules);
+        return new PlaylistRoot(rules);
     }
 
     /// <summary>
@@ -159,14 +159,14 @@ public static class PlaylistV2Builder
     /// </summary>
     public class Builder
     {
-        private readonly PlaylistV2Root _playlistRoot;
+        private readonly PlaylistRoot _playlistRoot;
 
         /// <summary>
         /// Initializes a new instance of the Builder class.
         /// </summary>
         public Builder()
         {
-            _playlistRoot = new PlaylistV2Root();
+            _playlistRoot = new PlaylistRoot();
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ public static class PlaylistV2Builder
         /// Builds and returns the playlist.
         /// </summary>
         /// <returns>The constructed PlaylistRoot object.</returns>
-        public PlaylistV2Root Build()
+        public PlaylistRoot Build()
         {
             return _playlistRoot;
         }
