@@ -18,9 +18,9 @@ namespace PlaylistV1
         /// </summary>
         /// <param name="testNames">The test names to include in the playlist.</param>
         /// <returns>A new PlaylistV1 object.</returns>
-        public static Models.PlaylistV1 Create(IEnumerable<string>? testNames = null)
+        public static PlaylistRoot Create(IEnumerable<string>? testNames = null)
         {
-            return new Models.PlaylistV1(testNames ?? Array.Empty<string>());
+            return new PlaylistRoot(testNames ?? Array.Empty<string>());
         }
 
         /// <summary>
@@ -28,9 +28,9 @@ namespace PlaylistV1
         /// </summary>
         /// <param name="testNames">The test names to include in the playlist.</param>
         /// <returns>A new PlaylistV1 object.</returns>
-        public static Models.PlaylistV1 Create(params string[] testNames)
+        public static PlaylistRoot Create(params string[] testNames)
         {
-            return new Models.PlaylistV1(testNames ?? Array.Empty<string>());
+            return new PlaylistRoot(testNames ?? Array.Empty<string>());
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace PlaylistV1
         /// <param name="playlist">The playlist to serialize.</param>
         /// <returns>The XML representation of the playlist.</returns>
         /// <exception cref="ArgumentNullException">Thrown when playlist is null.</exception>
-        public static string ToXmlString(Models.PlaylistV1 playlist)
+        public static string ToXmlString(PlaylistRoot playlist)
         {
             if (playlist == null)
                 throw new ArgumentNullException(nameof(playlist));
@@ -55,7 +55,7 @@ namespace PlaylistV1
         /// <param name="playlist">The playlist to save.</param>
         /// <param name="filePath">The path where to save the playlist file.</param>
         /// <exception cref="ArgumentNullException">Thrown when playlist or filePath is null.</exception>
-        public static void SaveToFile(Models.PlaylistV1 playlist, string filePath)
+        public static void SaveToFile(PlaylistRoot playlist, string filePath)
         {
             if (playlist == null)
                 throw new ArgumentNullException(nameof(playlist));
@@ -79,7 +79,7 @@ namespace PlaylistV1
         /// <param name="playlist">The playlist to write.</param>
         /// <param name="writer">The TextWriter to write to.</param>
         /// <exception cref="ArgumentNullException">Thrown when playlist or writer is null.</exception>
-        public static void WriteToTextWriter(Models.PlaylistV1 playlist, TextWriter writer)
+        public static void WriteToTextWriter(PlaylistRoot playlist, TextWriter writer)
         {
             if (playlist == null)
                 throw new ArgumentNullException(nameof(playlist));
@@ -104,7 +104,7 @@ namespace PlaylistV1
         /// <param name="playlist">The playlist to write.</param>
         /// <param name="xmlWriter">The XmlWriter to write to.</param>
         /// <exception cref="ArgumentNullException">Thrown when playlist or xmlWriter is null.</exception>
-        public static void WriteToXmlWriter(Models.PlaylistV1 playlist, XmlWriter xmlWriter)
+        public static void WriteToXmlWriter(PlaylistRoot playlist, XmlWriter xmlWriter)
         {
             if (playlist == null)
                 throw new ArgumentNullException(nameof(playlist));
@@ -115,7 +115,7 @@ namespace PlaylistV1
             var namespaces = new XmlSerializerNamespaces();
             namespaces.Add(string.Empty, string.Empty);
 
-            var serializer = new XmlSerializer(typeof(Models.PlaylistV1));
+            var serializer = new XmlSerializer(typeof(PlaylistRoot));
             serializer.Serialize(xmlWriter, playlist, namespaces);
         }
 
@@ -124,14 +124,14 @@ namespace PlaylistV1
         /// </summary>
         public class Builder
         {
-            private readonly Models.PlaylistV1 _playlist;
+            private readonly PlaylistRoot _playlist;
 
             /// <summary>
             /// Initializes a new instance of the Builder class.
             /// </summary>
             public Builder()
             {
-                _playlist = new Models.PlaylistV1();
+                _playlist = new PlaylistRoot();
             }
 
             /// <summary>
@@ -176,7 +176,7 @@ namespace PlaylistV1
             /// Builds and returns the playlist.
             /// </summary>
             /// <returns>The constructed PlaylistV1 object.</returns>
-            public Models.PlaylistV1 Build()
+            public PlaylistRoot Build()
             {
                 return _playlist;
             }

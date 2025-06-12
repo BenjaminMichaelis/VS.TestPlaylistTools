@@ -19,7 +19,7 @@ namespace PlaylistV1
         /// <returns>A PlaylistV1 object representing the parsed playlist.</returns>
         /// <exception cref="ArgumentNullException">Thrown when xmlContent is null.</exception>
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
-        public static Models.PlaylistV1 ParseFromString(string xmlContent)
+        public static PlaylistRoot ParseFromString(string xmlContent)
         {
             if (xmlContent == null)
                 throw new ArgumentNullException(nameof(xmlContent));
@@ -37,7 +37,7 @@ namespace PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when filePath is null.</exception>
         /// <exception cref="FileNotFoundException">Thrown when the file does not exist.</exception>
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
-        public static Models.PlaylistV1 ParseFromFile(string filePath)
+        public static PlaylistRoot ParseFromFile(string filePath)
         {
             if (filePath == null)
                 throw new ArgumentNullException(nameof(filePath));
@@ -55,7 +55,7 @@ namespace PlaylistV1
         /// <param name="reader">The TextReader containing the XML content.</param>
         /// <returns>A PlaylistV1 object representing the parsed playlist.</returns>
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
-        public static Models.PlaylistV1 Parse(TextReader reader)
+        public static PlaylistRoot Parse(TextReader reader)
         {
             if (reader == null)
                 throw new ArgumentNullException(nameof(reader));
@@ -83,8 +83,8 @@ namespace PlaylistV1
                 }
 
                 // Use XML serialization to deserialize the playlist
-                var serializer = new XmlSerializer(typeof(Models.PlaylistV1));
-                var playlist = (Models.PlaylistV1)serializer.Deserialize(xmlReader)!;
+                var serializer = new XmlSerializer(typeof(PlaylistRoot));
+                var playlist = (PlaylistRoot)serializer.Deserialize(xmlReader)!;
 
                 return playlist;
             }

@@ -39,15 +39,13 @@ namespace VSPlaylistBuilder
                 throw new InvalidDataException("Playlist <Playlist> element missing Version attribute.");
             xmlReader.MoveToElement();
             // Dispatch to correct parser
-            if (version.StartsWith("1"))
+            if (version.StartsWith('1'))
             {
                 return PlaylistV1Parser.Parse(reader);
             }
-            else if (version.StartsWith("2"))
+            else if (version.StartsWith('2'))
             {
-                // Implement PlaylistV2Parser.Parse(reader) in PlaylistV2 project
-                //return PlaylistV2Parser.Parse(reader);
-                return new object();
+                return Playlist.FromString(reader.ReadToEnd());
             }
             else
             {

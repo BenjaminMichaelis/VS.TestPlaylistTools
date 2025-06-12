@@ -1,0 +1,57 @@
+<Playlist Version="2.0">
+  <Rule Name="Includes" Match="Any">
+    <Rule Match="All">
+      <Property Name="Solution" />
+      <Rule Match="Any">
+        <Rule Match="All">
+          <Property Name="Project" Value="PlaylistV1.Tests" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="PlaylistV1.Tests" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="PlaylistV1Tests" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="PlaylistV1.Tests.PlaylistV1Tests.ParseFromString_UnsupportedVersion_ThrowsException" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="PlaylistV1.Tests.PlaylistV1Tests.ParseFromString_UnsupportedVersion_ThrowsException" />
+                      </Rule>
+                    </Rule>
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="PlaylistV1.Tests.PlaylistV1Tests.TestRoundTripConversion_FromPlaylistFile" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="PlaylistV1.Tests.PlaylistV1Tests.TestRoundTripConversion_FromPlaylistFile(filePath: &quot;D:\\crispy-giggle\\PlaylistV1.Tests\\SamplePlaylis&quot;···)" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+        <Rule Match="All">
+          <Property Name="Project" Value="PlaylistV2.Tests" />
+          <Rule Match="Any">
+            <Rule Match="All">
+              <Property Name="Namespace" Value="PlaylistV2.Tests" />
+              <Rule Match="Any">
+                <Rule Match="All">
+                  <Property Name="Class" Value="UnitTest1" />
+                  <Rule Match="Any">
+                    <Rule Match="All">
+                      <Property Name="TestWithNormalizedFullyQualifiedName" Value="PlaylistV2.Tests.UnitTest1.Test1" />
+                      <Rule Match="Any">
+                        <Property Name="DisplayName" Value="PlaylistV2.Tests.UnitTest1.Test1" />
+                      </Rule>
+                    </Rule>
+                  </Rule>
+                </Rule>
+              </Rule>
+            </Rule>
+          </Rule>
+        </Rule>
+      </Rule>
+    </Rule>
+  </Rule>
+</Playlist>

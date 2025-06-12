@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -9,13 +9,13 @@
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
   </PropertyGroup>
 
-  <ItemGroup Label="NuGet">
-    <!-- 
+<!--  <ItemGroup Label="NuGet">
+    --><!-- 
     Ensure the icon is included in the NuGet package
     https://learn.microsoft.com/nuget/reference/msbuild-targets#packing-an-icon-image-file
-    -->
+    --><!--
     <None Include="NuGetIcon.png" Pack="true" PackagePath="\" />
-  </ItemGroup>
+  </ItemGroup>-->
 
   <ItemGroup>
     <None Include="..\README.md" Pack="true" PackagePath="\" />
@@ -27,5 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PlaylistV1\PlaylistV1.csproj" />
+    <ProjectReference Include="..\PlaylistV2\PlaylistV2.csproj" />
   </ItemGroup>
 </Project>

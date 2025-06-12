@@ -34,19 +34,17 @@ namespace PlaylistV1.Tests
             Assert.True(PlaylistV1Parser.IsValidV1Playlist(xmlContent));
         }
 
-        public static IEnumerable<object[]> SamplePlaylistFiles()
+        public static TheoryData<string> SamplePlaylistFiles()
         {
             var testResourcesPath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV1.Tests", "SamplePlaylists");
             // Get all files in testResourcesPath that are .playlist files
             var sampleFiles = Directory.GetFiles(testResourcesPath, "*.playlist");
+            var theoryData = new TheoryData<string>();
             foreach (var fileName in sampleFiles)
             {
-                var filePath = fileName;
-                if (File.Exists(filePath))
-                {
-                    yield return new object[] { filePath };
-                }
+                theoryData.Add(fileName);
             }
+            return theoryData;
         }
 
         [Theory]
@@ -79,10 +77,10 @@ namespace PlaylistV1.Tests
         public void ParseFromString_UnsupportedVersion_ThrowsException()
         {
             var xmlContent = """
-                <Playlist Version="2.0">
-                    <Add Test="Test1" />
-                </Playlist>
-                """;
+                    <Playlist Version="2.0">
+                        <Add Test="Test1" />
+                    </Playlist>
+                    """;
             Assert.Throws<NotSupportedException>(() => PlaylistV1Parser.ParseFromString(xmlContent));
         }
     }

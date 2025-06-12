@@ -8,7 +8,7 @@ namespace PlaylistV1.Models
     /// Represents a Visual Studio Test Playlist Version 1.0
     /// </summary>
     [XmlRoot("Playlist")]
-    public class PlaylistV1
+    public class PlaylistRoot
     {
         /// <summary>
         /// The version of the playlist format. Always "1.0" for V1 playlists.
@@ -25,7 +25,7 @@ namespace PlaylistV1.Models
         /// <summary>
         /// Initializes a new instance of the PlaylistV1 class.
         /// </summary>
-        public PlaylistV1()
+        public PlaylistRoot()
         {
         }
 
@@ -33,7 +33,7 @@ namespace PlaylistV1.Models
         /// Initializes a new instance of the PlaylistV1 class with the specified tests.
         /// </summary>
         /// <param name="testNames">The test names to include in the playlist.</param>
-        public PlaylistV1(IEnumerable<string> testNames)
+        public PlaylistRoot(IEnumerable<string> testNames)
         {
             if (testNames == null)
                 throw new ArgumentNullException(nameof(testNames));
