@@ -17,9 +17,8 @@ namespace VS.TestPlaylistTools
         /// <returns>Parsed playlist object (PlaylistV1 or PlaylistV2).</returns>
         public static object Load(string filePath)
         {
-            ArgumentNullException.ThrowIfNull(filePath);
+            if (filePath is null) throw new ArgumentNullException(nameof(filePath));
             using var reader = new StreamReader(filePath);
-            ArgumentNullException.ThrowIfNull(reader);
             using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
             if (!xmlReader.ReadToFollowing("Playlist"))
                 throw new InvalidDataException("Root <Playlist> element not found.");

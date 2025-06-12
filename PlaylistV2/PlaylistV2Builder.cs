@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Xml;
 
@@ -17,7 +13,7 @@ public static class PlaylistV2Builder
     /// </summary>
     public static PlaylistRoot Create(IEnumerable<Rule>? rules = null)
     {
-        return new PlaylistRoot(rules ?? Array.Empty<Rule>());
+        return new PlaylistRoot(rules ?? []);
     }
 
     /// <summary>
@@ -25,7 +21,7 @@ public static class PlaylistV2Builder
     /// </summary>
     public static string ToXmlString(PlaylistRoot playlist)
     {
-        ArgumentNullException.ThrowIfNull(playlist);
+        if (playlist is null) throw new ArgumentNullException(nameof(playlist));
         return playlist.ToString();
     }
 
@@ -34,8 +30,8 @@ public static class PlaylistV2Builder
     /// </summary>
     public static void SaveToFile(PlaylistRoot playlist, string filePath)
     {
-        ArgumentNullException.ThrowIfNull(playlist);
-        ArgumentNullException.ThrowIfNull(filePath);
+        if (playlist is null) throw new ArgumentNullException(nameof(playlist));
+        if (filePath is null) throw new ArgumentNullException(nameof(filePath));
         var directory = Path.GetDirectoryName(filePath);
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
         {
@@ -50,8 +46,8 @@ public static class PlaylistV2Builder
     /// </summary>
     public static void WriteToTextWriter(PlaylistRoot playlist, TextWriter writer)
     {
-        ArgumentNullException.ThrowIfNull(playlist);
-        ArgumentNullException.ThrowIfNull(writer);
+        if (playlist is null) throw new ArgumentNullException(nameof(playlist));
+        if (writer is null) throw new ArgumentNullException(nameof(writer));
         playlist.Serialize(writer);
     }
 
@@ -60,8 +56,8 @@ public static class PlaylistV2Builder
     /// </summary>
     public static void WriteToXmlWriter(PlaylistRoot playlist, XmlWriter xmlWriter)
     {
-        ArgumentNullException.ThrowIfNull(playlist);
-        ArgumentNullException.ThrowIfNull(xmlWriter);
+        if (playlist is null) throw new ArgumentNullException(nameof(playlist));
+        if (xmlWriter is null) throw new ArgumentNullException(nameof(xmlWriter));
         var namespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
         namespaces.Add(string.Empty, string.Empty);
         var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));

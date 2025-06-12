@@ -49,7 +49,7 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromFile(string filePath)
     {
-        ArgumentNullException.ThrowIfNull(filePath);
+        if (filePath is null) throw new ArgumentNullException(nameof(filePath));
         using var reader = new StreamReader(filePath, Encoding.UTF8);
         return FromStream(reader);
     }
@@ -61,7 +61,7 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromXmlReader(XmlReader xmlReader)
     {
-        ArgumentNullException.ThrowIfNull(xmlReader);
+        if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
         if (!xmlReader.IsStartElement("Playlist"))
             throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
         var serializer = new XmlSerializer(typeof(PlaylistRoot));

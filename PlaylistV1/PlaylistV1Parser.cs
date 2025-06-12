@@ -18,7 +18,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
         public static PlaylistRoot FromString(string xmlContent)
         {
-            ArgumentNullException.ThrowIfNull(xmlContent);
+            if (xmlContent is null) throw new ArgumentNullException(nameof(xmlContent));
 
             using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlContent));
             using var reader = new StreamReader(stream);
@@ -35,7 +35,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
         public static PlaylistRoot FromFile(string filePath)
         {
-            ArgumentNullException.ThrowIfNull(filePath);
+            if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Playlist file not found: {filePath}");
@@ -52,7 +52,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
         public static PlaylistRoot FromStream(TextReader reader)
         {
-            ArgumentNullException.ThrowIfNull(reader);
+            if (reader is null) throw new ArgumentNullException(nameof(reader));
 
             try
             {

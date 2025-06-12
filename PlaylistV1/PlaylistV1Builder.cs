@@ -16,7 +16,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <returns>A new PlaylistV1 object.</returns>
         public static PlaylistRoot Create(IEnumerable<string>? testNames = null)
         {
-            return new PlaylistRoot(testNames ?? Array.Empty<string>());
+            return new PlaylistRoot(testNames ?? []);
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <returns>A new PlaylistV1 object.</returns>
         public static PlaylistRoot Create(params string[] testNames)
         {
-            return new PlaylistRoot(testNames ?? Array.Empty<string>());
+            return new PlaylistRoot(testNames ?? []);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist is null.</exception>
         public static string ToXmlString(PlaylistRoot playlist)
         {
-            ArgumentNullException.ThrowIfNull(playlist);
+            if (playlist is null) throw new ArgumentNullException(nameof(playlist));
 
             using var stringWriter = new StringWriter();
             WriteToTextWriter(playlist, stringWriter);
@@ -52,8 +52,8 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist or filePath is null.</exception>
         public static void SaveToFile(PlaylistRoot playlist, string filePath)
         {
-            ArgumentNullException.ThrowIfNull(playlist);
-            ArgumentNullException.ThrowIfNull(filePath);
+            if (playlist is null) throw new ArgumentNullException(nameof(playlist));
+            if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
             // Ensure directory exists
             var directory = Path.GetDirectoryName(filePath);
@@ -74,8 +74,8 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist or writer is null.</exception>
         public static void WriteToTextWriter(PlaylistRoot playlist, TextWriter writer)
         {
-            ArgumentNullException.ThrowIfNull(playlist);
-            ArgumentNullException.ThrowIfNull(writer);
+            if (playlist is null) throw new ArgumentNullException(nameof(playlist));
+            if (writer is null) throw new ArgumentNullException(nameof(writer));
 
             playlist.Serialize(writer);
         }
@@ -88,8 +88,8 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <exception cref="ArgumentNullException">Thrown when playlist or xmlWriter is null.</exception>
         public static void WriteToXmlWriter(PlaylistRoot playlist, XmlWriter xmlWriter)
         {
-            ArgumentNullException.ThrowIfNull(playlist);
-            ArgumentNullException.ThrowIfNull(xmlWriter);
+            if (playlist is null) throw new ArgumentNullException(nameof(playlist));
+            if (xmlWriter is null) throw new ArgumentNullException(nameof(xmlWriter));
 
             // Create XML serializer namespaces to avoid default namespaces
             var namespaces = new XmlSerializerNamespaces();

@@ -44,7 +44,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <param name="testNames">The test names to include in the playlist.</param>
         public PlaylistRoot(IEnumerable<string> testNames)
         {
-            ArgumentNullException.ThrowIfNull(testNames);
+            if (testNames is null) throw new ArgumentNullException(nameof(testNames));
 
             foreach (var testName in testNames)
             {

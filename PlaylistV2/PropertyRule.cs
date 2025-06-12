@@ -142,6 +142,11 @@ public class PropertyRule : Rule
         return new PropertyRule(TestPropertyType.ManagedMethod, name);
     }
 
+    /// <summary>
+    /// Determines whether the specified object is equal to the current PropertyRule instance.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current PropertyRule.</param>
+    /// <returns>True if the specified object is equal to the current PropertyRule; otherwise, false.</returns>
     public override bool Equals(object? obj)
     {
         if (obj is PropertyRule other)
@@ -151,6 +156,10 @@ public class PropertyRule : Rule
         return false;
     }
 
+    /// <summary>
+    /// Returns a hash code for the current PropertyRule instance.
+    /// </summary>
+    /// <returns>A hash code for the current PropertyRule.</returns>
     public override int GetHashCode()
     {
         return HashCode.Combine(Type, Value);
