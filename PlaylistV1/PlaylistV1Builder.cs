@@ -89,7 +89,6 @@ namespace PlaylistV1
             using var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings
             {
                 OmitXmlDeclaration = true,
-                CloseOutput = false,
                 Indent = true,
                 IndentChars = "    ",
                 CheckCharacters = false

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Xml;
 
 namespace PlaylistV2;
 
@@ -50,6 +52,34 @@ public class Playlist
     }
 
     /// <summary>
+    /// Parses a playlist from a file path
+    /// </summary>
+    public static Playlist FromFile(string filePath)
+    {
+        if (filePath == null)
+            throw new ArgumentNullException(nameof(filePath));
+        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        return FromStream(reader);
+    }
+
+    /// <summary>
+    /// Parses a playlist from an XmlReader
+    /// </summary>
+    public static Playlist FromXmlReader(XmlReader xmlReader)
+    {
+        if (xmlReader == null)
+            throw new ArgumentNullException(nameof(xmlReader));
+        if (!xmlReader.IsStartElement("Playlist"))
+            throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
+        var version = xmlReader.GetAttribute("Version");
+        if (version == "1.0")
+            throw new NotSupportedException("Playlist V1 format is not supported by this parser");
+        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
+        var root = (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+        return new Playlist(root);
+    }
+
+    /// <summary>
     /// Serializes the playlist to XML string
     /// </summary>
     public override string ToString()
@@ -63,6 +93,61 @@ public class Playlist
     public void Serialize(TextWriter writer)
     {
         _root.Serialize(writer);
+    }
+
+    /// <summary>
+    /// Serializes the playlist to a file
+    /// </summary>
+    public void SaveToFile(string filePath)
+    {
+        if (filePath == null)
+            throw new ArgumentNullException(nameof(filePath));
+        var directory = Path.GetDirectoryName(filePath);
+        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+        using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+        Serialize(writer);
+    }
+
+    /// <summary>
+    /// Serializes the playlist to a TextWriter
+    /// </summary>
+    public void WriteToTextWriter(TextWriter writer)
+    {
+        Serialize(writer);
+    }
+
+    /// <summary>
+    /// Serializes the playlist to an XmlWriter
+    /// </summary>
+    public void WriteToXmlWriter(XmlWriter xmlWriter)
+    {
+        if (xmlWriter == null)
+            throw new ArgumentNullException(nameof(xmlWriter));
+        var namespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
+        namespaces.Add(string.Empty, string.Empty);
+        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
+        serializer.Serialize(xmlWriter, _root, namespaces);
+    }
+
+    /// <summary>
+    /// Checks if the given XML content is a valid V2 playlist
+    /// </summary>
+    public static bool IsValidV2Playlist(string xmlContent)
+    {
+        if (string.IsNullOrWhiteSpace(xmlContent))
+            return false;
+        try
+        {
+            var root = PlaylistRoot.FromString(xmlContent);
+            return root.Version == "2.0";
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -156,5 +241,88 @@ public class Playlist
 
         playlist._root.Rules.Add(includeRule);
         return playlist;
+    }
+
+    /// <summary>
+    /// Builder pattern class for creating playlists fluently.
+    /// </summary>
+    public class Builder
+    {
+        private readonly PlaylistRoot _playlistRoot;
+
+        /// <summary>
+        /// Initializes a new instance of the Builder class.
+        /// </summary>
+        public Builder()
+        {
+            _playlistRoot = new PlaylistRoot();
+        }
+
+        /// <summary>
+        /// Adds a rule to the playlist being built.
+        /// </summary>
+        /// <param name="rule">The rule to add.</param>
+        /// <returns>This builder instance for method chaining.</returns>
+        public Builder AddRule(Rule rule)
+        {
+            if (rule != null)
+                _playlistRoot.Rules.Add(rule);
+            return this;
+        }
+
+        /// <summary>
+        /// Adds multiple rules to the playlist being built.
+        /// </summary>
+        /// <param name="rules">The rules to add.</param>
+        /// <returns>This builder instance for method chaining.</returns>
+        public Builder AddRules(IEnumerable<Rule> rules)
+        {
+            if (rules != null)
+            {
+                foreach (var rule in rules)
+                {
+                    if (rule != null)
+                        _playlistRoot.Rules.Add(rule);
+                }
+            }
+            return this;
+        }
+
+        /// <summary>
+        /// Builds and returns the playlist.
+        /// </summary>
+        /// <returns>The constructed Playlist object.</returns>
+        public Playlist Build()
+        {
+            return new Playlist(_playlistRoot);
+        }
+
+        /// <summary>
+        /// Builds the playlist and converts it to an XML string.
+        /// </summary>
+        /// <returns>The XML representation of the playlist.</returns>
+        public string ToXmlString()
+        {
+            return _playlistRoot.ToString();
+        }
+
+        /// <summary>
+        /// Builds the playlist and saves it to a file.
+        /// </summary>
+        /// <param name="filePath">The path where to save the playlist file.</param>
+        public void SaveToFile(string filePath)
+        {
+            var playlist = Build();
+            playlist.SaveToFile(filePath);
+        }
+    }
+
+    /// <summary>
+    /// Creates a new builder instance for fluent playlist construction.
+    /// </summary>
+    /// <returns>A new Builder instance.</returns>
+    public static Builder CreateBuilder()
+    {
+        return new Builder();
     }
 }
