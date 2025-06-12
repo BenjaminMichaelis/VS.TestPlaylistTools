@@ -30,16 +30,17 @@ See: https://learn.microsoft.com/visualstudio/msbuild/customize-your-build
 
   <!-- Many of these properties can be found here: https://learn.microsoft.com/nuget/create-packages/package-authoring-best-practices#package-metadata -->
   <PropertyGroup Label="NuGet Details">
-    <Title>CHANGEME: BenjaminMichaelis.NuGet</Title>
-    <Authors>CHANGEME: BenjaminMichaelis.Template</Authors>
-    <Description>CHANGEME: A library generated from BenjaminMichaelis's template. https://github.com/BenjaminMichaelis/DotnetTemplates</Description>
+    <Title>VS.TestPlaylistTools</Title>
+    <Authors>Benjamin Michaelis</Authors>
+  <Description>A .NET library for creating, parsing, and manipulating Visual Studio test playlist files. Supports advanced playlist building and integration with test runners.</Description>
     <Copyright>Copyright © 2025-$([System.DateTime]::Now.ToString("yyyy"))</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <!-- The recommended size for the icon is 128x128: https://learn.microsoft.com/nuget/reference/msbuild-targets#packing-an-icon-image-file -->
-    <PackageIcon>NuGetIcon.png</PackageIcon>
-    <RepositoryUrl>https://github.com/CHANGEME_RepoOwner/CHANGEME_RepoName</RepositoryUrl>
+    <!--<PackageIcon>NuGetIcon.png</PackageIcon>-->
+  <PackageTags>visualstudio;playlist;test;vstest;unittest;dotnet;builder;parser</PackageTags>
+    <RepositoryUrl>https://github.com/BenjaminMichaelis/VS.TestPlaylistTools</RepositoryUrl>
     <!-- If you project has a website set that value here; optionally this can also point to the repo -->
-    <!-- <PackageProjectUrl>https://github.com/CHANGEME_RepoOwner/CHANGEME_RepoName</PackageProjectUrl> -->
+    <PackageProjectUrl>https://github.com/BenjaminMichaelis/VS.TestPlaylistTools</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
