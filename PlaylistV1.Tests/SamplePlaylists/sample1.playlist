@@ -1,0 +1,6 @@
+<Playlist Version="1.0">
+    <Add Test="MyTestClass.Tests.CustomLogicTests.ValidateCoreLogicTest" />
+    <Add Test="MyTestClass.Tests.CustomLogicTests.CalculateDetailsTest" />
+    <Add Test="MyTestClass.Tests.CustomLogicTests.NumberLogicTest" />
+    <Add Test="MyTestClass.Tests.CustomLogicTests.ArgumentTest" />
+</Playlist>

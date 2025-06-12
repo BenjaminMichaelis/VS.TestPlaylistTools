@@ -1,0 +1,54 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main ]
+    # Sequence of patterns matched against refs/tags
+    paths-ignore:
+      - 'README.md'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  # For GitHub Auto Merge to work it must be enabled on the repo.
+  # This can be done with the script here:
+  # https://github.com/BenjaminMichaelis/DotnetTemplates/blob/main/SetupRepo.ps1
+  # See documentation here:
+  # https://docs.github.com/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/automatically-merging-a-pull-request
+  automerge:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - uses: fastify/github-action-merge-dependabot@v3.10.1
+        with:
+            use-github-auto-merge: true
+
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: "./global.json"
+  
+      - name: Restore dependencies
+        run: dotnet restore
+  
+      - name: Build
+        run: dotnet build -p:ContinuousIntegrationBuild=True --no-restore --configuration Release
+  
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
