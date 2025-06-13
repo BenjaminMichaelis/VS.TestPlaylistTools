@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VS.TestPlaylistTools", "VSPlaylistBuilder\VS.TestPlaylistTools.csproj", "{A87CB29C-0A36-423F-B9B6-43053906A3CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTestPlaylistTools", "VSPlaylistBuilder\VSTestPlaylistTools.csproj", "{A87CB29C-0A36-423F-B9B6-43053906A3CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VS.TestPlaylistTools.Tests", "VSPlaylistBuilder.Tests\VS.TestPlaylistTools.Tests.csproj", "{DF8F9490-887C-489E-AFE0-99518CC49ECF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTestPlaylistTools.Tests", "VSPlaylistBuilder.Tests\VSTestPlaylistTools.Tests.csproj", "{DF8F9490-887C-489E-AFE0-99518CC49ECF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{33332FBD-7EFF-4A3D-8691-21BF50B245A7}"
 	ProjectSection(SolutionItems) = preProject
@@ -17,13 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		NuGet.config = NuGet.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VS.TestPlaylistTools.PlaylistV1.Tests", "PlaylistV1.Tests\VS.TestPlaylistTools.PlaylistV1.Tests.csproj", "{79DAC6AF-626A-406E-89D0-1B32B109085B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.PlaylistV1.Tests", "PlaylistV1.Tests\VSTestPlaylistTools.PlaylistV1.Tests.csproj", "{79DAC6AF-626A-406E-89D0-1B32B109085B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VS.TestPlaylistTools.PlaylistV1", "PlaylistV1\VS.TestPlaylistTools.PlaylistV1.csproj", "{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.V1Playlist", "PlaylistV1\VSTestPlaylistTools.V1Playlist.csproj", "{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VS.TestPlaylistTools.PlaylistV2", "PlaylistV2\VS.TestPlaylistTools.PlaylistV2.csproj", "{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.V2Playlist", "PlaylistV2\VSTestPlaylistTools.V2Playlist.csproj", "{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VS.TestPlaylistTools.PlaylistV2.Tests", "PlaylistV2.Tests\VS.TestPlaylistTools.PlaylistV2.Tests.csproj", "{B87DFF8E-81E5-4AA7-9629-C888535F1862}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.PlaylistV2.Tests", "PlaylistV2.Tests\VSTestPlaylistTools.PlaylistV2.Tests.csproj", "{B87DFF8E-81E5-4AA7-9629-C888535F1862}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
