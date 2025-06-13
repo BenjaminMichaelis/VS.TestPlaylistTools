@@ -10,24 +10,6 @@ The PlaylistV1 implementation provides functionality to:
 - Validate playlist file format
 - Perform round-trip conversions (parse and regenerate identical XML)
 
-## File Structure
-
-```
-PlaylistV1/
-├── Models/
-│   ├── PlaylistV1.cs       # Main playlist model
-│   └── AddElement.cs       # Test element model
-├── PlaylistV1Parser.cs     # XML parsing functionality
-├── PlaylistV1Builder.cs    # XML building and serialization
-├── TestProgram.cs          # Comprehensive test program
-├── TestResources/          # Sample playlist files
-│   ├── sample1.playlist
-│   ├── sample2.playlist
-│   ├── sample3.playlist
-│   └── sample4.playlist
-└── README.md               # This file
-```
-
 ## Usage Examples
 
 ### Parsing a Playlist File
@@ -98,31 +80,3 @@ Key characteristics:
 - Root element is `<Playlist>` with `Version="1.0"`
 - Each test is represented by an `<Add>` element with a `Test` attribute
 - Test names should be fully qualified (e.g., `Namespace.Class.Method`)
-
-## Testing
-
-Run the test program to validate functionality:
-
-```bash
-cd PlaylistV1
-dotnet run
-```
-
-The test program validates:
-1. Parsing of all sample playlist files
-2. Round-trip conversion (parse → build → parse again)
-3. Builder pattern functionality
-4. XML output format correctness
-
-## Dependencies
-
-- .NET 8.0 or later
-- System.Xml (included in .NET runtime)
-
-## Notes
-
-This implementation is designed to be:
-- **Clean**: Written from scratch, not based on decompiled code
-- **Focused**: Handles only V1 format, not the complex rule-based V2+ formats
-- **Robust**: Includes comprehensive error handling and validation
-- **Tested**: Validates against the original sample XML files provided in the requirements
