@@ -62,6 +62,6 @@ jobs:
           $tagVersion = "${{ github.ref }}".substring(11)
           echo "::set-output name=TAG_VERSION::$tagVersion"
           dotnet nuget push VS.TestPlaylistTools.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push VS.TestPlaylistTools.PlaylistV1$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push VS.TestPlaylistTools.PlaylistV2$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push VS.TestPlaylistTools.PlaylistV1.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push VS.TestPlaylistTools.PlaylistV2.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
         id: tag-version
