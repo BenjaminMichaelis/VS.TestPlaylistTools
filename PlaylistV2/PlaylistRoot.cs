@@ -56,7 +56,7 @@ public class PlaylistRoot
     /// </summary>
     public override string ToString()
     {
-        using var stringWriter = new StringWriter();
+        using StringWriter stringWriter = new StringWriter();
         Serialize(stringWriter);
         return stringWriter.ToString();
     }
@@ -66,17 +66,17 @@ public class PlaylistRoot
     /// </summary>
     public void Serialize(TextWriter writer)
     {
-        using var xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings
+        using XmlWriter xmlWriter = XmlWriter.Create(writer, new XmlWriterSettings
         {
             OmitXmlDeclaration = true,
             CloseOutput = false,
             Indent = true
         });
 
-        var namespaces = new XmlSerializerNamespaces();
+        XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
         namespaces.Add(string.Empty, string.Empty);
 
-        var serializer = new XmlSerializer(typeof(PlaylistRoot));
+        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
         serializer.Serialize(xmlWriter, this, namespaces);
     }
 }

@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "VSTestPlaylistTools.TrxToPlaylist": {
+      "commandName": "Project"
+    },
+    "Display Help": {
+      "commandName": "Project",
+      "commandLineArgs": "--help"
+    }
+  }
+}

@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Xml;
-using Xunit;
 
 namespace VS.TestPlaylistTools.PlaylistV2.Tests;
 
@@ -14,22 +11,22 @@ public class PlaylistIntegrationTests
     public void CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml()
     {
         // This test validates the exact scenario from the issue description
-        
+
         // Arrange
-        var projectName = "PlaylistV2.Tests";
-        var namespaceName = "PlaylistV2.Tests";
-        var className = "PlaylistIntegrationTests";
-        var testName = "PlaylistV2.Tests.PlaylistIntegrationTests.CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml";
-        var displayName = "PlaylistV2.Tests.PlaylistIntegrationTests.CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml";
+        string projectName = "PlaylistV2.Tests";
+        string namespaceName = "PlaylistV2.Tests";
+        string className = "PlaylistIntegrationTests";
+        string testName = "PlaylistV2.Tests.PlaylistIntegrationTests.CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml";
+        string displayName = "PlaylistV2.Tests.PlaylistIntegrationTests.CreateHierarchicalPlaylist_WithProjectNamespaceClass_GeneratesCorrectXml";
 
         // Act
-        var playlist = PlaylistV2Builder.CreateHierarchicalPlaylist(
+        PlaylistRoot playlist = PlaylistV2Builder.CreateHierarchicalPlaylist(
             projectName, namespaceName, className, testName, displayName);
-        var generatedXml = playlist.ToString();
+        string generatedXml = playlist.ToString();
 
         // Assert - Generated XML should be valid and parseable
         Assert.NotNull(generatedXml);
-        var reparsedPlaylist = PlaylistV2Parser.FromString(generatedXml);
+        PlaylistRoot reparsedPlaylist = PlaylistV2Parser.FromString(generatedXml);
         Assert.Equal("2.0", reparsedPlaylist.Version);
 
         // The generated XML should have similar structure to Sample1.playlist
@@ -47,13 +44,13 @@ public class PlaylistIntegrationTests
 
     public static TheoryData<string> SamplePlaylistFiles()
     {
-        var testResourcesPath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV2.Tests", "SamplePlaylists");
-        var sampleFiles = Directory.GetFiles(testResourcesPath, "*.playlist");
-        var theoryData = new TheoryData<string>();
+        string testResourcesPath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV2.Tests", "SamplePlaylists");
+        string[] sampleFiles = Directory.GetFiles(testResourcesPath, "*.playlist");
+        TheoryData<string> theoryData = new TheoryData<string>();
 
-        foreach (var fileName in sampleFiles)
+        foreach (string fileName in sampleFiles)
         {
-            var filePath = fileName;
+            string filePath = fileName;
             if (File.Exists(filePath))
             {
                 theoryData.Add(filePath);
@@ -68,22 +65,22 @@ public class PlaylistIntegrationTests
     public void TestRoundTripConversion_FromPlaylistFiles(string filePath)
     {
         // Read original XML
-        var originalContent = File.ReadAllText(filePath);
+        string originalContent = File.ReadAllText(filePath);
 
         // Parse original
-        var playlist = PlaylistV2Parser.FromString(originalContent);
+        PlaylistRoot playlist = PlaylistV2Parser.FromString(originalContent);
         Assert.Equal("2.0", playlist.Version);
 
         // Serialize back to XML
-        var regeneratedXml = playlist.ToString();
+        string regeneratedXml = playlist.ToString();
 
         // Parse regenerated XML
-        var reparsedPlaylist = PlaylistV2Parser.FromString(regeneratedXml);
+        PlaylistRoot reparsedPlaylist = PlaylistV2Parser.FromString(regeneratedXml);
         Assert.Equal("2.0", reparsedPlaylist.Version);
 
         // Compare normalized XML
         XmlDocument originalDoc = new();
-        var streamReader = new StringReader(originalContent);
+        StringReader streamReader = new StringReader(originalContent);
         XmlReader xmlReader = XmlReader.Create(streamReader, new XmlReaderSettings { IgnoreWhitespace = true, IgnoreComments = true });
         originalDoc.Load(xmlReader);
         originalDoc.PreserveWhitespace = false;

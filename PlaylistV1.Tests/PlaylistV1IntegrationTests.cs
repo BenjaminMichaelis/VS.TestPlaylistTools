@@ -6,11 +6,11 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
     {
         public static TheoryData<string> SamplePlaylistFiles()
         {
-            var testResourcesPath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV1.Tests", "SamplePlaylists");
+            string testResourcesPath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV1.Tests", "SamplePlaylists");
             // Get all files in testResourcesPath that are .playlist files
-            var sampleFiles = Directory.GetFiles(testResourcesPath, "*.playlist");
-            var theoryData = new TheoryData<string>();
-            foreach (var fileName in sampleFiles)
+            string[] sampleFiles = Directory.GetFiles(testResourcesPath, "*.playlist");
+            TheoryData<string> theoryData = new TheoryData<string>();
+            foreach (string fileName in sampleFiles)
             {
                 theoryData.Add(fileName);
             }
@@ -21,21 +21,21 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
         [MemberData(nameof(SamplePlaylistFiles))]
         public void TestRoundTripConversion_FromPlaylistFile(string filePath)
         {
-            var originalContent = File.ReadAllText(filePath);
+            string originalContent = File.ReadAllText(filePath);
 
             // Parse original
-            var playlist = PlaylistV1Parser.FromString(originalContent);
+            PlaylistRoot playlist = PlaylistV1Parser.FromString(originalContent);
             Assert.Equal("1.0", playlist.Version);
 
             // Serialize back to XML
-            var regeneratedXml = playlist.ToString();
+            string regeneratedXml = playlist.ToString();
 
             // Parse regenerated XML
-            var reparsedPlaylist = PlaylistV1Parser.FromString(regeneratedXml);
+            PlaylistRoot reparsedPlaylist = PlaylistV1Parser.FromString(regeneratedXml);
             Assert.Equal("1.0", reparsedPlaylist.Version);
 
             XmlDocument originalDoc = new();
-            var streamReader = new StringReader(originalContent);
+            StringReader streamReader = new StringReader(originalContent);
             XmlReader xmlReader = XmlReader.Create(streamReader, new XmlReaderSettings { IgnoreWhitespace = true, IgnoreComments = true });
             originalDoc.Load(xmlReader);
             originalDoc.PreserveWhitespace = false;
@@ -49,8 +49,8 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
 
             Assert.Equal(playlist.Version, reparsedPlaylist.Version);
             Assert.Equal(playlist.TestCount, reparsedPlaylist.TestCount);
-            var originalTests = playlist.Tests.Select(t => t.Test).OrderBy(t => t).ToArray();
-            var reparsedTests = reparsedPlaylist.Tests.Select(t => t.Test).OrderBy(t => t).ToArray();
+            string?[] originalTests = playlist.Tests.Select(t => t.Test).OrderBy(t => t).ToArray();
+            string?[] reparsedTests = reparsedPlaylist.Tests.Select(t => t.Test).OrderBy(t => t).ToArray();
             Assert.Equal(originalTests, reparsedTests);
         }
     }

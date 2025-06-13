@@ -4,9 +4,9 @@ namespace VS.TestPlaylistTools.Tests
     {
         public static TheoryData<string> SampleV1PlaylistFiles()
         {
-            var data = new TheoryData<string>();
-            var dir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV1.Tests", "SamplePlaylists");
-            foreach (var file in Directory.GetFiles(dir, "*.playlist"))
+            TheoryData<string> data = new TheoryData<string>();
+            string dir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV1.Tests", "SamplePlaylists");
+            foreach (string file in Directory.GetFiles(dir, "*.playlist"))
             {
                 data.Add(file);
             }
@@ -15,9 +15,9 @@ namespace VS.TestPlaylistTools.Tests
 
         public static TheoryData<string> SampleV2PlaylistFiles()
         {
-            var data = new TheoryData<string>();
-            var dir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV2.Tests", "SamplePlaylists");
-            foreach (var file in Directory.GetFiles(dir, "*.playlist"))
+            TheoryData<string> data = new TheoryData<string>();
+            string dir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "PlaylistV2.Tests", "SamplePlaylists");
+            foreach (string file in Directory.GetFiles(dir, "*.playlist"))
             {
                 data.Add(file);
             }
@@ -30,10 +30,10 @@ namespace VS.TestPlaylistTools.Tests
         {
             Assert.True(File.Exists(samplePath), $"Sample file not found: {samplePath}");
 
-            var result = PlaylistLoader.Load(samplePath);
+            object result = PlaylistLoader.Load(samplePath);
 
             Assert.NotNull(result);
-            var playlist = Assert.IsType<PlaylistV1.PlaylistRoot>(result);
+            PlaylistV1.PlaylistRoot playlist = Assert.IsType<PlaylistV1.PlaylistRoot>(result);
             Assert.Equal("1.0", playlist.Version);
         }
 
@@ -42,10 +42,10 @@ namespace VS.TestPlaylistTools.Tests
         public void LoadPlaylistV2_ParsesCorrectVersion(string samplePath)
         {
             Assert.True(File.Exists(samplePath), $"Sample file not found: {samplePath}");
-            var result = PlaylistLoader.Load(samplePath);
+            object result = PlaylistLoader.Load(samplePath);
 
             Assert.NotNull(result);
-            var playlist = Assert.IsType<PlaylistV2.PlaylistRoot>(result);
+            PlaylistV2.PlaylistRoot playlist = Assert.IsType<PlaylistV2.PlaylistRoot>(result);
             Assert.Equal("2.0", playlist.Version);
         }
     }

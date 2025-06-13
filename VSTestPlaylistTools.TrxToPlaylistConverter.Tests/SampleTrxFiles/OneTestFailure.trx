@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a1293f2f-ba2d-4aa4-91a7-ceed97fd4735" name="BenjaminMichaelis@ 2025-06-12 21:35:44" runUser="BenjaminMichaelis" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2025-06-12T21:35:44.8440908-07:00" queuing="2025-06-12T21:35:44.8440914-07:00" start="2025-06-12T21:35:43.7806876-07:00" finish="2025-06-12T21:35:51.3544457-07:00" />
+  <TestSettings name="default" id="ce38969f-384e-4aa6-8ed5-77d1015ae425">
+    <Deployment runDeploymentRoot="BenjaminMichaelis__2025-06-12_21_35_44" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9682c228-090a-47f3-96d2-26ffa23c9a53" testId="35e9c03c-7c18-2ee8-7216-91e69cfe406e" testName="Main_StormCastleShort" computerName="" duration="00:00:00.0003778" startTime="2025-06-13T08:35:44.7775632-07:00" endTime="2025-06-13T08:35:44.7781420-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9682c228-090a-47f3-96d2-26ffa23c9a53" />
+    <UnitTestResult executionId="2bc2f9ce-86a0-41b3-80c4-34f1f13ae1c9" testId="e4ad582c-bd6f-7380-6293-934f9d00c37d" testName="Main_HelloToInigo" computerName="" duration="00:00:00.0001743" startTime="2025-06-13T08:35:44.7785585-07:00" endTime="2025-06-13T08:35:44.7788208-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2bc2f9ce-86a0-41b3-80c4-34f1f13ae1c9" />
+    <UnitTestResult executionId="9aacf51c-ca5b-418b-b17c-02818b16fadc" testId="ceb08b5d-bec8-0816-0907-0dbb84605d89" testName="Main_InigoHello" computerName="" duration="00:00:00.0002854" startTime="2025-06-13T08:35:44.7797974-07:00" endTime="2025-06-13T08:35:44.7801960-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9aacf51c-ca5b-418b-b17c-02818b16fadc" />
+    <UnitTestResult executionId="e3b679dd-6c43-40bb-b7d2-e3c99cb0a42d" testId="191c5340-07a7-097d-05a0-02dc6bb3ca61" testName="Main_ItWouldTakeAMiracle_OutputWrittenToConsole" computerName="" duration="00:00:00.0002015" startTime="2025-06-13T08:35:44.7352561-07:00" endTime="2025-06-13T08:35:44.7355527-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e3b679dd-6c43-40bb-b7d2-e3c99cb0a42d" />
+    <UnitTestResult executionId="c914a046-32d2-4be3-b4a3-47ba3a473cf3" testId="cb6441ab-d8b2-8100-17db-6dd5a59a0acb" testName="Main_HelloToInigo" computerName="" duration="00:00:00.0001659" startTime="2025-06-13T08:35:44.7781959-07:00" endTime="2025-06-13T08:35:44.7785186-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c914a046-32d2-4be3-b4a3-47ba3a473cf3" />
+    <UnitTestResult executionId="43b80f32-09f3-4a7b-9237-54c46c54f95d" testId="c6e79154-e20e-086b-023f-23aa7eb6fa38" testName="Main_InputInigoMontoya_WriteLastFirst" computerName="" duration="00:00:00.0257034" startTime="2025-06-13T08:35:44.6707396-07:00" endTime="2025-06-13T08:35:44.7218642-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="43b80f32-09f3-4a7b-9237-54c46c54f95d" />
+    <UnitTestResult executionId="b6f58726-d45d-4657-ba66-f0d61bbb67c0" testId="fdfbe677-0ddf-8412-5044-da01050e9cf1" testName="Main_InigoMantra_ProperOutput" computerName="" duration="00:00:00.0001996" startTime="2025-06-13T08:35:44.7359070-07:00" endTime="2025-06-13T08:35:44.7362082-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6f58726-d45d-4657-ba66-f0d61bbb67c0" />
+    <UnitTestResult executionId="a2091fe2-b9d6-4f92-a866-ad9c64c8c7e8" testId="4ea257e0-280c-ddba-6df7-fd252aa7aef9" testName="Main_InputInigoMontoya_WriteFirstLast" computerName="" duration="00:00:00.0005733" startTime="2025-06-13T08:35:44.7327507-07:00" endTime="2025-06-13T08:35:44.7334947-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2091fe2-b9d6-4f92-a866-ad9c64c8c7e8" />
+    <UnitTestResult executionId="9e0cf65b-86b9-461e-8d4d-6aaec98142aa" testId="d9afc2b4-1c74-ea88-b102-679fd9766b82" testName="Main_InigoHello" computerName="" duration="00:00:00.0001910" startTime="2025-06-13T08:35:44.7806271-07:00" endTime="2025-06-13T08:35:44.7809127-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9e0cf65b-86b9-461e-8d4d-6aaec98142aa" />
+    <UnitTestResult executionId="9038c6bf-2368-4393-9b26-db9201a7a55c" testId="c448a68d-1b6c-8c30-0547-3ac46368fba0" testName="Main_InigoHello" computerName="" duration="00:00:00.0002621" startTime="2025-06-13T08:35:44.7802438-07:00" endTime="2025-06-13T08:35:44.7805870-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9038c6bf-2368-4393-9b26-db9201a7a55c" />
+    <UnitTestResult executionId="d79c59c7-932b-4a39-8532-4fae99f51d94" testId="2ac70888-6a9d-b6de-4304-04404303d3a1" testName="Main_InputInigoMontoya_WriteLastFirst" computerName="" duration="00:00:00.0004715" startTime="2025-06-13T08:35:44.7317704-07:00" endTime="2025-06-13T08:35:44.7326656-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d79c59c7-932b-4a39-8532-4fae99f51d94" />
+    <UnitTestResult executionId="cfe2be17-348f-4189-9bf2-97b587be6880" testId="8a78a587-4fcb-b32c-ff26-bbd854964c1f" testName="CreateAndRunNewConsoleProject" computerName="" duration="00:00:06.3349996" startTime="2025-06-13T08:35:44.9205826-07:00" endTime="2025-06-13T08:35:51.2574502-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cfe2be17-348f-4189-9bf2-97b587be6880" />
+    <UnitTestResult executionId="d5d5e070-6858-4294-b79c-6616d605fdfa" testId="dc6c5743-4533-0e1f-2421-7f1e5ff1f91f" testName="Main_UpDown" computerName="" duration="00:00:00.1362232" startTime="2025-06-13T08:35:44.7814702-07:00" endTime="2025-06-13T08:35:44.9178782-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d5d5e070-6858-4294-b79c-6616d605fdfa">
+      <Output>
+        <ErrorInfo>
+          <Message>Test method AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_03.Tests.HelloWorldTests.Main_UpDown threw exception: &#xD;
+System.Exception: Values are not equal:- &#xD;
+-----------------------------------&#xD;
+Expected: "Uasdfadfp\r\nDown"&#xD;
+Actual  : "Up\r\nDown"&#xD;
+-----------------------------------&#xD;
+The expected length of 15 does not match the output length of 8. </Message>
+          <StackTrace>   at IntelliTect.TestTools.Console.ConsoleAssert.AssertExpectation(String expectedOutput, String output, Func`3 areEquivalentOperator, String equivalentOperatorErrorMessage)&#xD;
+   at IntelliTect.TestTools.Console.ConsoleAssert.CompareOutput(String output, String expectedOutput, NormalizeOptions normalizeOptions, Func`3 areEquivalentOperator, String equivalentOperatorErrorMessage)&#xD;
+   at IntelliTect.TestTools.Console.ConsoleAssert.Execute(String givenInput, String expectedOutput, Action action, Func`3 areEquivalentOperator, NormalizeOptions normalizeOptions, String equivalentOperatorErrorMessage)&#xD;
+   at IntelliTect.TestTools.Console.ConsoleAssert.Expect(String expected, Action action, Func`3 comparisonOperator, NormalizeOptions normalizeOptions, String equivalentOperatorErrorMessage)&#xD;
+   at IntelliTect.TestTools.Console.ConsoleAssert.Expect(String expected, Action action, NormalizeOptions normalizeOptions)&#xD;
+   at AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_03.Tests.HelloWorldTests.Main_UpDown() in EssentialCSharp\src\Chapter01.Tests\Listing01.03.Tests.cs:line 14&#xD;
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="5dcc55e2-04cd-4eef-bbeb-1456f6ca4e6e" testId="bc64cf99-1608-0f18-3c09-0266823155ba" testName="Main_GiveNone_GetZero" computerName="" duration="00:00:00.0007571" startTime="2025-06-13T08:35:44.7788555-07:00" endTime="2025-06-13T08:35:44.7797443-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5dcc55e2-04cd-4eef-bbeb-1456f6ca4e6e" />
+    <UnitTestResult executionId="86ff1fe0-ef46-4281-b70a-7ecc3ed2376b" testId="86ead1bf-ffc4-438f-7f75-cf1e96cc7b60" testName="Main_InputInigoMontoya_WriteNothing" computerName="" duration="00:00:00.0002593" startTime="2025-06-13T08:35:44.7348149-07:00" endTime="2025-06-13T08:35:44.7352199-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86ff1fe0-ef46-4281-b70a-7ecc3ed2376b" />
+    <UnitTestResult executionId="7073771d-29b9-49b6-8f0f-d68e5c9bcd77" testId="b93d4878-5a4c-9586-55f8-cf66aed934ec" testName="Main_InigoHello" computerName="" duration="00:00:00.0002690" startTime="2025-06-13T08:35:44.7809337-07:00" endTime="2025-06-13T08:35:44.7814354-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7073771d-29b9-49b6-8f0f-d68e5c9bcd77" />
+    <UnitTestResult executionId="1258f820-d571-42b9-a265-890d7793c333" testId="90e1cdb0-d1f4-6e21-8cce-8ad89256ab66" testName="Main_StormCastleLong" computerName="" duration="00:00:00.0002006" startTime="2025-06-13T08:35:44.7355732-07:00" endTime="2025-06-13T08:35:44.7358413-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1258f820-d571-42b9-a265-890d7793c333" />
+    <UnitTestResult executionId="b397d750-4a88-4f09-98c6-906ab73cf833" testId="af83e95b-ca88-c650-2784-e7763b492d4b" testName="Main_InputInigoMontoya_WriteFirstLast" computerName="" duration="00:00:00.0006206" startTime="2025-06-13T08:35:44.7335507-07:00" endTime="2025-06-13T08:35:44.7343526-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b397d750-4a88-4f09-98c6-906ab73cf833" />
+    <UnitTestResult executionId="8a9bb89c-4ff2-4bf4-a31a-658c2f9f4437" testId="4ffe22f2-8714-22c4-241a-c03b5c38d729" testName="Main_InputOne_WriteOne" computerName="" duration="00:00:00.0002758" startTime="2025-06-13T08:35:44.7343906-07:00" endTime="2025-06-13T08:35:44.7347839-07:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8a9bb89c-4ff2-4bf4-a31a-658c2f9f4437" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="Main_InputInigoMontoya_WriteNothing" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="86ead1bf-ffc4-438f-7f75-cf1e96cc7b60">
+      <Execution id="86ff1fe0-ef46-4281-b70a-7ecc3ed2376b" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_16.Tests.HeyYouTests" name="Main_InputInigoMontoya_WriteNothing" />
+    </UnitTest>
+    <UnitTest name="Main_InputInigoMontoya_WriteFirstLast" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="af83e95b-ca88-c650-2784-e7763b492d4b">
+      <Execution id="b397d750-4a88-4f09-98c6-906ab73cf833" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_18.Tests.ProgramTests" name="Main_InputInigoMontoya_WriteFirstLast" />
+    </UnitTest>
+    <UnitTest name="Main_UpDown" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="dc6c5743-4533-0e1f-2421-7f1e5ff1f91f">
+      <Execution id="d5d5e070-6858-4294-b79c-6616d605fdfa" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_03.Tests.HelloWorldTests" name="Main_UpDown" />
+    </UnitTest>
+    <UnitTest name="CreateAndRunNewConsoleProject" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="8a78a587-4fcb-b32c-ff26-bbd854964c1f">
+      <Execution id="cfe2be17-348f-4189-9bf2-97b587be6880" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_01.Tests.HelloWorldTests" name="CreateAndRunNewConsoleProject" />
+    </UnitTest>
+    <UnitTest name="Main_InputInigoMontoya_WriteLastFirst" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="2ac70888-6a9d-b6de-4304-04404303d3a1">
+      <Execution id="d79c59c7-932b-4a39-8532-4fae99f51d94" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_20.Tests.ProgramTests" name="Main_InputInigoMontoya_WriteLastFirst" />
+    </UnitTest>
+    <UnitTest name="Main_InputInigoMontoya_WriteLastFirst" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="c6e79154-e20e-086b-023f-23aa7eb6fa38">
+      <Execution id="43b80f32-09f3-4a7b-9237-54c46c54f95d" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_21.Tests.ProgramTests" name="Main_InputInigoMontoya_WriteLastFirst" />
+    </UnitTest>
+    <UnitTest name="Main_InigoMantra_ProperOutput" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="fdfbe677-0ddf-8412-5044-da01050e9cf1">
+      <Execution id="b6f58726-d45d-4657-ba66-f0d61bbb67c0" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_13.Tests.HelloWorldTests" name="Main_InigoMantra_ProperOutput" />
+    </UnitTest>
+    <UnitTest name="Main_InputInigoMontoya_WriteFirstLast" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="4ea257e0-280c-ddba-6df7-fd252aa7aef9">
+      <Execution id="a2091fe2-b9d6-4f92-a866-ad9c64c8c7e8" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_19.Tests.ProgramTests" name="Main_InputInigoMontoya_WriteFirstLast" />
+    </UnitTest>
+    <UnitTest name="Main_GiveNone_GetZero" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="bc64cf99-1608-0f18-3c09-0266823155ba">
+      <Execution id="5dcc55e2-04cd-4eef-bbeb-1456f6ca4e6e" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_09.Tests.ProgramTests" name="Main_GiveNone_GetZero" />
+    </UnitTest>
+    <UnitTest name="Main_HelloToInigo" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="e4ad582c-bd6f-7380-6293-934f9d00c37d">
+      <Execution id="2bc2f9ce-86a0-41b3-80c4-34f1f13ae1c9" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_10.Tests.HelloWorldTests" name="Main_HelloToInigo" />
+    </UnitTest>
+    <UnitTest name="Main_HelloToInigo" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="cb6441ab-d8b2-8100-17db-6dd5a59a0acb">
+      <Execution id="c914a046-32d2-4be3-b4a3-47ba3a473cf3" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_11.Tests.ProgramTests" name="Main_HelloToInigo" />
+    </UnitTest>
+    <UnitTest name="Main_InputOne_WriteOne" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="4ffe22f2-8714-22c4-241a-c03b5c38d729">
+      <Execution id="8a9bb89c-4ff2-4bf4-a31a-658c2f9f4437" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_17.Tests.ProgramTests" name="Main_InputOne_WriteOne" />
+    </UnitTest>
+    <UnitTest name="Main_InigoHello" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="d9afc2b4-1c74-ea88-b102-679fd9766b82">
+      <Execution id="9e0cf65b-86b9-461e-8d4d-6aaec98142aa" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_05.Tests.HelloWorldTests" name="Main_InigoHello" />
+    </UnitTest>
+    <UnitTest name="Main_InigoHello" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="c448a68d-1b6c-8c30-0547-3ac46368fba0">
+      <Execution id="9038c6bf-2368-4393-9b26-db9201a7a55c" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_06.Tests.HelloWorldTests" name="Main_InigoHello" />
+    </UnitTest>
+    <UnitTest name="Main_StormCastleLong" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="90e1cdb0-d1f4-6e21-8cce-8ad89256ab66">
+      <Execution id="1258f820-d571-42b9-a265-890d7793c333" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_14.Tests.MiracleMaxTests" name="Main_StormCastleLong" />
+    </UnitTest>
+    <UnitTest name="Main_InigoHello" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="ceb08b5d-bec8-0816-0907-0dbb84605d89">
+      <Execution id="9aacf51c-ca5b-418b-b17c-02818b16fadc" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_08.Tests.ProgramTests" name="Main_InigoHello" />
+    </UnitTest>
+    <UnitTest name="Main_ItWouldTakeAMiracle_OutputWrittenToConsole" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="191c5340-07a7-097d-05a0-02dc6bb3ca61">
+      <Execution id="e3b679dd-6c43-40bb-b7d2-e3c99cb0a42d" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_15.Tests.Listing01_13_Tests" name="Main_ItWouldTakeAMiracle_OutputWrittenToConsole" />
+    </UnitTest>
+    <UnitTest name="Main_InigoHello" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="b93d4878-5a4c-9586-55f8-cf66aed934ec">
+      <Execution id="7073771d-29b9-49b6-8f0f-d68e5c9bcd77" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_04.Tests.HelloWorldTests" name="Main_InigoHello" />
+    </UnitTest>
+    <UnitTest name="Main_StormCastleShort" storage="essentialcsharp\src\chapter01.tests\bin\debug\net6.0\chapter01.tests.dll" id="35e9c03c-7c18-2ee8-7216-91e69cfe406e">
+      <Execution id="9682c228-090a-47f3-96d2-26ffa23c9a53" />
+      <TestMethod codeBase="EssentialCSharp\src\Chapter01.Tests\bin\Debug\net6.0\Chapter01.Tests.dll" adapterTypeName="executor://mstestadapter/v2" className="AddisonWesley.Michaelis.EssentialCSharp.Chapter01.Listing01_12.Tests.MiracleMaxTests" name="Main_StormCastleShort" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="35e9c03c-7c18-2ee8-7216-91e69cfe406e" executionId="9682c228-090a-47f3-96d2-26ffa23c9a53" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="e4ad582c-bd6f-7380-6293-934f9d00c37d" executionId="2bc2f9ce-86a0-41b3-80c4-34f1f13ae1c9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="ceb08b5d-bec8-0816-0907-0dbb84605d89" executionId="9aacf51c-ca5b-418b-b17c-02818b16fadc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="191c5340-07a7-097d-05a0-02dc6bb3ca61" executionId="e3b679dd-6c43-40bb-b7d2-e3c99cb0a42d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cb6441ab-d8b2-8100-17db-6dd5a59a0acb" executionId="c914a046-32d2-4be3-b4a3-47ba3a473cf3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c6e79154-e20e-086b-023f-23aa7eb6fa38" executionId="43b80f32-09f3-4a7b-9237-54c46c54f95d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="fdfbe677-0ddf-8412-5044-da01050e9cf1" executionId="b6f58726-d45d-4657-ba66-f0d61bbb67c0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ea257e0-280c-ddba-6df7-fd252aa7aef9" executionId="a2091fe2-b9d6-4f92-a866-ad9c64c8c7e8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d9afc2b4-1c74-ea88-b102-679fd9766b82" executionId="9e0cf65b-86b9-461e-8d4d-6aaec98142aa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c448a68d-1b6c-8c30-0547-3ac46368fba0" executionId="9038c6bf-2368-4393-9b26-db9201a7a55c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="2ac70888-6a9d-b6de-4304-04404303d3a1" executionId="d79c59c7-932b-4a39-8532-4fae99f51d94" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="8a78a587-4fcb-b32c-ff26-bbd854964c1f" executionId="cfe2be17-348f-4189-9bf2-97b587be6880" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="dc6c5743-4533-0e1f-2421-7f1e5ff1f91f" executionId="d5d5e070-6858-4294-b79c-6616d605fdfa" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="bc64cf99-1608-0f18-3c09-0266823155ba" executionId="5dcc55e2-04cd-4eef-bbeb-1456f6ca4e6e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="86ead1bf-ffc4-438f-7f75-cf1e96cc7b60" executionId="86ff1fe0-ef46-4281-b70a-7ecc3ed2376b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="b93d4878-5a4c-9586-55f8-cf66aed934ec" executionId="7073771d-29b9-49b6-8f0f-d68e5c9bcd77" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="90e1cdb0-d1f4-6e21-8cce-8ad89256ab66" executionId="1258f820-d571-42b9-a265-890d7793c333" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="af83e95b-ca88-c650-2784-e7763b492d4b" executionId="b397d750-4a88-4f09-98c6-906ab73cf833" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="4ffe22f2-8714-22c4-241a-c03b5c38d729" executionId="8a9bb89c-4ff2-4bf4-a31a-658c2f9f4437" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="19" executed="19" passed="18" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>PowerShell 7.4.10&#xD;
+</StdOut>
+    </Output>
+  </ResultSummary>
+</TestRun>

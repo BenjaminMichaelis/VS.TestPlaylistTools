@@ -18,11 +18,11 @@ namespace VS.TestPlaylistTools
         public static object Load(string filePath)
         {
             if (filePath is null) throw new ArgumentNullException(nameof(filePath));
-            using var reader = new StreamReader(filePath);
-            using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
+            using StreamReader reader = new StreamReader(filePath);
+            using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings { IgnoreComments = true, IgnoreWhitespace = true });
             if (!xmlReader.ReadToFollowing("Playlist"))
                 throw new InvalidDataException("Root <Playlist> element not found.");
-            var version = xmlReader.GetAttribute("Version");
+            string version = xmlReader.GetAttribute("Version");
             if (string.IsNullOrWhiteSpace(version))
                 throw new InvalidDataException("Playlist <Playlist> element missing Version attribute.");
             // Dispatch to correct parser

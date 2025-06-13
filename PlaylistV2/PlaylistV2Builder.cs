@@ -32,12 +32,12 @@ public static class PlaylistV2Builder
     {
         if (playlist is null) throw new ArgumentNullException(nameof(playlist));
         if (filePath is null) throw new ArgumentNullException(nameof(filePath));
-        var directory = Path.GetDirectoryName(filePath);
+        string directory = Path.GetDirectoryName(filePath);
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);
         }
-        using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+        using StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8);
         WriteToTextWriter(playlist, writer);
     }
 
@@ -58,9 +58,9 @@ public static class PlaylistV2Builder
     {
         if (playlist is null) throw new ArgumentNullException(nameof(playlist));
         if (xmlWriter is null) throw new ArgumentNullException(nameof(xmlWriter));
-        var namespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
+        System.Xml.Serialization.XmlSerializerNamespaces namespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
         namespaces.Add(string.Empty, string.Empty);
-        var serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
+        System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
         serializer.Serialize(xmlWriter, playlist, namespaces);
     }
 
@@ -74,8 +74,8 @@ public static class PlaylistV2Builder
         string testWithNormalizedFullyQualifiedName,
         string displayName)
     {
-        var rules = new List<Rule>();
-        var includeRule = BooleanRule.Any("Includes",
+        List<Rule> rules = new List<Rule>();
+        BooleanRule includeRule = BooleanRule.Any("Includes",
             BooleanRule.All(
                 PropertyRule.Solution(),
                 BooleanRule.Any(
@@ -116,7 +116,7 @@ public static class PlaylistV2Builder
         string className,
         IEnumerable<(string testWithNormalizedFullyQualifiedName, string displayName)> tests)
     {
-        var testRules = tests.Select(test =>
+        BooleanRule[] testRules = tests.Select(test =>
             BooleanRule.All(
                 PropertyRule.TestWithNormalizedFullyQualifiedName(test.testWithNormalizedFullyQualifiedName),
                 BooleanRule.Any(
@@ -124,8 +124,8 @@ public static class PlaylistV2Builder
                 )
             )
         ).ToArray();
-        var rules = new List<Rule>();
-        var includeRule = BooleanRule.Any("Includes",
+        List<Rule> rules = new List<Rule>();
+        BooleanRule includeRule = BooleanRule.Any("Includes",
             BooleanRule.All(
                 PropertyRule.Solution(),
                 BooleanRule.Any(
@@ -186,7 +186,7 @@ public static class PlaylistV2Builder
         {
             if (rules != null)
             {
-                foreach (var rule in rules)
+                foreach (Rule rule in rules)
                 {
                     if (rule != null)
                         _playlistRoot.Rules.Add(rule);

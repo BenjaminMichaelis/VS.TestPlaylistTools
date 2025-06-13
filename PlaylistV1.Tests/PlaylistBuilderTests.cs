@@ -6,11 +6,11 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
         public void TestBuilder_BasicAndFluentAndXmlAndValidation()
         {
             // Test basic builder
-            var playlist1 = PlaylistV1Builder.Create("Test1", "Test2", "Test3");
+            PlaylistRoot playlist1 = PlaylistV1Builder.Create("Test1", "Test2", "Test3");
             Assert.Equal(3, playlist1.TestCount);
 
             // Test fluent builder
-            var playlist2 = PlaylistV1Builder.CreateBuilder()
+            PlaylistRoot playlist2 = PlaylistV1Builder.CreateBuilder()
                 .AddTest("FluentTest1")
                 .AddTest("FluentTest2")
                 .AddTests("FluentTest3", "FluentTest4")
@@ -18,7 +18,7 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
             Assert.Equal(4, playlist2.TestCount);
 
             // Test XML generation
-            var xmlContent = PlaylistV1Builder.ToXmlString(playlist2);
+            string xmlContent = PlaylistV1Builder.ToXmlString(playlist2);
             Assert.Contains("FluentTest1", xmlContent);
             Assert.Contains("Version=\"1.0\"", xmlContent);
 

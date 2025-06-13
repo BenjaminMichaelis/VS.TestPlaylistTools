@@ -9,7 +9,7 @@ public class BooleanRuleTests
     public void BooleanRule_CreatesCorrectStructure()
     {
         // Arrange
-        var rule = BooleanRule.Any("TestRule",
+        BooleanRule rule = BooleanRule.Any("TestRule",
             PropertyRule.Solution(),
             BooleanRule.All(
                 PropertyRule.Project("TestProject"),
@@ -18,9 +18,9 @@ public class BooleanRuleTests
         );
 
         // Act
-        var playlist = new PlaylistRoot();
+        PlaylistRoot playlist = new PlaylistRoot();
         playlist.Rules.Add(rule);
-        var xml = playlist.ToString();
+        string xml = playlist.ToString();
 
         // Assert
         Assert.Contains("Name=\"TestRule\"", xml);

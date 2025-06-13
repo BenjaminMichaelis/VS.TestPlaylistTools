@@ -20,8 +20,8 @@ namespace VS.TestPlaylistTools.PlaylistV1
         {
             if (xmlContent is null) throw new ArgumentNullException(nameof(xmlContent));
 
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlContent));
-            using var reader = new StreamReader(stream);
+            using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlContent));
+            using StreamReader reader = new StreamReader(stream);
             return FromStream(reader);
         }
 
@@ -40,7 +40,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"Playlist file not found: {filePath}");
 
-            using var reader = new StreamReader(filePath);
+            using StreamReader reader = new StreamReader(filePath);
             return FromStream(reader);
         }
 
@@ -56,7 +56,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
 
             try
             {
-                using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings
+                using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
                 {
                     IgnoreWhitespace = true,
                     IgnoreComments = true
@@ -69,8 +69,8 @@ namespace VS.TestPlaylistTools.PlaylistV1
                 }
 
                 // Use XML serialization to deserialize the playlist
-                var serializer = new XmlSerializer(typeof(PlaylistRoot));
-                var playlist = (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+                XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
+                PlaylistRoot playlist = (PlaylistRoot)serializer.Deserialize(xmlReader)!;
 
                 return playlist;
             }

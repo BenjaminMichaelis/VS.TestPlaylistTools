@@ -39,7 +39,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         {
             if (playlist is null) throw new ArgumentNullException(nameof(playlist));
 
-            using var stringWriter = new StringWriter();
+            using StringWriter stringWriter = new StringWriter();
             WriteToTextWriter(playlist, stringWriter);
             return stringWriter.ToString();
         }
@@ -56,13 +56,13 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
             // Ensure directory exists
-            var directory = Path.GetDirectoryName(filePath);
+            string directory = Path.GetDirectoryName(filePath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+            using StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8);
             WriteToTextWriter(playlist, writer);
         }
 
@@ -92,10 +92,10 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (xmlWriter is null) throw new ArgumentNullException(nameof(xmlWriter));
 
             // Create XML serializer namespaces to avoid default namespaces
-            var namespaces = new XmlSerializerNamespaces();
+            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
             namespaces.Add(string.Empty, string.Empty);
 
-            var serializer = new XmlSerializer(typeof(PlaylistRoot));
+            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
             serializer.Serialize(xmlWriter, playlist, namespaces);
         }
 
@@ -134,7 +134,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
             {
                 if (testNames != null)
                 {
-                    foreach (var testName in testNames)
+                    foreach (string testName in testNames)
                     {
                         _playlist.AddTest(testName);
                     }

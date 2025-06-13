@@ -16,8 +16,8 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromString(string xml)
     {
-        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
-        using var reader = new StreamReader(stream);
+        using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
+        using StreamReader reader = new StreamReader(stream);
         return FromStream(reader);
     }
 
@@ -28,7 +28,7 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromStream(TextReader reader)
     {
-        using var xmlReader = XmlReader.Create(reader, new XmlReaderSettings
+        using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
         {
             CloseInput = false
         });
@@ -38,7 +38,7 @@ public static class PlaylistV2Parser
             throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
         }
 
-        var serializer = new XmlSerializer(typeof(PlaylistRoot));
+        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
         return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
     }
 
@@ -50,7 +50,7 @@ public static class PlaylistV2Parser
     public static PlaylistRoot FromFile(string filePath)
     {
         if (filePath is null) throw new ArgumentNullException(nameof(filePath));
-        using var reader = new StreamReader(filePath, Encoding.UTF8);
+        using StreamReader reader = new StreamReader(filePath, Encoding.UTF8);
         return FromStream(reader);
     }
 
@@ -64,7 +64,7 @@ public static class PlaylistV2Parser
         if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
         if (!xmlReader.IsStartElement("Playlist"))
             throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
-        var serializer = new XmlSerializer(typeof(PlaylistRoot));
+        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
         return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
     }
 
@@ -81,7 +81,7 @@ public static class PlaylistV2Parser
             return false;
         try
         {
-            var root = FromString(xmlContent);
+            PlaylistRoot root = FromString(xmlContent);
             return root.Version == "2.0";
         }
         catch

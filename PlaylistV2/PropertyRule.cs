@@ -36,8 +36,8 @@ public class PropertyRule : Rule
     [XmlAttribute(AttributeName = "Name")]
     public string Name
     {
-        get => PropertyTypeToXmlNameMap.TryGetValue(Type, out var xmlName) ? xmlName : string.Empty;
-        set => Type = XmlNameToPropertyTypeMap.TryGetValue(value, out var propertyType) 
+        get => PropertyTypeToXmlNameMap.TryGetValue(Type, out string? xmlName) ? xmlName : string.Empty;
+        set => Type = XmlNameToPropertyTypeMap.TryGetValue(value, out TestPropertyType propertyType) 
             ? propertyType 
             : TestPropertyType.Solution;
     }

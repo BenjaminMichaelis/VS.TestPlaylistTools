@@ -5,7 +5,7 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
         [Fact]
         public void ParseFromString_UnsupportedVersion_ThrowsException()
         {
-            var xmlContent = """
+            string xmlContent = """
                     <Playlist Version="2.0">
                         <Add Test="Test1" />
                     </Playlist>
