@@ -11,7 +11,7 @@ public static class PlaylistV2Builder
     /// <summary>
     /// Creates a new playlist with the specified rules.
     /// </summary>
-    public static PlaylistRoot Create(IEnumerable<Rule>? rules = null)
+    public static PlaylistRoot Create(List<Rule>? rules = null)
     {
         return new PlaylistRoot(rules ?? []);
     }
