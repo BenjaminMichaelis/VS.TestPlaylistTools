@@ -47,13 +47,6 @@ See: https://learn.microsoft.com/visualstudio/msbuild/customize-your-build
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
-  <PropertyGroup Label="SourceLink">
-    <!--
-    You will also need to ensure that the appropriate Microsoft.SourceLink.* package is referenced.
-    https://github.com/dotnet/sourcelink
-    -->
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    
     <!-- 
     To produce a deterministic build, you will want to enable ContinuousIntegrationBuild as part of the pipeline build, but not for local development.
     https://learn.microsoft.com/dotnet/core/project-sdk/msbuild-props#continuousintegrationbuild
@@ -63,9 +56,17 @@ See: https://learn.microsoft.com/visualstudio/msbuild/customize-your-build
     dotnet build -p:ContinuousIntegrationBuild=true
     If you want to use Azure Devops, change the `GITHUB_ACTIONS` to `TF_BUILD` in the Condition.
     -->
-    <!-- <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
   	  <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-    </PropertyGroup> ->-->
+    </PropertyGroup>
+
+  <PropertyGroup Label="SourceLink">
+    <!--
+    You will also need to ensure that the appropriate Microsoft.SourceLink.* package is referenced.
+    https://github.com/dotnet/sourcelink
+    -->
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    
     
     <!--
     These are optional, though typically recommended. See the docs for more details

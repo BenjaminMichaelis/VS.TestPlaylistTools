@@ -14,17 +14,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// </summary>
         /// <param name="testNames">The test names to include in the playlist.</param>
         /// <returns>A new PlaylistV1 object.</returns>
-        public static PlaylistRoot Create(IEnumerable<string>? testNames = null)
-        {
-            return new PlaylistRoot(testNames ?? []);
-        }
-
-        /// <summary>
-        /// Creates a new playlist with the specified test names.
-        /// </summary>
-        /// <param name="testNames">The test names to include in the playlist.</param>
-        /// <returns>A new PlaylistV1 object.</returns>
-        public static PlaylistRoot Create(params string[] testNames)
+        public static PlaylistRoot Create(List<string>? testNames)
         {
             return new PlaylistRoot(testNames ?? []);
         }
