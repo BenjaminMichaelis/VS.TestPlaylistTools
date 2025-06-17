@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" />
-    <PackageReference Include="TRexLib" />
+    <PackageReference Include="TrxLib" />
   </ItemGroup>
   
 

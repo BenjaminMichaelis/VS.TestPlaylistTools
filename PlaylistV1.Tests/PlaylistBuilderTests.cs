@@ -6,7 +6,7 @@ namespace VS.TestPlaylistTools.PlaylistV1.Tests
         public void TestBuilder_BasicAndFluentAndXmlAndValidation()
         {
             // Test basic builder
-            PlaylistRoot playlist1 = PlaylistV1Builder.Create("Test1", "Test2", "Test3");
+            PlaylistRoot playlist1 = PlaylistV1Builder.Create(["Test1", "Test2", "Test3"]);
             Assert.Equal(3, playlist1.TestCount);
 
             // Test fluent builder

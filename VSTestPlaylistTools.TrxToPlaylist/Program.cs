@@ -52,13 +52,13 @@ public sealed class Program
                 playlistFile = Path.Combine(directory, $"{fileName}.playlist");
             }
 
-            TRexLib.TestOutcome[]? outcomes = null;
+            TrxLib.TestOutcome[]? outcomes = null;
             if (outcomesRaw is { Length: > 0 })
             {
-                List<TRexLib.TestOutcome> parsed = new List<TRexLib.TestOutcome>();
+                List<TrxLib.TestOutcome> parsed = new List<TrxLib.TestOutcome>();
                 foreach (string outcomeStr in outcomesRaw)
                 {
-                    if (Enum.TryParse<TRexLib.TestOutcome>(outcomeStr, ignoreCase: true, out TRexLib.TestOutcome outcome))
+                    if (Enum.TryParse<TrxLib.TestOutcome>(outcomeStr, ignoreCase: true, out TrxLib.TestOutcome outcome))
                         parsed.Add(outcome);
                     else
                         throw new ArgumentException($"Invalid outcome: {outcomeStr}");
