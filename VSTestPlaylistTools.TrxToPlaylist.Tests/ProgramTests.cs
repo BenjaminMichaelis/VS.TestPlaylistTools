@@ -153,6 +153,28 @@ public class ProgramTests
         }
     }
 
+    [Fact]
+    public async Task Invoke_WithSuccessTrxFileAndFailedFilterAndSkipEmpty_DoesNotCreatePlaylistFile()
+    {
+        string playlistFilePath = Path.Combine(Path.GetTempPath(), "FilteredSkipEmpty.playlist");
+        try
+        {
+            using StringWriter stdOut = new();
+            string trxFilePath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            int exitCode = await Invoke($"convert \"{trxFilePath}\" --output \"{playlistFilePath}\" --outcome Failed --skip-empty", stdOut);
+            Assert.Equal(0, exitCode);
+            Assert.False(File.Exists(playlistFilePath), "Playlist file should not be created when --skip-empty is used and there are no tests.");
+            Assert.Contains("Playlist file was not created due to --skip-empty", stdOut.ToString());
+        }
+        finally
+        {
+            if (File.Exists(playlistFilePath))
+            {
+                File.Delete(playlistFilePath);
+            }
+        }
+    }
+
     private static Task<int> Invoke(string commandLine, StringWriter console)
     {
         CliConfiguration configuration = Program.GetConfiguration();

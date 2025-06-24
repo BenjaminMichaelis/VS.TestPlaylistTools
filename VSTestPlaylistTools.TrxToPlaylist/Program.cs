@@ -28,18 +28,25 @@ public sealed class Program
             Arity = ArgumentArity.ZeroOrMore,
             AllowMultipleArgumentsPerToken = true
         };
+        // Option to skip writing empty playlists
+        CliOption<bool> skipEmptyOption = new("--skip-empty")
+        {
+            Description = "Do not write a playlist file if there are no tests in the playlist."
+        };
 
         CliCommand convertCommand = new("convert", "Convert a TRX file to a Visual Studio Test Playlist")
         {
             trxPath,
             playlistPath,
-            outcomesOption
+            outcomesOption,
+            skipEmptyOption
         };
         convertCommand.SetAction((ParseResult parseResult) =>
         {
             string? trxFile = parseResult.CommandResult.GetValue(trxPath);
             string? playlistFile = parseResult.CommandResult.GetValue(playlistPath);
             string[]? outcomesRaw = parseResult.CommandResult.GetValue(outcomesOption);
+            bool skipEmpty = parseResult.CommandResult.GetValue(skipEmptyOption);
 
             if (string.IsNullOrEmpty(trxFile))
                 throw new ArgumentException("TRX file path must be specified.");
@@ -67,8 +74,15 @@ public sealed class Program
             }
 
             TrxToPlaylistConverter converter = new TrxToPlaylistConverter();
-            converter.ConvertTrxToPlaylistFile(trxFile, playlistFile, outcomes ?? []);
+            var playlist = converter.ConvertTrxToPlaylist(trxFile, outcomes ?? []);
 
+            if (skipEmpty && (playlist.Tests == null || playlist.Tests.Count == 0))
+            {
+                parseResult.Configuration.Output.WriteLine($"No tests found in '{trxFile}'. Playlist file was not created due to --skip-empty.");
+                return;
+            }
+
+            converter.ConvertTrxToPlaylistFile(trxFile, playlistFile, outcomes ?? []);
             parseResult.Configuration.Output.WriteLine($"Converted '{trxFile}' to playlist '{playlistFile}'.");
         });
 
