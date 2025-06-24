@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VSTestPlaylistTools.TrxToPlaylist\trx-to-vsplaylist.csproj" />
+    <ProjectReference Include="..\trx-to-vsplaylist\trx-to-vsplaylist.csproj" />
   </ItemGroup>
 
   <ItemGroup>

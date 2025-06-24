@@ -1,11 +1,10 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTestPlaylistTools", "VSPlaylistBuilder\VSTestPlaylistTools.csproj", "{A87CB29C-0A36-423F-B9B6-43053906A3CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTestPlaylistTools", "VSTestPlaylistTools\VSTestPlaylistTools.csproj", "{A87CB29C-0A36-423F-B9B6-43053906A3CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTestPlaylistTools.Tests", "VSPlaylistBuilder.Tests\VSTestPlaylistTools.Tests.csproj", "{DF8F9490-887C-489E-AFE0-99518CC49ECF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSTestPlaylistTools.Tests", "VSTestPlaylistTools.Tests\VSTestPlaylistTools.Tests.csproj", "{DF8F9490-887C-489E-AFE0-99518CC49ECF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{33332FBD-7EFF-4A3D-8691-21BF50B245A7}"
 	ProjectSection(SolutionItems) = preProject
@@ -25,9 +24,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.V2Playl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.PlaylistV2.Tests", "PlaylistV2.Tests\VSTestPlaylistTools.PlaylistV2.Tests.csproj", "{B87DFF8E-81E5-4AA7-9629-C888535F1862}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "trx-to-vsplaylist", "VSTestPlaylistTools.TrxToPlaylist\trx-to-vsplaylist.csproj", "{EB8479EC-087C-A7CB-8F1A-48CCD42CED7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "trx-to-vsplaylist", "trx-to-vsplaylist\trx-to-vsplaylist.csproj", "{EB8479EC-087C-A7CB-8F1A-48CCD42CED7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "trx-to-vsplaylist.Tests", "VSTestPlaylistTools.TrxToPlaylist.Tests\trx-to-vsplaylist.Tests.csproj", "{070CA89F-7192-3F2C-1949-2C3455BEA801}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "trx-to-vsplaylist.Tests", "trx-to-vsplaylist.Tests\trx-to-vsplaylist.Tests.csproj", "{070CA89F-7192-3F2C-1949-2C3455BEA801}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.TrxToPlaylistConverter", "VSTestPlaylistTools.TrxToPlaylistConverter\VSTestPlaylistTools.TrxToPlaylistConverter.csproj", "{9D69D1E6-2DED-4D7B-80C7-5CF6D14A2343}"
 EndProject
