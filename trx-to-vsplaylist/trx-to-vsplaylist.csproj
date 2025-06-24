@@ -29,7 +29,6 @@
     <PackageReference Include="System.CommandLine" />
     <PackageReference Include="TrxLib" />
   </ItemGroup>
-  
 
   <ItemGroup>
     <ProjectReference Include="..\VSTestPlaylistTools.TrxToPlaylistConverter\VSTestPlaylistTools.TrxToPlaylistConverter.csproj" />
