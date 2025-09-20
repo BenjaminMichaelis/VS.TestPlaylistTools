@@ -71,12 +71,12 @@ public sealed class Program
 
             if (skipEmpty && (playlist.Tests == null || playlist.Tests.Count == 0))
             {
-                parseResult.Configuration.Output.WriteLine($"No tests found in '{trxFile}'. Playlist file was not created due to --skip-empty.");
+                parseResult.InvocationConfiguration.Output.WriteLine($"No tests found in '{trxFile}'. Playlist file was not created due to --skip-empty.");
                 return;
             }
 
             converter.ConvertTrxToPlaylistFile(trxFile, playlistFile, outcomes ?? []);
-            parseResult.Configuration.Output.WriteLine($"Converted '{trxFile}' to playlist '{playlistFile}'.");
+            parseResult.InvocationConfiguration.Output.WriteLine($"Converted '{trxFile}' to playlist '{playlistFile}'.");
         });
 
         RootCommand rootCommand = new("Convert TRX files to Visual Studio Test Playlists");
