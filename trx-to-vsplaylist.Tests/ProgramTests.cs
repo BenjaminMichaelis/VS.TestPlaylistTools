@@ -175,10 +175,23 @@ public class ProgramTests
         }
     }
 
-    private static Task<int> Invoke(string commandLine, StringWriter console)
+    private static async Task<int> Invoke(string commandLine, StringWriter console)
     {
-        CliConfiguration configuration = Program.GetConfiguration();
-        configuration.Output = console;
-        return configuration.InvokeAsync(commandLine);
+        RootCommand rootCommand = Program.GetConfiguration();
+        var parseResult = rootCommand.Parse(commandLine);
+        var invocationConfig = new InvocationConfiguration();
+        
+        // Redirect output to the provided console
+        var originalOut = Console.Out;
+        Console.SetOut(console);
+        
+        try
+        {
+            return await parseResult.InvokeAsync(invocationConfig);
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+        }
     }
 }
