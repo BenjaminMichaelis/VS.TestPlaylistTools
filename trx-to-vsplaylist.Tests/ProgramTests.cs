@@ -177,63 +177,8 @@ public class ProgramTests
 
     private static Task<int> Invoke(string commandLine, StringWriter console)
     {
-        // Parse the command line string into arguments
-        var args = ParseCommandLine(commandLine);
-        
-        // Temporarily redirect console output to capture it
-        var originalOut = Console.Out;
-        try
-        {
-            Console.SetOut(console);
-            // Use the same entry point as the main program
-            var method = typeof(Program).GetMethod("Main", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
-            if (method != null)
-            {
-                var result = method.Invoke(null, new object[] { args });
-                return Task.FromResult(result is int exitCode ? exitCode : 0);
-            }
-            return Task.FromResult(0);
-        }
-        finally
-        {
-            Console.SetOut(originalOut);
-        }
-    }
-
-    private static string[] ParseCommandLine(string commandLine)
-    {
-        // Simple command line parsing - split on spaces but handle quoted strings
-        List<string> args = new();
-        bool inQuotes = false;
-        var currentArg = new System.Text.StringBuilder();
-        
-        for (int i = 0; i < commandLine.Length; i++)
-        {
-            char c = commandLine[i];
-            
-            if (c == '"')
-            {
-                inQuotes = !inQuotes;
-            }
-            else if (c == ' ' && !inQuotes)
-            {
-                if (currentArg.Length > 0)
-                {
-                    args.Add(currentArg.ToString());
-                    currentArg.Clear();
-                }
-            }
-            else
-            {
-                currentArg.Append(c);
-            }
-        }
-        
-        if (currentArg.Length > 0)
-        {
-            args.Add(currentArg.ToString());
-        }
-        
-        return args.ToArray();
+        CliConfiguration configuration = Program.GetConfiguration();
+        configuration.Output = console;
+        return configuration.InvokeAsync(commandLine);
     }
 }
