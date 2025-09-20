@@ -1,0 +1,27 @@
+name: Copilot Setup Steps
+
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: "./global.json"
+  
+      - name: Restore dependencies
+        run: dotnet restore
+  
+      - name: Build
+        run: dotnet build -p:ContinuousIntegrationBuild=True --no-restore --configuration Release
