@@ -4,49 +4,42 @@ namespace VSTestPlaylistTools.TrxToPlaylist;
 
 public sealed class Program
 {
-    private static Task<int> Main(string[] args)
+    private static async Task<int> Main(string[] args)
     {
-        CommandLineConfiguration configuration = GetConfiguration();
-        return configuration.InvokeAsync(args);
+        RootCommand rootCommand = GetRootCommand();
+        var parseResult = rootCommand.Parse(args);
+        var invocationConfig = new InvocationConfiguration();
+        return await parseResult.InvokeAsync(invocationConfig);
     }
 
-    public static CommandLineConfiguration GetConfiguration()
+    public static RootCommand GetRootCommand()
     {
-        Argument<string> trxPath = new("trx-file")
-        {
-            Description = "Path to the TRX file to convert"
-        };
-        // Change from CliArgument to CliOption to make it optional
-        Option<string> playlistPath = new("--output", "-o")
-        {
-            Description = "Path to the output playlist file. If not specified, the playlist will be saved in the same directory as the trx file with the same name but with .playlist extension."
-        };
-        // Option for specifying outcomes (repeatable)
-        Option<string[]> outcomesOption = new("--outcome", "-f")
-        {
-            Description = "Test outcomes to include (e.g. Passed Failed Skipped). Can be specified multiple times.",
-            Arity = ArgumentArity.ZeroOrMore,
-            AllowMultipleArgumentsPerToken = true
-        };
-        // Option to skip writing empty playlists
-        Option<bool> skipEmptyOption = new("--skip-empty")
-        {
-            Description = "Do not write a playlist file if there are no tests in the playlist."
-        };
+        Argument<string> trxPath = new("trx-file");
+        trxPath.Description = "Path to the TRX file to convert";
+        
+        Option<string> playlistPath = new("--output", "-o");
+        playlistPath.Description = "Path to the output playlist file. If not specified, the playlist will be saved in the same directory as the trx file with the same name but with .playlist extension.";
+        
+        Option<string[]> outcomesOption = new("--outcome", "-f");
+        outcomesOption.Description = "Test outcomes to include (e.g. Passed Failed Skipped). Can be specified multiple times.";
+        outcomesOption.Arity = ArgumentArity.ZeroOrMore;
+        outcomesOption.AllowMultipleArgumentsPerToken = true;
+        
+        Option<bool> skipEmptyOption = new("--skip-empty");
+        skipEmptyOption.Description = "Do not write a playlist file if there are no tests in the playlist.";
 
-        Command convertCommand = new("convert", "Convert a TRX file to a Visual Studio Test Playlist")
-        {
-            trxPath,
-            playlistPath,
-            outcomesOption,
-            skipEmptyOption
-        };
+        Command convertCommand = new("convert", "Convert a TRX file to a Visual Studio Test Playlist");
+        convertCommand.Add(trxPath);
+        convertCommand.Add(playlistPath);
+        convertCommand.Add(outcomesOption);
+        convertCommand.Add(skipEmptyOption);
+        
         convertCommand.SetAction((ParseResult parseResult) =>
         {
-            string? trxFile = parseResult.CommandResult.GetValue(trxPath);
-            string? playlistFile = parseResult.CommandResult.GetValue(playlistPath);
-            string[]? outcomesRaw = parseResult.CommandResult.GetValue(outcomesOption);
-            bool skipEmpty = parseResult.CommandResult.GetValue(skipEmptyOption);
+            string? trxFile = parseResult.GetValue(trxPath);
+            string? playlistFile = parseResult.GetValue(playlistPath);
+            string[]? outcomesRaw = parseResult.GetValue(outcomesOption);
+            bool skipEmpty = parseResult.GetValue(skipEmptyOption);
 
             if (string.IsNullOrEmpty(trxFile))
                 throw new ArgumentException("TRX file path must be specified.");
@@ -78,18 +71,22 @@ public sealed class Program
 
             if (skipEmpty && (playlist.Tests == null || playlist.Tests.Count == 0))
             {
-                parseResult.Configuration.Output.WriteLine($"No tests found in '{trxFile}'. Playlist file was not created due to --skip-empty.");
+                Console.WriteLine($"No tests found in '{trxFile}'. Playlist file was not created due to --skip-empty.");
                 return;
             }
 
             converter.ConvertTrxToPlaylistFile(trxFile, playlistFile, outcomes ?? []);
-            parseResult.Configuration.Output.WriteLine($"Converted '{trxFile}' to playlist '{playlistFile}'.");
+            Console.WriteLine($"Converted '{trxFile}' to playlist '{playlistFile}'.");
         });
 
-        RootCommand rootCommand = new("Convert TRX files to Visual Studio Test Playlists")
-        {
-            convertCommand
-        };
-        return new CommandLineConfiguration(rootCommand);
+        RootCommand rootCommand = new("Convert TRX files to Visual Studio Test Playlists");
+        rootCommand.Add(convertCommand);
+        return rootCommand;
+    }
+
+    // Keep the old method name for compatibility with tests, but return RootCommand now
+    public static RootCommand GetConfiguration()
+    {
+        return GetRootCommand();
     }
 }
