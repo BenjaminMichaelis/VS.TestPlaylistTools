@@ -175,7 +175,7 @@ public class ProgramTests
         }
     }
 
-    private static Task<int> Invoke(string commandLine, StringWriter console)
+    private static async Task<int> Invoke(string commandLine, StringWriter console)
     {
         // Parse the command line string into arguments
         var args = ParseCommandLine(commandLine);
@@ -190,9 +190,13 @@ public class ProgramTests
             if (method != null)
             {
                 var result = method.Invoke(null, new object[] { args });
-                return Task.FromResult(result is int exitCode ? exitCode : 0);
+                if (result is Task<int> taskResult)
+                {
+                    return await taskResult;
+                }
+                return result is int exitCode ? exitCode : 0;
             }
-            return Task.FromResult(0);
+            return 0;
         }
         finally
         {
