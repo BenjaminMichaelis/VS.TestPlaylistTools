@@ -6,35 +6,35 @@ public sealed class Program
 {
     private static Task<int> Main(string[] args)
     {
-        CliConfiguration configuration = GetConfiguration();
+        CommandLineConfiguration configuration = GetConfiguration();
         return configuration.InvokeAsync(args);
     }
 
-    public static CliConfiguration GetConfiguration()
+    public static CommandLineConfiguration GetConfiguration()
     {
-        CliArgument<string> trxPath = new("trx-file")
+        Argument<string> trxPath = new("trx-file")
         {
             Description = "Path to the TRX file to convert"
         };
         // Change from CliArgument to CliOption to make it optional
-        CliOption<string> playlistPath = new("--output", "-o")
+        Option<string> playlistPath = new("--output", "-o")
         {
             Description = "Path to the output playlist file. If not specified, the playlist will be saved in the same directory as the trx file with the same name but with .playlist extension."
         };
         // Option for specifying outcomes (repeatable)
-        CliOption<string[]> outcomesOption = new("--outcome", "-f")
+        Option<string[]> outcomesOption = new("--outcome", "-f")
         {
             Description = "Test outcomes to include (e.g. Passed Failed Skipped). Can be specified multiple times.",
             Arity = ArgumentArity.ZeroOrMore,
             AllowMultipleArgumentsPerToken = true
         };
         // Option to skip writing empty playlists
-        CliOption<bool> skipEmptyOption = new("--skip-empty")
+        Option<bool> skipEmptyOption = new("--skip-empty")
         {
             Description = "Do not write a playlist file if there are no tests in the playlist."
         };
 
-        CliCommand convertCommand = new("convert", "Convert a TRX file to a Visual Studio Test Playlist")
+        Command convertCommand = new("convert", "Convert a TRX file to a Visual Studio Test Playlist")
         {
             trxPath,
             playlistPath,
@@ -86,10 +86,10 @@ public sealed class Program
             parseResult.Configuration.Output.WriteLine($"Converted '{trxFile}' to playlist '{playlistFile}'.");
         });
 
-        CliRootCommand rootCommand = new("Convert TRX files to Visual Studio Test Playlists")
+        RootCommand rootCommand = new("Convert TRX files to Visual Studio Test Playlists")
         {
             convertCommand
         };
-        return new CliConfiguration(rootCommand);
+        return new CommandLineConfiguration(rootCommand);
     }
 }

@@ -177,7 +177,7 @@ public class ProgramTests
 
     private static Task<int> Invoke(string commandLine, StringWriter console)
     {
-        CliConfiguration configuration = Program.GetConfiguration();
+        CommandLineConfiguration configuration = Program.GetConfiguration();
         configuration.Output = console;
         return configuration.InvokeAsync(commandLine);
     }
