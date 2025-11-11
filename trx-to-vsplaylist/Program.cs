@@ -159,7 +159,7 @@ public sealed class Program
                     string fileName = Path.GetFileNameWithoutExtension(trxFile);
                     string outputFile = Path.Combine(outputDirectory, $"{fileName}.playlist");
 
-                    converter.ConvertTrxToPlaylistFile(trxFile, outputFile, outcomes ?? []);
+                    PlaylistV1Builder.SaveToFile(playlist, outputFile);
                     parseResult.InvocationConfiguration.Output.WriteLine($"Converted '{trxFile}' to playlist '{outputFile}'.");
                     filesCreated++;
                 }
