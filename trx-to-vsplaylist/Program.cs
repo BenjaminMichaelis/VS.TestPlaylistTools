@@ -142,9 +142,15 @@ public sealed class Program
                 string fileName = Path.GetFileNameWithoutExtension(trxFiles[0]);
                 playlistFile = Path.Combine(directory, $"{fileName}.playlist");
             }
-            else if (Directory.Exists(playlistFile) || (!Path.HasExtension(playlistFile) && !File.Exists(playlistFile)))
+            else if (Directory.Exists(playlistFile) && !File.Exists(playlistFile))
             {
-                // Output is a directory - generate filename based on first TRX
+                // Output exists as a directory (and not as a file) - generate filename based on first TRX
+                string fileName = Path.GetFileNameWithoutExtension(trxFiles[0]);
+                playlistFile = Path.Combine(playlistFile, $"{fileName}.playlist");
+            }
+            else if (!Path.HasExtension(playlistFile) && !File.Exists(playlistFile) && !Directory.Exists(playlistFile))
+            {
+                // Output path has no extension and doesn't exist - treat as directory
                 string fileName = Path.GetFileNameWithoutExtension(trxFiles[0]);
                 playlistFile = Path.Combine(playlistFile, $"{fileName}.playlist");
             }

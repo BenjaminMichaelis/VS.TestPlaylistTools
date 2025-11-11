@@ -180,7 +180,9 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
 
             // Should have same count as single file since duplicates are removed
             TrxLib.TestResultSet parsedTrx = TrxLib.TrxParser.Parse(new FileInfo(trxFile));
-            Assert.Equal(parsedTrx.Count, playlist.Tests.Count);
+            // Get unique test names from TRX file (handles parameterized tests that appear multiple times)
+            int uniqueTestCount = parsedTrx.Select(r => r.FullyQualifiedTestName).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+            Assert.Equal(uniqueTestCount, playlist.Tests.Count);
         }
 
         [Fact]

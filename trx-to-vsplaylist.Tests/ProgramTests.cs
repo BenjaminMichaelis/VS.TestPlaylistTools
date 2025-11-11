@@ -119,6 +119,11 @@ public class ProgramTests
             {
                 File.Delete(playlistFilePath);
             }
+            // Clean up if a directory was accidentally created
+            if (Directory.Exists(playlistFilePath))
+            {
+                Directory.Delete(playlistFilePath, true);
+            }
         }
     }
 
@@ -186,7 +191,7 @@ public class ProgramTests
             using StringWriter stdOut = new();
             string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
-            
+
             int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{playlistFilePath}\"", stdOut);
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(playlistFilePath), "Merged playlist file was not created.");
@@ -195,7 +200,7 @@ public class ProgramTests
             PlaylistRoot? playlist = playlistContent as PlaylistRoot;
             Assert.NotNull(playlist);
             Assert.NotEmpty(playlist.Tests);
-            
+
             // Verify the output message mentions multiple files
             Assert.Contains("TRX files", stdOut.ToString());
             Assert.Contains("unique tests", stdOut.ToString());
@@ -218,7 +223,7 @@ public class ProgramTests
             using StringWriter stdOut = new();
             string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
-            
+
             int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --outcome Failed --output \"{playlistFilePath}\"", stdOut);
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(playlistFilePath), "Merged playlist file was not created.");
@@ -243,20 +248,20 @@ public class ProgramTests
     {
         string outputDir = Path.Combine(Path.GetTempPath(), "SeparatePlaylists");
         Directory.CreateDirectory(outputDir);
-        
+
         try
         {
             using StringWriter stdOut = new();
             string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
-            
+
             int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{outputDir}\" --separate", stdOut);
             Assert.Equal(0, exitCode);
 
             // Verify separate playlist files were created
             string playlist1 = Path.Combine(outputDir, "AllTestsPass.playlist");
             string playlist2 = Path.Combine(outputDir, "OneTestFailure.playlist");
-            
+
             Assert.True(File.Exists(playlist1), "First playlist file was not created.");
             Assert.True(File.Exists(playlist2), "Second playlist file was not created.");
 
@@ -277,13 +282,13 @@ public class ProgramTests
     {
         string outputDir = Path.Combine(Path.GetTempPath(), "SeparatePlaylistsSkipEmpty");
         Directory.CreateDirectory(outputDir);
-        
+
         try
         {
             using StringWriter stdOut = new();
             string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
-            
+
             // Filter for failed tests only - first file will be empty
             int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{outputDir}\" --separate --skip-empty --outcome Failed", stdOut);
             Assert.Equal(0, exitCode);
@@ -291,7 +296,7 @@ public class ProgramTests
             // Verify only the second playlist was created (has failed tests)
             string playlist1 = Path.Combine(outputDir, "AllTestsPass.playlist");
             string playlist2 = Path.Combine(outputDir, "OneTestFailure.playlist");
-            
+
             Assert.False(File.Exists(playlist1), "First playlist should have been skipped (no failed tests).");
             Assert.True(File.Exists(playlist2), "Second playlist file was not created.");
 
@@ -311,18 +316,16 @@ public class ProgramTests
     public async Task Invoke_WithMultipleTrxFilesSeparateAndFileOutput_ThrowsArgumentException()
     {
         string playlistFilePath = Path.Combine(Path.GetTempPath(), "ShouldNotWork.playlist");
-        
+
         try
         {
             using StringWriter stdOut = new();
             string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
-            
-            // Should throw because we're providing a file path with --separate
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{playlistFilePath}\" --separate", stdOut);
-            });
+
+            // Should fail because we're providing a file path with --separate
+            int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{playlistFilePath}\" --separate", stdOut);
+            Assert.Equal(1, exitCode); // Expect failure exit code
         }
         finally
         {
@@ -341,7 +344,7 @@ public class ProgramTests
         {
             using StringWriter stdOut = new();
             string trxFile = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
-            
+
             int exitCode = await Invoke($"convert \"{trxFile}\" --output \"{playlistFilePath}\" --separate", stdOut);
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(playlistFilePath), "Playlist file was not created.");
@@ -364,12 +367,12 @@ public class ProgramTests
     {
         string outputDir = Path.Combine(Path.GetTempPath(), "SingleFileToDirectory");
         Directory.CreateDirectory(outputDir);
-        
+
         try
         {
             using StringWriter stdOut = new();
             string trxFile = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
-            
+
             int exitCode = await Invoke($"convert \"{trxFile}\" --output \"{outputDir}\"", stdOut);
             Assert.Equal(0, exitCode);
 
@@ -411,7 +414,7 @@ public class ProgramTests
             // Now merge them
             using StringWriter stdOut3 = new();
             int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\" --output \"{mergedPath}\"", stdOut3);
-            
+
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(mergedPath), "Merged playlist was not created.");
 
@@ -446,14 +449,13 @@ public class ProgramTests
 
             // Try to merge without output - should fail
             using StringWriter stdOut2 = new();
-            await Assert.ThrowsAsync<ArgumentException>(async () =>
-            {
-                await Invoke($"merge \"{playlist1Path}\"", stdOut2);
-            });
+            int exitCode = await Invoke($"merge \"{playlist1Path}\"", stdOut2);
+            Assert.Equal(1, exitCode); // Expect failure exit code
         }
         finally
         {
             if (File.Exists(playlist1Path)) File.Delete(playlist1Path);
+            if (Directory.Exists(playlist1Path)) Directory.Delete(playlist1Path, true);
         }
     }
 
@@ -464,11 +466,11 @@ public class ProgramTests
         RootCommand rootCommand = Program.GetConfiguration();
         var parseResult = rootCommand.Parse(commandLine);
         var invocationConfig = new InvocationConfiguration();
-        
+
         // Redirect output to the provided console
         var originalOut = Console.Out;
         Console.SetOut(console);
-        
+
         try
         {
             return await parseResult.InvokeAsync(invocationConfig);
