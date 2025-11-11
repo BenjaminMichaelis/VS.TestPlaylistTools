@@ -265,17 +265,49 @@ public sealed class Program
                     // Use file globbing
                     Matcher matcher = new();
 
-                    // Determine the base directory and pattern
-                    string directory = Path.GetDirectoryName(pattern) ?? Directory.GetCurrentDirectory();
-                    string filePattern = Path.GetFileName(pattern);
-
-                    // Handle absolute paths vs relative paths
-                    if (!Path.IsPathRooted(directory) || string.IsNullOrEmpty(directory))
+                    // Determine the base directory and glob pattern
+                    string directory;
+                    string globPattern;
+                    
+                    // Split the pattern into path segments
+                    var segments = pattern.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                    int wildcardIndex = -1;
+                    for (int i = 0; i < segments.Length; i++)
                     {
+                        if (segments[i].Contains('*'))
+                        {
+                            wildcardIndex = i;
+                            break;
+                        }
+                    }
+                    
+                    if (wildcardIndex == -1)
+                    {
+                        // No wildcard found (shouldn't happen given outer if condition, but handle defensively)
+                        directory = Path.GetDirectoryName(pattern) ?? Directory.GetCurrentDirectory();
+                        globPattern = Path.GetFileName(pattern);
+                    }
+                    else if (wildcardIndex == 0)
+                    {
+                        // Wildcard in the first segment - use current directory
                         directory = Directory.GetCurrentDirectory();
+                        globPattern = pattern;
+                    }
+                    else
+                    {
+                        // Base directory is everything before the first wildcard segment
+                        directory = Path.Combine(segments.Take(wildcardIndex).ToArray());
+                        if (!Path.IsPathRooted(directory))
+                        {
+                            directory = Path.Combine(Directory.GetCurrentDirectory(), directory);
+                        }
+                        
+                        // The glob pattern is everything from the first wildcard onward
+                        // Use forward slashes for glob patterns as expected by Matcher
+                        globPattern = string.Join("/", segments.Skip(wildcardIndex));
                     }
 
-                    matcher.AddInclude(filePattern);
+                    matcher.AddInclude(globPattern);
                     IEnumerable<string> matchedFiles = matcher.GetResultsInFullPath(directory);
 
                     if (!matchedFiles.Any())

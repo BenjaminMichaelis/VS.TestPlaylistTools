@@ -30,7 +30,7 @@ public class ProgramTests
             Assert.True(File.Exists(playlistFilePath), "Playlist file was not created.");
 
             var playlistContent = PlaylistLoader.Load(playlistFilePath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             Assert.NotEmpty(playlist.Tests);
         }
@@ -324,7 +324,7 @@ public class ProgramTests
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
 
             // Should fail because we're providing a file path with --separate
-            int exitCode = await Invoke($"convert \"trxFile1\" \"trxFile2\" --output \"{playlistFilePath}\" --separate", stdOut);
+            int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{playlistFilePath}\" --separate", stdOut);
             Assert.Equal(1, exitCode);
         }
         finally
@@ -419,7 +419,7 @@ public class ProgramTests
             Assert.True(File.Exists(mergedPath), "Merged playlist was not created.");
 
             var playlistContent = PlaylistLoader.Load(mergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
 
@@ -453,7 +453,47 @@ public class ProgramTests
             Assert.True(File.Exists(mergedPath), "Merged playlist was not created.");
 
             var playlistContent = PlaylistLoader.Load(mergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+
+            // Verify output message
+            Assert.Contains("Merged 13 playlist files", stdOut3.ToString());
+        }
+        finally
+        {
+            if (File.Exists(mergedPath)) File.Delete(mergedPath);
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithRecursiveGlobPattern_MergesMatchingFiles()
+    {
+        string initialTestDir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "trx-to-vsplaylist.Tests", "BatchOfManyPlaylists");
+        // copy files to a temp directory to avoid modifying source files, make sure the files are in subdirectory so we can test recursive globbing
+        string testDir = Path.Combine(Path.GetTempPath(), "RecursiveGlobTest_" + Guid.NewGuid().ToString("N"));
+        string fileDir = Path.Combine(testDir, "nestedSubDirectory");
+        Directory.CreateDirectory(fileDir);
+        // copy all playlist files to the new subdirectory
+        foreach (var file in Directory.GetFiles(initialTestDir, "*.playlist"))
+        {
+            var destFile = Path.Combine(fileDir, Path.GetFileName(file));
+            File.Copy(file, destFile, true);
+        }
+        string mergedPath = Path.Combine(testDir, "merged.playlist");
+
+        try
+        {
+            // Merge using recursive glob pattern
+            using StringWriter stdOut3 = new();
+            string globPattern = Path.Combine(testDir, "**", "*.playlist");
+            int exitCode = await Invoke($"merge \"{globPattern}\" --output \"{mergedPath}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(mergedPath), "Merged playlist was not created.");
+
+            var playlistContent = PlaylistLoader.Load(mergedPath);
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
 
@@ -495,7 +535,7 @@ public class ProgramTests
             Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in auto-detected directory.");
 
             var playlistContent = PlaylistLoader.Load(expectedMergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
 
@@ -542,7 +582,7 @@ public class ProgramTests
             Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created.");
 
             var playlistContent = PlaylistLoader.Load(expectedMergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
 
@@ -650,7 +690,7 @@ public class ProgramTests
             Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in the specified directory.");
 
             var playlistContent = PlaylistLoader.Load(expectedMergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
         }
@@ -693,7 +733,7 @@ public class ProgramTests
             Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in the new directory.");
 
             var playlistContent = PlaylistLoader.Load(expectedMergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
         }
@@ -737,7 +777,7 @@ public class ProgramTests
             Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in the directory specified with trailing separator.");
 
             var playlistContent = PlaylistLoader.Load(expectedMergedPath);
-            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            var mergedPlaylist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(mergedPlaylist);
             Assert.NotEmpty(mergedPlaylist.Tests);
         }
