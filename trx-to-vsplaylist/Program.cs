@@ -1,4 +1,5 @@
 ﻿using System.CommandLine;
+using Microsoft.Extensions.FileSystemGlobbing;
 using VS.TestPlaylistTools.PlaylistV1;
 
 namespace VSTestPlaylistTools.TrxToPlaylist;
@@ -187,11 +188,11 @@ public sealed class Program
     private static Command CreateMergeCommand()
     {
         Argument<string[]> playlistPaths = new("playlist-files");
-        playlistPaths.Description = "Path(s) to the playlist file(s) to merge. Tests will be automatically de-duplicated.";
+        playlistPaths.Description = "Path(s) to the playlist file(s) to merge. Supports glob patterns (e.g., *.playlist, **/*.playlist). Tests will be automatically de-duplicated.";
         playlistPaths.Arity = ArgumentArity.OneOrMore;
 
         Option<string> outputPath = new("--output", "-o");
-        outputPath.Description = "Path to the output merged playlist file (required).";
+        outputPath.Description = "Path to the output merged playlist file. If not specified and all input files are in the same directory, the merged file will be created in that directory.";
 
         Option<bool> skipEmptyOption = new("--skip-empty");
         skipEmptyOption.Description = "Do not write a playlist file if there are no tests in the merged playlist.";
@@ -205,22 +206,104 @@ public sealed class Program
 
         mergeCommand.SetAction((ParseResult parseResult) =>
         {
-            string[]? playlistFiles = parseResult.GetValue(playlistPaths);
+            string[]? playlistPatterns = parseResult.GetValue(playlistPaths);
             string? outputFile = parseResult.GetValue(outputPath);
             bool skipEmpty = parseResult.GetValue(skipEmptyOption);
 
-            if (playlistFiles == null || playlistFiles.Length == 0)
-                throw new ArgumentException("At least one playlist file path must be specified.");
+            if (playlistPatterns == null || playlistPatterns.Length == 0)
+                throw new ArgumentException("At least one playlist file path or pattern must be specified.");
 
+            // Expand glob patterns to actual file paths
+            List<string> playlistFiles = new();
+            foreach (string pattern in playlistPatterns)
+            {
+                if (string.IsNullOrEmpty(pattern))
+                    throw new ArgumentException("Playlist file path or pattern cannot be null or empty.");
+
+                // Check if the pattern contains glob characters (* or **)
+                // Note: Microsoft.Extensions.FileSystemGlobbing does not support ? wildcard
+                if (pattern.Contains('*'))
+                {
+                    // Use file globbing
+                    Matcher matcher = new();
+                    
+                    // Determine the base directory and pattern
+                    string directory = Path.GetDirectoryName(pattern) ?? Directory.GetCurrentDirectory();
+                    string filePattern = Path.GetFileName(pattern);
+                    
+                    // Handle absolute paths vs relative paths
+                    if (!Path.IsPathRooted(directory) || string.IsNullOrEmpty(directory))
+                    {
+                        directory = Directory.GetCurrentDirectory();
+                    }
+                    
+                    matcher.AddInclude(filePattern);
+                    IEnumerable<string> matchedFiles = matcher.GetResultsInFullPath(directory);
+                    
+                    if (!matchedFiles.Any())
+                    {
+                        throw new FileNotFoundException($"No files matched the pattern: {pattern}");
+                    }
+                    
+                    playlistFiles.AddRange(matchedFiles);
+                }
+                else
+                {
+                    // Regular file path - validate it exists
+                    if (!File.Exists(pattern))
+                        throw new FileNotFoundException($"Playlist file not found: {pattern}");
+                    
+                    playlistFiles.Add(Path.GetFullPath(pattern));
+                }
+            }
+
+            // Remove duplicates (in case patterns overlap)
+            playlistFiles = playlistFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+
+            if (playlistFiles.Count == 0)
+                throw new ArgumentException("No playlist files found to merge.");
+
+            // Auto-detect output directory if not specified
             if (string.IsNullOrEmpty(outputFile))
-                throw new ArgumentException("Output file path must be specified (use --output or -o).");
+            {
+                // Check if all files are in the same directory
+                string? firstDirectory = Path.GetDirectoryName(Path.GetFullPath(playlistFiles[0]));
+                bool allInSameDirectory = playlistFiles.All(f => 
+                    string.Equals(Path.GetDirectoryName(Path.GetFullPath(f)), firstDirectory, StringComparison.OrdinalIgnoreCase));
 
-            // Validate all playlist files exist
+                if (allInSameDirectory && !string.IsNullOrEmpty(firstDirectory))
+                {
+                    // All files are in the same directory - use that directory
+                    outputFile = Path.Combine(firstDirectory, "merged.playlist");
+                    parseResult.InvocationConfiguration.Output.WriteLine($"Output directory not specified. Using '{firstDirectory}' (same directory as input files).");
+                }
+                else
+                {
+                    // Files are in different directories - require explicit output
+                    throw new ArgumentException("Output file path must be specified (use --output or -o) when merging files from different directories.");
+                }
+            }
+            else
+            {
+                // Output was specified - check if it's a directory
+                if (Directory.Exists(outputFile))
+                {
+                    // It's an existing directory - create merged.playlist in that directory
+                    outputFile = Path.Combine(outputFile, "merged.playlist");
+                }
+                else if (!Path.HasExtension(outputFile) && !File.Exists(outputFile))
+                {
+                    // No extension and doesn't exist as a file - treat as a directory path
+                    // Create the directory and use merged.playlist as filename
+                    Directory.CreateDirectory(outputFile);
+                    outputFile = Path.Combine(outputFile, "merged.playlist");
+                }
+                // else: It has an extension or exists as a file - treat it as a file path
+            }
+
+            // Validate all playlist files exist (should already be validated, but double-check)
             foreach (string playlistFile in playlistFiles)
             {
-                if (string.IsNullOrEmpty(playlistFile))
-                    throw new ArgumentException("Playlist file path cannot be null or empty.");
-
                 if (!File.Exists(playlistFile))
                     throw new FileNotFoundException($"Playlist file not found: {playlistFile}");
             }
@@ -243,7 +326,7 @@ public sealed class Program
 
             if (skipEmpty && uniqueTestNames.Count == 0)
             {
-                parseResult.InvocationConfiguration.Output.WriteLine($"No tests found in {playlistFiles.Length} playlist files. Merged playlist file was not created due to --skip-empty.");
+                parseResult.InvocationConfiguration.Output.WriteLine($"No tests found in {playlistFiles.Count} playlist files. Merged playlist file was not created due to --skip-empty.");
                 return;
             }
 
@@ -251,7 +334,7 @@ public sealed class Program
             PlaylistRoot mergedPlaylist = PlaylistV1Builder.Create(uniqueTestNames.ToList());
             PlaylistV1Builder.SaveToFile(mergedPlaylist, outputFile);
 
-            parseResult.InvocationConfiguration.Output.WriteLine($"Merged {playlistFiles.Length} playlist files into '{outputFile}' ({mergedPlaylist.TestCount} unique tests).");
+            parseResult.InvocationConfiguration.Output.WriteLine($"Merged {playlistFiles.Count} playlist files into '{outputFile}' ({mergedPlaylist.TestCount} unique tests).");
         });
 
         return mergeCommand;

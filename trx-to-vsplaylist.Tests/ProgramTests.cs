@@ -459,6 +459,205 @@ public class ProgramTests
         }
     }
 
+    [Fact]
+    public async Task Invoke_MergeCommandWithGlobPattern_MergesMatchingFiles()
+    {
+        string testDir = Path.Combine(Path.GetTempPath(), "GlobPatternTest_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(testDir);
+
+        string playlist1Path = Path.Combine(testDir, "test1.playlist");
+        string playlist2Path = Path.Combine(testDir, "test2.playlist");
+        string mergedPath = Path.Combine(testDir, "merged.playlist");
+
+        try
+        {
+            // Create some playlists to merge
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Merge using glob pattern
+            using StringWriter stdOut3 = new();
+            string globPattern = Path.Combine(testDir, "test*.playlist");
+            int exitCode = await Invoke($"merge \"{globPattern}\" --output \"{mergedPath}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(mergedPath), "Merged playlist was not created.");
+
+            var playlistContent = PlaylistLoader.Load(mergedPath);
+            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+
+            // Verify output message
+            Assert.Contains("Merged 2 playlist files", stdOut3.ToString());
+        }
+        finally
+        {
+            if (Directory.Exists(testDir))
+            {
+                Directory.Delete(testDir, true);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithoutOutputAndSameDirectory_AutoDetectsOutputDirectory()
+    {
+        string testDir = Path.Combine(Path.GetTempPath(), "AutoDetectTest_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(testDir);
+
+        string playlist1Path = Path.Combine(testDir, "auto1.playlist");
+        string playlist2Path = Path.Combine(testDir, "auto2.playlist");
+        string expectedMergedPath = Path.Combine(testDir, "merged.playlist");
+
+        try
+        {
+            // Create some playlists in the same directory
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Merge without specifying output - should auto-detect
+            using StringWriter stdOut3 = new();
+            int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in auto-detected directory.");
+
+            var playlistContent = PlaylistLoader.Load(expectedMergedPath);
+            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+
+            // Verify output message mentions auto-detection
+            Assert.Contains("Output directory not specified", stdOut3.ToString());
+            Assert.Contains("same directory as input files", stdOut3.ToString());
+        }
+        finally
+        {
+            if (Directory.Exists(testDir))
+            {
+                Directory.Delete(testDir, true);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithGlobPatternAndAutoDetect_MergesInSameDirectory()
+    {
+        string testDir = Path.Combine(Path.GetTempPath(), "GlobAutoDetectTest_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(testDir);
+
+        string playlist1Path = Path.Combine(testDir, "glob1.playlist");
+        string playlist2Path = Path.Combine(testDir, "glob2.playlist");
+        string expectedMergedPath = Path.Combine(testDir, "merged.playlist");
+
+        try
+        {
+            // Create some playlists
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Merge using glob pattern without output - should auto-detect
+            using StringWriter stdOut3 = new();
+            string globPattern = Path.Combine(testDir, "glob*.playlist");
+            int exitCode = await Invoke($"merge \"{globPattern}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created.");
+
+            var playlistContent = PlaylistLoader.Load(expectedMergedPath);
+            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+
+            // Verify both messages appear
+            Assert.Contains("Merged 2 playlist files", stdOut3.ToString());
+            Assert.Contains("same directory as input files", stdOut3.ToString());
+        }
+        finally
+        {
+            if (Directory.Exists(testDir))
+            {
+                Directory.Delete(testDir, true);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithDifferentDirectories_RequiresOutput()
+    {
+        string testDir1 = Path.Combine(Path.GetTempPath(), "DiffDir1_" + Guid.NewGuid().ToString("N"));
+        string testDir2 = Path.Combine(Path.GetTempPath(), "DiffDir2_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(testDir1);
+        Directory.CreateDirectory(testDir2);
+
+        string playlist1Path = Path.Combine(testDir1, "diff1.playlist");
+        string playlist2Path = Path.Combine(testDir2, "diff2.playlist");
+
+        try
+        {
+            // Create playlists in different directories
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Try to merge without output - should fail because directories differ
+            using StringWriter stdOut3 = new();
+            int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\"", stdOut3);
+
+            Assert.Equal(1, exitCode); // Expect failure exit code
+        }
+        finally
+        {
+            if (Directory.Exists(testDir1)) Directory.Delete(testDir1, true);
+            if (Directory.Exists(testDir2)) Directory.Delete(testDir2, true);
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithInvalidGlobPattern_ThrowsException()
+    {
+        string testDir = Path.Combine(Path.GetTempPath(), "NoMatchTest_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(testDir);
+
+        try
+        {
+            // Try to merge with a pattern that matches nothing
+            using StringWriter stdOut = new();
+            string globPattern = Path.Combine(testDir, "nonexistent*.playlist");
+            string outputPath = Path.Combine(testDir, "output.playlist");
+            int exitCode = await Invoke($"merge \"{globPattern}\" --output \"{outputPath}\"", stdOut);
+
+            Assert.Equal(1, exitCode); // Expect failure exit code
+        }
+        finally
+        {
+            if (Directory.Exists(testDir))
+            {
+                Directory.Delete(testDir, true);
+            }
+        }
+    }
+
     #endregion
 
     private static async Task<int> Invoke(string commandLine, StringWriter console)

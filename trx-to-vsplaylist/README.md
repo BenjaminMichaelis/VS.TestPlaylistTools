@@ -82,24 +82,62 @@ trx-to-vsplaylist convert results.trx --outcome Failed --skip-empty
 
 ### `merge` - Merge playlist files
 
-Merges multiple existing playlist files into a single playlist with automatic de-duplication of tests.
+Merges multiple existing playlist files into a single playlist with automatic de-duplication of tests. Supports file globbing patterns for easy batch operations.
 
 #### Arguments
 
-- `<playlist-files>`: Path(s) to the playlist file(s) to merge (one or more required)
-- `--output`, `-o`: Path to the output merged playlist file (required)
+- `<playlist-files>`: Path(s) or glob pattern(s) to the playlist file(s) to merge (one or more required). Supports wildcards like `*.playlist` or `**/*.playlist`
+- `--output`, `-o`: Path to the output merged playlist file (optional when all input files are in the same directory)
 - `--skip-empty`: Do not create a playlist file if there are no tests (optional)
+
+#### Auto-Detection of Output Directory
+
+When `--output` is not specified, the merge command will automatically determine the output location based on the input files:
+
+- **All files in the same directory**: The merged playlist will be created as `merged.playlist` in that directory
+- **Files in different directories**: An error will be thrown requiring you to explicitly specify `--output`
+
+#### Glob Pattern Support
+
+The merge command supports file globbing patterns using standard wildcards:
+
+- `*` matches zero or more characters (except directory separators)
+- `**` matches any number of directory levels (recursive search)
+
+**Note:** The single-character wildcard `?` is not supported by the underlying globbing library.
 
 #### Examples
 
-Merge multiple playlist files:
+Merge multiple playlist files with explicit output:
 ```bash
 trx-to-vsplaylist merge playlist1.playlist playlist2.playlist playlist3.playlist --output combined.playlist
+```
+
+Merge all playlists in a directory using a glob pattern:
+```bash
+trx-to-vsplaylist merge "C:\Playlists\*.playlist" --output all-tests.playlist
+```
+
+Merge playlists in the same directory without specifying output (auto-detects output location):
+```bash
+trx-to-vsplaylist merge "C:\Playlists\test1.playlist" "C:\Playlists\test2.playlist"
+# Creates C:\Playlists\merged.playlist
+```
+
+Combine glob pattern with auto-detection:
+```bash
+trx-to-vsplaylist merge "C:\Playlists\*.playlist"
+# Creates C:\Playlists\merged.playlist if all matched files are in C:\Playlists
 ```
 
 Merge playlists and skip if empty:
 ```bash
 trx-to-vsplaylist merge *.playlist --output all-tests.playlist --skip-empty
+```
+
+Recursively find and merge all playlists:
+```bash
+trx-to-vsplaylist merge "TestResults\**\*.playlist" --output all-frameworks.playlist
 ```
 
 ## Use Cases
