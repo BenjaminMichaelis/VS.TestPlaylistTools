@@ -193,11 +193,11 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
 
             VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertMultipleTrxToPlaylist(
-                new[] { trxFile1, trxFile2 }, 
+                new[] { trxFile1, trxFile2 },
                 TrxLib.TestOutcome.Failed);
 
             Assert.NotNull(playlist);
-            
+
             // Should only have failed tests (from second file)
             TrxLib.TestResultSet parsedTrx2 = TrxLib.TrxParser.Parse(new FileInfo(trxFile2));
             Assert.Equal(parsedTrx2.Failed.Count, playlist.Tests.Count);
@@ -251,7 +251,7 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
                 Assert.True(File.Exists(outputPath), "Output playlist file was not created.");
 
                 var playlistContent = VS.TestPlaylistTools.PlaylistLoader.Load(outputPath);
-                VS.TestPlaylistTools.PlaylistV1.PlaylistRoot? playlist = playlistContent as VS.TestPlaylistTools.PlaylistV1.PlaylistRoot;
+                var playlist = Assert.IsType<VS.TestPlaylistTools.PlaylistV1.PlaylistRoot>(playlistContent);
                 Assert.NotNull(playlist);
                 Assert.NotEmpty(playlist.Tests);
             }

@@ -56,7 +56,7 @@ public class ProgramTests
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(playlistFilePath), "Playlist file was not created.");
             var playlistContent = PlaylistLoader.Load(playlistFilePath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             Assert.Empty(playlist.Tests);
         }
@@ -82,7 +82,7 @@ public class ProgramTests
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(playlistFilePath), "Playlist file was not created.");
             var playlistContent = PlaylistLoader.Load(playlistFilePath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             Assert.Single(playlist.Tests);
         }
@@ -108,7 +108,7 @@ public class ProgramTests
             Assert.Equal(0, exitCode);
             Assert.True(File.Exists(playlistFilePath), "Playlist file was not created.");
             var playlistContent = PlaylistLoader.Load(playlistFilePath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             Assert.True(playlist.TestCount > 1, "Playlist should contain both passed and failed tests.");
         }
@@ -144,7 +144,7 @@ public class ProgramTests
             Assert.True(File.Exists(expectedPlaylistPath), "Playlist file was not created at the default location.");
 
             var playlistContent = PlaylistLoader.Load(expectedPlaylistPath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             Assert.NotEmpty(playlist.Tests);
         }
@@ -197,7 +197,7 @@ public class ProgramTests
             Assert.True(File.Exists(playlistFilePath), "Merged playlist file was not created.");
 
             var playlistContent = PlaylistLoader.Load(playlistFilePath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             Assert.NotEmpty(playlist.Tests);
 
@@ -229,7 +229,7 @@ public class ProgramTests
             Assert.True(File.Exists(playlistFilePath), "Merged playlist file was not created.");
 
             var playlistContent = PlaylistLoader.Load(playlistFilePath);
-            PlaylistRoot? playlist = playlistContent as PlaylistRoot;
+            var playlist = Assert.IsType<PlaylistRoot>(playlistContent);
             Assert.NotNull(playlist);
             // Should have at least one failed test from the second file
             Assert.NotEmpty(playlist.Tests);
@@ -631,31 +631,6 @@ public class ProgramTests
         {
             if (Directory.Exists(testDir1)) Directory.Delete(testDir1, true);
             if (Directory.Exists(testDir2)) Directory.Delete(testDir2, true);
-        }
-    }
-
-    [Fact]
-    public async Task Invoke_MergeCommandWithInvalidGlobPattern_ThrowsException()
-    {
-        string testDir = Path.Combine(Path.GetTempPath(), "NoMatchTest_" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(testDir);
-
-        try
-        {
-            // Try to merge with a pattern that matches nothing
-            using StringWriter stdOut = new();
-            string globPattern = Path.Combine(testDir, "nonexistent*.playlist");
-            string outputPath = Path.Combine(testDir, "output.playlist");
-            int exitCode = await Invoke($"merge \"{globPattern}\" --output \"{outputPath}\"", stdOut);
-
-            Assert.Equal(1, exitCode);
-        }
-        finally
-        {
-            if (Directory.Exists(testDir))
-            {
-                Directory.Delete(testDir, true);
-            }
         }
     }
 

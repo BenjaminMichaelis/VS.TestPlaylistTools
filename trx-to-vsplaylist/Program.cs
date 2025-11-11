@@ -215,7 +215,7 @@ public sealed class Program
             }
             else
             {
-                converter.ConvertMultipleTrxToPlaylistFile(trxFiles, playlistFile, outcomes ?? []);
+                PlaylistV1Builder.SaveToFile(mergedPlaylist, playlistFile);
                 parseResult.InvocationConfiguration.Output.WriteLine($"Converted {trxFiles.Length} TRX files to playlist '{playlistFile}' ({mergedPlaylist.TestCount} unique tests).");
             }
         });
@@ -268,7 +268,7 @@ public sealed class Program
                     // Determine the base directory and glob pattern
                     string directory;
                     string globPattern;
-                    
+
                     // Split the pattern into path segments
                     var segments = pattern.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                     int wildcardIndex = -1;
@@ -280,7 +280,7 @@ public sealed class Program
                             break;
                         }
                     }
-                    
+
                     if (wildcardIndex == -1)
                     {
                         // No wildcard found (shouldn't happen given outer if condition, but handle defensively)
@@ -296,12 +296,26 @@ public sealed class Program
                     else
                     {
                         // Base directory is everything before the first wildcard segment
-                        directory = Path.Combine(segments.Take(wildcardIndex).ToArray());
-                        if (!Path.IsPathRooted(directory))
-                        {
-                            directory = Path.Combine(Directory.GetCurrentDirectory(), directory);
-                        }
+                        // Handle absolute paths that start with / (Unix) by reconstructing properly
+                        var directorySegments = segments.Take(wildcardIndex).ToArray();
                         
+                        // If the path was absolute (started with /), the first segment will be empty
+                        // We need to preserve that for Path.Combine to work correctly on Unix
+                        if (directorySegments.Length > 0 && string.IsNullOrEmpty(directorySegments[0]) && 
+                            (pattern.StartsWith("/") || pattern.StartsWith("\\")))
+                        {
+                            // Reconstruct the absolute path manually for Unix
+                            directory = "/" + string.Join("/", directorySegments.Skip(1));
+                        }
+                        else
+                        {
+                            directory = Path.Combine(directorySegments);
+                            if (!Path.IsPathRooted(directory))
+                            {
+                                directory = Path.Combine(Directory.GetCurrentDirectory(), directory);
+                            }
+                        }
+
                         // The glob pattern is everything from the first wildcard onward
                         // Use forward slashes for glob patterns as expected by Matcher
                         globPattern = string.Join("/", segments.Skip(wildcardIndex));
@@ -369,11 +383,9 @@ public sealed class Program
             }
 
             // Validate all playlist files exist (should already be validated, but double-check)
-            foreach (string playlistFile in playlistFiles)
-            {
-                if (!File.Exists(playlistFile))
-                    throw new FileNotFoundException($"Playlist file not found: {playlistFile}");
-            }
+            var missingFiles = playlistFiles.Where(f => !File.Exists(f));
+            if (missingFiles.Any())
+                throw new FileNotFoundException($"Playlist file(s) not found: {string.Join(", ", missingFiles)}");
 
             // Use a HashSet to automatically de-duplicate test names
             HashSet<string> uniqueTestNames = new(StringComparer.OrdinalIgnoreCase);
@@ -382,7 +394,7 @@ public sealed class Program
             {
                 PlaylistRoot rootPlaylist = PlaylistV1Parser.FromFile(playlistFile);
 
-                foreach (var test in rootPlaylist.Tests)
+                foreach (AddElement test in rootPlaylist.Tests)
                 {
                     if (!string.IsNullOrWhiteSpace(test.Test))
                     {
