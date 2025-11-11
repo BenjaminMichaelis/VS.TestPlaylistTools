@@ -1,0 +1,5 @@
+﻿<Playlist Version="1.0">
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter10.Listing10_01.Tests.ProductSerialNumberTests.Equals_GivenEqualObjects_Equal" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter10.Listing10_01.Tests.ProductSerialNumberTests.Equals_GivenSameReference_Equal" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter10.Listing10_01.Tests.ProductSerialNumberTests.NotEquals_GivenDifferentObjects_NotEqual" />
+</Playlist>

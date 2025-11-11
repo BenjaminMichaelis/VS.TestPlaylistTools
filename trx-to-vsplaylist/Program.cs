@@ -1,5 +1,7 @@
 ﻿using System.CommandLine;
+
 using Microsoft.Extensions.FileSystemGlobbing;
+
 using VS.TestPlaylistTools.PlaylistV1;
 
 namespace VSTestPlaylistTools.TrxToPlaylist;
@@ -20,6 +22,44 @@ public sealed class Program
         rootCommand.Add(CreateConvertCommand());
         rootCommand.Add(CreateMergeCommand());
         return rootCommand;
+    }
+
+    /// <summary>
+    /// Determines whether the given path represents a directory or should be treated as one.
+    /// </summary>
+    /// <param name="path">The path to evaluate.</param>
+    /// <returns>
+    /// True if the path is an existing directory or should be treated as a directory;
+    /// false if it should be treated as a file path.
+    /// </returns>
+    private static bool IsDirectory(string path)
+    {
+        // Check if the path exists
+        bool pathExists = File.Exists(path) || Directory.Exists(path);
+
+        if (pathExists)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+            return attr.HasFlag(FileAttributes.Directory);
+        }
+        else
+        {
+            // Check for trailing directory separator as an explicit signal
+            if (path.EndsWith(Path.DirectorySeparatorChar.ToString()) ||
+                path.EndsWith(Path.AltDirectorySeparatorChar.ToString()))
+            {
+                return true;
+            }
+
+            // No extension and no trailing separator
+            if (!Path.HasExtension(path))
+            {
+                return true;
+            }
+
+            // Has extension - treat as file
+            return false;
+        }
     }
 
     private static Command CreateConvertCommand()
@@ -143,15 +183,13 @@ public sealed class Program
                 string fileName = Path.GetFileNameWithoutExtension(trxFiles[0]);
                 playlistFile = Path.Combine(directory, $"{fileName}.playlist");
             }
-            else if (Directory.Exists(playlistFile) && !File.Exists(playlistFile))
+            else if (IsDirectory(playlistFile))
             {
-                // Output exists as a directory (and not as a file) - generate filename based on first TRX
-                string fileName = Path.GetFileNameWithoutExtension(trxFiles[0]);
-                playlistFile = Path.Combine(playlistFile, $"{fileName}.playlist");
-            }
-            else if (!Path.HasExtension(playlistFile) && !File.Exists(playlistFile) && !Directory.Exists(playlistFile))
-            {
-                // Output path has no extension and doesn't exist - treat as directory
+                // Output is or should be a directory - generate filename based on first TRX
+                if (!Directory.Exists(playlistFile))
+                {
+                    Directory.CreateDirectory(playlistFile);
+                }
                 string fileName = Path.GetFileNameWithoutExtension(trxFiles[0]);
                 playlistFile = Path.Combine(playlistFile, $"{fileName}.playlist");
             }
@@ -226,25 +264,25 @@ public sealed class Program
                 {
                     // Use file globbing
                     Matcher matcher = new();
-                    
+
                     // Determine the base directory and pattern
                     string directory = Path.GetDirectoryName(pattern) ?? Directory.GetCurrentDirectory();
                     string filePattern = Path.GetFileName(pattern);
-                    
+
                     // Handle absolute paths vs relative paths
                     if (!Path.IsPathRooted(directory) || string.IsNullOrEmpty(directory))
                     {
                         directory = Directory.GetCurrentDirectory();
                     }
-                    
+
                     matcher.AddInclude(filePattern);
                     IEnumerable<string> matchedFiles = matcher.GetResultsInFullPath(directory);
-                    
+
                     if (!matchedFiles.Any())
                     {
                         throw new FileNotFoundException($"No files matched the pattern: {pattern}");
                     }
-                    
+
                     playlistFiles.AddRange(matchedFiles);
                 }
                 else
@@ -252,7 +290,7 @@ public sealed class Program
                     // Regular file path - validate it exists
                     if (!File.Exists(pattern))
                         throw new FileNotFoundException($"Playlist file not found: {pattern}");
-                    
+
                     playlistFiles.Add(Path.GetFullPath(pattern));
                 }
             }
@@ -268,7 +306,7 @@ public sealed class Program
             {
                 // Check if all files are in the same directory
                 string? firstDirectory = Path.GetDirectoryName(Path.GetFullPath(playlistFiles[0]));
-                bool allInSameDirectory = playlistFiles.All(f => 
+                bool allInSameDirectory = playlistFiles.All(f =>
                     string.Equals(Path.GetDirectoryName(Path.GetFullPath(f)), firstDirectory, StringComparison.OrdinalIgnoreCase));
 
                 if (allInSameDirectory && !string.IsNullOrEmpty(firstDirectory))
@@ -285,20 +323,17 @@ public sealed class Program
             }
             else
             {
-                // Output was specified - check if it's a directory
-                if (Directory.Exists(outputFile))
+                // Output was specified - determine if it's a directory or file path
+                if (IsDirectory(outputFile))
                 {
-                    // It's an existing directory - create merged.playlist in that directory
+                    // It's a directory - create it if needed and use merged.playlist as filename
+                    if (!Directory.Exists(outputFile))
+                    {
+                        Directory.CreateDirectory(outputFile);
+                    }
                     outputFile = Path.Combine(outputFile, "merged.playlist");
                 }
-                else if (!Path.HasExtension(outputFile) && !File.Exists(outputFile))
-                {
-                    // No extension and doesn't exist as a file - treat as a directory path
-                    // Create the directory and use merged.playlist as filename
-                    Directory.CreateDirectory(outputFile);
-                    outputFile = Path.Combine(outputFile, "merged.playlist");
-                }
-                // else: It has an extension or exists as a file - treat it as a file path
+                // else: It's a file path - use it as-is
             }
 
             // Validate all playlist files exist (should already be validated, but double-check)
@@ -313,9 +348,9 @@ public sealed class Program
 
             foreach (string playlistFile in playlistFiles)
             {
-                PlaylistRoot playlist = PlaylistV1Parser.FromFile(playlistFile);
+                PlaylistRoot rootPlaylist = PlaylistV1Parser.FromFile(playlistFile);
 
-                foreach (var test in playlist.Tests)
+                foreach (var test in rootPlaylist.Tests)
                 {
                     if (!string.IsNullOrWhiteSpace(test.Test))
                     {

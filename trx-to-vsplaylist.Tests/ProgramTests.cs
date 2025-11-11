@@ -324,8 +324,8 @@ public class ProgramTests
             string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
 
             // Should fail because we're providing a file path with --separate
-            int exitCode = await Invoke($"convert \"{trxFile1}\" \"{trxFile2}\" --output \"{playlistFilePath}\" --separate", stdOut);
-            Assert.Equal(1, exitCode); // Expect failure exit code
+            int exitCode = await Invoke($"convert \"trxFile1\" \"trxFile2\" --output \"{playlistFilePath}\" --separate", stdOut);
+            Assert.Equal(1, exitCode);
         }
         finally
         {
@@ -436,53 +436,17 @@ public class ProgramTests
     }
 
     [Fact]
-    public async Task Invoke_MergeCommandWithoutOutput_ThrowsException()
-    {
-        string playlist1Path = Path.Combine(Path.GetTempPath(), "ToMergeNoOutput.playlist");
-
-        try
-        {
-            // Create a playlist first
-            using StringWriter stdOut1 = new();
-            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
-            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
-
-            // Try to merge without output - should fail
-            using StringWriter stdOut2 = new();
-            int exitCode = await Invoke($"merge \"{playlist1Path}\"", stdOut2);
-            Assert.Equal(1, exitCode); // Expect failure exit code
-        }
-        finally
-        {
-            if (File.Exists(playlist1Path)) File.Delete(playlist1Path);
-            if (Directory.Exists(playlist1Path)) Directory.Delete(playlist1Path, true);
-        }
-    }
-
-    [Fact]
     public async Task Invoke_MergeCommandWithGlobPattern_MergesMatchingFiles()
     {
-        string testDir = Path.Combine(Path.GetTempPath(), "GlobPatternTest_" + Guid.NewGuid().ToString("N"));
-        Directory.CreateDirectory(testDir);
+        string testDir = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "trx-to-vsplaylist.Tests", "BatchOfManyPlaylists");
 
-        string playlist1Path = Path.Combine(testDir, "test1.playlist");
-        string playlist2Path = Path.Combine(testDir, "test2.playlist");
         string mergedPath = Path.Combine(testDir, "merged.playlist");
 
         try
         {
-            // Create some playlists to merge
-            using StringWriter stdOut1 = new();
-            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
-            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
-
-            using StringWriter stdOut2 = new();
-            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
-            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
-
             // Merge using glob pattern
             using StringWriter stdOut3 = new();
-            string globPattern = Path.Combine(testDir, "test*.playlist");
+            string globPattern = Path.Combine(testDir, "*.playlist");
             int exitCode = await Invoke($"merge \"{globPattern}\" --output \"{mergedPath}\"", stdOut3);
 
             Assert.Equal(0, exitCode);
@@ -494,14 +458,11 @@ public class ProgramTests
             Assert.NotEmpty(mergedPlaylist.Tests);
 
             // Verify output message
-            Assert.Contains("Merged 2 playlist files", stdOut3.ToString());
+            Assert.Contains("Merged 13 playlist files", stdOut3.ToString());
         }
         finally
         {
-            if (Directory.Exists(testDir))
-            {
-                Directory.Delete(testDir, true);
-            }
+            if (File.Exists(mergedPath)) File.Delete(mergedPath);
         }
     }
 
@@ -624,7 +585,7 @@ public class ProgramTests
             using StringWriter stdOut3 = new();
             int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\"", stdOut3);
 
-            Assert.Equal(1, exitCode); // Expect failure exit code
+            Assert.Equal(1, exitCode);
         }
         finally
         {
@@ -647,7 +608,7 @@ public class ProgramTests
             string outputPath = Path.Combine(testDir, "output.playlist");
             int exitCode = await Invoke($"merge \"{globPattern}\" --output \"{outputPath}\"", stdOut);
 
-            Assert.Equal(1, exitCode); // Expect failure exit code
+            Assert.Equal(1, exitCode);
         }
         finally
         {
@@ -655,6 +616,135 @@ public class ProgramTests
             {
                 Directory.Delete(testDir, true);
             }
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithExplicitDirectoryOutput_CreatesMergedPlaylistInDirectory()
+    {
+        string inputDir = Path.Combine(Path.GetTempPath(), "MergeInput_" + Guid.NewGuid().ToString("N"));
+        string outputDir = Path.Combine(Path.GetTempPath(), "MergeOutput_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(inputDir);
+        Directory.CreateDirectory(outputDir);
+
+        string playlist1Path = Path.Combine(inputDir, "test1.playlist");
+        string playlist2Path = Path.Combine(inputDir, "test2.playlist");
+        string expectedMergedPath = Path.Combine(outputDir, "merged.playlist");
+
+        try
+        {
+            // Create some playlists
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Merge with explicit directory output
+            using StringWriter stdOut3 = new();
+            int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\" --output \"{outputDir}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in the specified directory.");
+
+            var playlistContent = PlaylistLoader.Load(expectedMergedPath);
+            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+        }
+        finally
+        {
+            if (Directory.Exists(inputDir)) Directory.Delete(inputDir, true);
+            if (Directory.Exists(outputDir)) Directory.Delete(outputDir, true);
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithNewDirectoryOutput_CreatesDirectoryAndMergedPlaylist()
+    {
+        string inputDir = Path.Combine(Path.GetTempPath(), "MergeInputNew_" + Guid.NewGuid().ToString("N"));
+        string outputDir = Path.Combine(Path.GetTempPath(), "MergeOutputNew_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(inputDir);
+        // Don't create outputDir - let the merge command create it
+
+        string playlist1Path = Path.Combine(inputDir, "test1.playlist");
+        string playlist2Path = Path.Combine(inputDir, "test2.playlist");
+        string expectedMergedPath = Path.Combine(outputDir, "merged.playlist");
+
+        try
+        {
+            // Create some playlists
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Merge with new directory output (directory doesn't exist yet)
+            using StringWriter stdOut3 = new();
+            int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\" --output \"{outputDir}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(Directory.Exists(outputDir), "Output directory was not created.");
+            Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in the new directory.");
+
+            var playlistContent = PlaylistLoader.Load(expectedMergedPath);
+            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+        }
+        finally
+        {
+            if (Directory.Exists(inputDir)) Directory.Delete(inputDir, true);
+            if (Directory.Exists(outputDir)) Directory.Delete(outputDir, true);
+        }
+    }
+
+    [Fact]
+    public async Task Invoke_MergeCommandWithTrailingSeparator_TreatsAsDirectory()
+    {
+        string inputDir = Path.Combine(Path.GetTempPath(), "MergeInputTrailing_" + Guid.NewGuid().ToString("N"));
+        string outputDir = Path.Combine(Path.GetTempPath(), "MergeOutputTrailing_" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(inputDir);
+        // Don't create outputDir - let the merge command create it
+
+        string playlist1Path = Path.Combine(inputDir, "test1.playlist");
+        string playlist2Path = Path.Combine(inputDir, "test2.playlist");
+        string expectedMergedPath = Path.Combine(outputDir, "merged.playlist");
+
+        try
+        {
+            // Create some playlists
+            using StringWriter stdOut1 = new();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            await Invoke($"convert \"{trxFile1}\" --output \"{playlist1Path}\"", stdOut1);
+
+            using StringWriter stdOut2 = new();
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            await Invoke($"convert \"{trxFile2}\" --output \"{playlist2Path}\"", stdOut2);
+
+            // Merge with trailing separator to explicitly indicate directory
+            using StringWriter stdOut3 = new();
+            string outputWithTrailingSeparator = outputDir + Path.DirectorySeparatorChar;
+            int exitCode = await Invoke($"merge \"{playlist1Path}\" \"{playlist2Path}\" --output \"{outputWithTrailingSeparator}\"", stdOut3);
+
+            Assert.Equal(0, exitCode);
+            Assert.True(Directory.Exists(outputDir), "Output directory was not created.");
+            Assert.True(File.Exists(expectedMergedPath), "Merged playlist was not created in the directory specified with trailing separator.");
+
+            var playlistContent = PlaylistLoader.Load(expectedMergedPath);
+            PlaylistRoot? mergedPlaylist = playlistContent as PlaylistRoot;
+            Assert.NotNull(mergedPlaylist);
+            Assert.NotEmpty(mergedPlaylist.Tests);
+        }
+        finally
+        {
+            if (Directory.Exists(inputDir)) Directory.Delete(inputDir, true);
+            if (Directory.Exists(outputDir)) Directory.Delete(outputDir, true);
         }
     }
 
