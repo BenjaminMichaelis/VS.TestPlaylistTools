@@ -1,0 +1,4 @@
+﻿<Playlist Version="1.0">
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter03.Listing03_03.Tests.UppercaseTests.Main_GivenValidString_MakeUppercase" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter03.Table03_03.Tests.ArrayHighlightsTests.ParseAndCompile" />
+</Playlist>

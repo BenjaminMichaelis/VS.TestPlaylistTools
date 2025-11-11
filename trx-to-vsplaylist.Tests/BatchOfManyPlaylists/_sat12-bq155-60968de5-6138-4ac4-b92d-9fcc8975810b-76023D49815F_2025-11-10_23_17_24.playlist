@@ -1,0 +1,10 @@
+﻿<Playlist Version="1.0">
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.Listing08_07.Tests.ContactTests.DeclaringAMethodOnARelatedInterface_CompileError" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.CallConcreteInterfaceMethod3" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.InterfaceMethod1" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.InterfaceMethod2" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.InterfaceMethod3" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.ISampleInterfaceProtectedConcreteInterfaceMethod" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.ISampleInterfacePublicConcreteInterfaceMethod" />
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter08.UnderstandingAccessModifiers.Tests.Thing+AccessibilityModifierTests.ProtectedConcreteInterfaceMethod" />
+</Playlist>

@@ -124,7 +124,7 @@ public static class PlaylistV2Builder
                 )
             )
         ).ToArray();
-        List<Rule> rules = new List<Rule>();
+        List<Rule> rules = [];
         BooleanRule includeRule = BooleanRule.Any("Includes",
             BooleanRule.All(
                 PropertyRule.Solution(),

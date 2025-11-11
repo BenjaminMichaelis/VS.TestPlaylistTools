@@ -134,5 +134,151 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
             Assert.NotEmpty(playlistTestNames);
             Assert.Equal(passedTestNames, playlistTestNames);
         }
+
+        #region Multiple TRX Files Tests
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylist_TwoFiles_MergesTests()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+
+            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertMultipleTrxToPlaylist(new[] { trxFile1, trxFile2 });
+
+            Assert.NotNull(playlist);
+            Assert.NotEmpty(playlist.Tests);
+
+            // Count total unique tests from both files
+            TrxLib.TestResultSet parsedTrx1 = TrxLib.TrxParser.Parse(new FileInfo(trxFile1));
+            TrxLib.TestResultSet parsedTrx2 = TrxLib.TrxParser.Parse(new FileInfo(trxFile2));
+
+            HashSet<string> allTestNames = new(StringComparer.OrdinalIgnoreCase);
+            foreach (var result in parsedTrx1)
+            {
+                allTestNames.Add(result.FullyQualifiedTestName);
+            }
+            foreach (var result in parsedTrx2)
+            {
+                allTestNames.Add(result.FullyQualifiedTestName);
+            }
+
+            Assert.Equal(allTestNames.Count, playlist.Tests.Count);
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylist_WithDuplicateTests_DeduplicatesTests()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+            // Use the same file twice to ensure de-duplication works
+            string trxFile = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+
+            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertMultipleTrxToPlaylist(new[] { trxFile, trxFile });
+
+            Assert.NotNull(playlist);
+            Assert.NotEmpty(playlist.Tests);
+
+            // Should have same count as single file since duplicates are removed
+            TrxLib.TestResultSet parsedTrx = TrxLib.TrxParser.Parse(new FileInfo(trxFile));
+            // Get unique test names from TRX file (handles parameterized tests that appear multiple times)
+            int uniqueTestCount = parsedTrx.Select(r => r.FullyQualifiedTestName).Distinct(StringComparer.OrdinalIgnoreCase).Count();
+            Assert.Equal(uniqueTestCount, playlist.Tests.Count);
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylist_WithOutcomeFilter_FiltersAcrossAllFiles()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+
+            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertMultipleTrxToPlaylist(
+                new[] { trxFile1, trxFile2 },
+                TrxLib.TestOutcome.Failed);
+
+            Assert.NotNull(playlist);
+
+            // Should only have failed tests (from second file)
+            TrxLib.TestResultSet parsedTrx2 = TrxLib.TrxParser.Parse(new FileInfo(trxFile2));
+            Assert.Equal(parsedTrx2.Failed.Count, playlist.Tests.Count);
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylist_EmptyArray_ThrowsArgumentException()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                converter.ConvertMultipleTrxToPlaylist(Array.Empty<string>());
+            });
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylist_NullArray_ThrowsArgumentNullException()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                converter.ConvertMultipleTrxToPlaylist(null!);
+            });
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylist_NonExistentFile_ThrowsFileNotFoundException()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+
+            Assert.Throws<FileNotFoundException>(() =>
+            {
+                converter.ConvertMultipleTrxToPlaylist(new[] { "nonexistent.trx" });
+            });
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylistFile_TwoFiles_CreatesFile()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+            string outputPath = Path.Combine(Path.GetTempPath(), "MergedConverter.playlist");
+
+            try
+            {
+                converter.ConvertMultipleTrxToPlaylistFile(new[] { trxFile1, trxFile2 }, outputPath);
+
+                Assert.True(File.Exists(outputPath), "Output playlist file was not created.");
+
+                var playlistContent = VS.TestPlaylistTools.PlaylistLoader.Load(outputPath);
+                var playlist = Assert.IsType<VS.TestPlaylistTools.PlaylistV1.PlaylistRoot>(playlistContent);
+                Assert.NotNull(playlist);
+                Assert.NotEmpty(playlist.Tests);
+            }
+            finally
+            {
+                if (File.Exists(outputPath))
+                {
+                    File.Delete(outputPath);
+                }
+            }
+        }
+
+        [Fact]
+        public void ConvertMultipleTrxToPlaylistXml_TwoFiles_ReturnsValidXml()
+        {
+            TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
+            string trxFile1 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+            string trxFile2 = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
+
+            string xml = converter.ConvertMultipleTrxToPlaylistXml(new[] { trxFile1, trxFile2 });
+
+            Assert.NotNull(xml);
+            Assert.NotEmpty(xml);
+            Assert.Contains("<Playlist", xml);
+            Assert.Contains("Version=\"1.0\"", xml);
+        }
+
+        #endregion
     }
 }

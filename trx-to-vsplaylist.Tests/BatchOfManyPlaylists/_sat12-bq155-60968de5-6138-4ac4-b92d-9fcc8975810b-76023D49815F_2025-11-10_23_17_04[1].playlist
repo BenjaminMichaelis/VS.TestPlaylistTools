@@ -1,0 +1,3 @@
+﻿<Playlist Version="1.0">
+  <Add Test="AddisonWesley.Michaelis.EssentialCSharp.Chapter02.Listing02_14.Tests.InterpolationTests.Main_CorrectOutput" />
+</Playlist>
