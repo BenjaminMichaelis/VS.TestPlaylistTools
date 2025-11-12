@@ -1,4 +1,4 @@
-﻿using VS.TestPlaylistTools.PlaylistV1;
+using VS.TestPlaylistTools.PlaylistV1;
 
 namespace VSTestPlaylistTools.TrxToPlaylist
 {
@@ -49,7 +49,8 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <returns>A PlaylistRoot object containing the filtered and de-duplicated tests.</returns>
         public PlaylistRoot ConvertMultipleTrxToPlaylist(IEnumerable<string> trxFilePaths, params TrxLib.TestOutcome[] outcomes)
         {
-            ArgumentNullException.ThrowIfNull(trxFilePaths);
+        if (trxFilePaths == null)
+            throw new ArgumentNullException(nameof(trxFilePaths));
 
             string[] filesArray = trxFilePaths.ToArray();
             if (filesArray.Length == 0)
