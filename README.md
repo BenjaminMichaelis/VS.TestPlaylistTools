@@ -6,6 +6,7 @@ A collection of .NET libraries and tools for creating, parsing, and manipulating
 
 ### Tools
 
+- **[GitHub Action](https://github.com/marketplace/actions/trx-to-vs-playlist-converter)** - A GitHub action wrapping the .NET tool
 - **[trx-to-vsplaylist](https://www.nuget.org/packages/trx-to-vsplaylist)** - .NET CLI tool for converting TRX files to VS playlists
 
 ### Libraries
