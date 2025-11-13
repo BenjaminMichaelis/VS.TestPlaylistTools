@@ -1,55 +1,62 @@
-# VSPlaylistBuilder
+﻿# VS.TestPlaylistTools
 
-A .NET library for creating, parsing, and manipulating Visual Studio test playlist files (V1 and V2).
-Easily build, serialize, and manage playlists for use with Visual Studio Test Explorer and automated test runners.
+A collection of .NET libraries and tools for creating, parsing, and manipulating Visual Studio test playlist files.
 
-## Features
+## Packages
 
-- Create Visual Studio test playlists (V1 and V2 formats)
-- Parse and manipulate existing playlist files
-- Fluent builder API for programmatic playlist construction
-- Serialize playlists to XML or save directly to file
-- Supports advanced rule-based playlist definitions
+### Tools
 
-## Installation
+- **[trx-to-vsplaylist](https://www.nuget.org/packages/trx-to-vsplaylist)** - .NET CLI tool for converting TRX files to VS playlists
 
-Install via NuGet:
-dotnet add package VSPlaylistBuilder
-Or via the NuGet Package Manager:
-PM> Install-Package VSPlaylistBuilder
-## Usage
+### Libraries
 
-### Creating a V2 Playlist
-using PlaylistV2;
+- **[VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools)** - Unified library with playlist loading utilities
+- **[VSTestPlaylistTools.TrxToPlaylistConverter](https://www.nuget.org/packages/VSTestPlaylistTools.TrxToPlaylistConverter)** - Convert TRX test results to playlists
 
-// Create a simple playlist with rules
-var playlist = PlaylistV2Builder.Create(new[] { /* your rules here */ });
+## Quick Start
 
-// Serialize to XML string
-string xml = PlaylistV2Builder.ToXmlString(playlist);
+### Installing the CLI Tool
 
-// Save to file
-PlaylistV2Builder.SaveToFile(playlist, "MyPlaylist.playlist");
-### Using the Fluent Builder
-var builder = PlaylistV2Builder.CreateBuilder();
-builder.AddRule(/* your rule */);
-var playlist = builder.Build();
-builder.SaveToFile("MyPlaylist.playlist");
-### Parsing an Existing Playlist
-using PlaylistV2;
+`dotnet tool install --global trx-to-vsplaylist`
 
-// Load and parse a playlist file
-var playlist = PlaylistV2Parser.ParseFromFile("Existing.playlist");
+### Converting a TRX file to a VS Playlist
 
-## Documentation
+`trx-to-vsplaylist input.trx -o output.playlist`
 
-- [API Reference](https://github.com/BenjaminMichaelis/VSPlaylistBuilder)
+### Convert failed tests only
+
+`trx-to-vsplaylist input.trx -o failed.playlist --failed-only`
+
+### Using the V2 Playlist Library
+
+`dotnet add package VSTestPlaylistTools.V2Playlist`
+
+```
+using VS.TestPlaylistTools.PlaylistV2;
+// Create a playlist with rules var playlist = new PlaylistRoot(); playlist.Rules.Add(BooleanRule.Any("MyTests", PropertyRule.Namespace("MyNamespace"), PropertyRule.Trait("Category", "Integration") ));
+// Save to file playlist.SaveToFile("MyPlaylist.playlist");
+```
+
+### Using the V1 Playlist Library
+
+`dotnet add package VSTestPlaylistTools.V1Playlist`
+
+```
+using VS.TestPlaylistTools.PlaylistV1;
+// Create a simple V1 playlist var playlist = new Playlist(); playlist.AddTest("MyTest.FullyQualifiedName"); playlist.SaveToFile("MyPlaylist.playlist");
+```
+
+## 📚 Documentation
+
+- [PlaylistV2 Documentation](./PlaylistV2/README.md)
+- [PlaylistV1 Documentation](./PlaylistV1/README.md)
+- [TRX Converter Documentation](./VSTestPlaylistTools.TrxToPlaylistConverter/README.md)
 - [Sample Playlists](./PlaylistV2.Tests/SamplePlaylists)
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please open issues or submit pull requests on [GitHub](https://github.com/BenjaminMichaelis/VSPlaylistBuilder).
+Contributions are welcome! Please open issues or submit pull requests on [GitHub](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools).
 
-## License
+## 📄 License
 
 MIT License. See [LICENSE](./LICENSE) for details.

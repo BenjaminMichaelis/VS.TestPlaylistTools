@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV2;
@@ -37,8 +33,8 @@ public class PropertyRule : Rule
     public string Name
     {
         get => PropertyTypeToXmlNameMap.TryGetValue(Type, out string? xmlName) ? xmlName : string.Empty;
-        set => Type = XmlNameToPropertyTypeMap.TryGetValue(value, out TestPropertyType propertyType) 
-            ? propertyType 
+        set => Type = XmlNameToPropertyTypeMap.TryGetValue(value, out TestPropertyType propertyType)
+            ? propertyType
             : TestPropertyType.Solution;
     }
 
@@ -92,6 +88,14 @@ public class PropertyRule : Rule
     public static PropertyRule Namespace(string name)
     {
         return new PropertyRule(TestPropertyType.NamespaceName, name);
+    }
+
+    /// <summary>
+    /// Creates a Trait property rule with the specified trait name
+    /// </summary>
+    public static PropertyRule Trait(string name)
+    {
+        return new PropertyRule(TestPropertyType.Trait, name);
     }
 
     /// <summary>

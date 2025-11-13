@@ -30,4 +30,26 @@ public class BooleanRuleTests
         Assert.Contains("Name=\"Project\" Value=\"TestProject\"", xml);
         Assert.Contains("Name=\"Namespace\" Value=\"TestNamespace\"", xml);
     }
+
+    [Fact]
+    public void BooleanRule_NotRule_CreatesCorrectStructure()
+    {
+        // Arrange
+        BooleanRule rule = BooleanRule.Any("Includes",
+            BooleanRule.Not(
+                PropertyRule.Trait("SlowTests")
+            )
+        );
+
+        // Act
+        PlaylistRoot playlist = new PlaylistRoot();
+        playlist.Rules.Add(rule);
+        string xml = playlist.ToString();
+
+        // Assert
+        Assert.Contains("Name=\"Includes\"", xml);
+        Assert.Contains("Match=\"Any\"", xml);
+        Assert.Contains("Match=\"Not\"", xml);
+        Assert.Contains("Name=\"Trait\" Value=\"SlowTests\"", xml);
+    }
 }
