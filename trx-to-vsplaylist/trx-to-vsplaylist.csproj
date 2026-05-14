@@ -17,10 +17,11 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>trx-to-vsplaylist</ToolCommandName>
     <!-- Self-contained packages for common platforms (no .NET runtime required).
-         https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools -->
+         https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools
+         ToolPackageRuntimeIdentifiers is omitted: for CoreCLR self-contained tools,
+         the SDK derives it automatically from RuntimeIdentifiers. It is only needed
+         for AOT builds where each platform is packed separately on its native OS. -->
     <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
-    <!-- Derive tool RIDs from RuntimeIdentifiers to keep them in sync -->
-    <ToolPackageRuntimeIdentifiers>$(RuntimeIdentifiers)</ToolPackageRuntimeIdentifiers>
   </PropertyGroup>
 
   <!-- The top-level pointer package has no binary content; suppress empty snupkg only for that build.
