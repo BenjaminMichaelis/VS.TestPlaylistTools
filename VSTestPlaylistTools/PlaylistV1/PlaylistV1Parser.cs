@@ -37,11 +37,15 @@ namespace VS.TestPlaylistTools.PlaylistV1
         {
             if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"Playlist file not found: {filePath}");
-
-            using StreamReader reader = new StreamReader(filePath);
-            return FromStream(reader);
+            try
+            {
+                using StreamReader reader = new StreamReader(filePath);
+                return FromStream(reader);
+            }
+            catch (FileNotFoundException ex)
+            {
+                throw new FileNotFoundException($"Playlist file not found: {filePath}", filePath, ex);
+            }
         }
 
         /// <summary>
@@ -78,6 +82,22 @@ namespace VS.TestPlaylistTools.PlaylistV1
             {
                 throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
             }
+        }
+
+        /// <summary>
+        /// Parses a playlist from an XmlReader.
+        /// </summary>
+        /// <param name="xmlReader">The XmlReader positioned on or before the root Playlist element.</param>
+        /// <returns>A PlaylistV1 object representing the parsed playlist.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when xmlReader is null.</exception>
+        /// <exception cref="InvalidDataException">Thrown when the XML format is invalid.</exception>
+        public static PlaylistRoot FromXmlReader(XmlReader xmlReader)
+        {
+            if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
+            if (!xmlReader.IsStartElement("Playlist"))
+                throw new InvalidDataException("Root element must be 'Playlist'.");
+            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
+            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
         }
 
         /// <summary>

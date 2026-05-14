@@ -11,7 +11,7 @@ namespace VS.TestPlaylistTools.PlaylistV2;
 /// Represents the root of a V2 format playlist
 /// </summary>
 [XmlRoot("Playlist")]
-public class PlaylistRoot
+public class PlaylistRoot : IPlaylistRoot
 {
     /// <summary>
     /// The playlist version (always "2.0" for V2 format)

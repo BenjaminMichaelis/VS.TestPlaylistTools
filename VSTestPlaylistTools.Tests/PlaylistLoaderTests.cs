@@ -30,7 +30,7 @@ namespace VS.TestPlaylistTools.Tests
         {
             Assert.True(File.Exists(samplePath), $"Sample file not found: {samplePath}");
 
-            object result = PlaylistLoader.Load(samplePath);
+            IPlaylistRoot result = PlaylistLoader.Load(samplePath);
 
             Assert.NotNull(result);
             PlaylistV1.PlaylistRoot playlist = Assert.IsType<PlaylistV1.PlaylistRoot>(result);
@@ -42,7 +42,7 @@ namespace VS.TestPlaylistTools.Tests
         public void LoadPlaylistV2_ParsesCorrectVersion(string samplePath)
         {
             Assert.True(File.Exists(samplePath), $"Sample file not found: {samplePath}");
-            object result = PlaylistLoader.Load(samplePath);
+            IPlaylistRoot result = PlaylistLoader.Load(samplePath);
 
             Assert.NotNull(result);
             PlaylistV2.PlaylistRoot playlist = Assert.IsType<PlaylistV2.PlaylistRoot>(result);

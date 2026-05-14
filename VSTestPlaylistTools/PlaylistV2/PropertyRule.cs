@@ -91,11 +91,12 @@ public class PropertyRule : Rule
     }
 
     /// <summary>
-    /// Creates a Trait property rule with the specified trait name
+    /// Creates a Trait property rule matching by trait value.
     /// </summary>
-    public static PropertyRule Trait(string name)
+    /// <param name="traitValue">The value of the trait to match (e.g. "Integration").</param>
+    public static PropertyRule Trait(string traitValue)
     {
-        return new PropertyRule(TestPropertyType.Trait, name);
+        return new PropertyRule(TestPropertyType.Trait, traitValue);
     }
 
     /// <summary>

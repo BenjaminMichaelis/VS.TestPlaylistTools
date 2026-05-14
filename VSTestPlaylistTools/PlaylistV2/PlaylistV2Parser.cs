@@ -16,6 +16,7 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromString(string xml)
     {
+        if (xml is null) throw new ArgumentNullException(nameof(xml));
         using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
         using StreamReader reader = new StreamReader(stream);
         return FromStream(reader);
@@ -50,8 +51,15 @@ public static class PlaylistV2Parser
     public static PlaylistRoot FromFile(string filePath)
     {
         if (filePath is null) throw new ArgumentNullException(nameof(filePath));
-        using StreamReader reader = new StreamReader(filePath, Encoding.UTF8);
-        return FromStream(reader);
+        try
+        {
+            using StreamReader reader = new StreamReader(filePath, Encoding.UTF8);
+            return FromStream(reader);
+        }
+        catch (FileNotFoundException ex)
+        {
+            throw new FileNotFoundException($"Playlist file not found: {filePath}", filePath, ex);
+        }
     }
 
     /// <summary>
@@ -75,8 +83,6 @@ public static class PlaylistV2Parser
     /// <returns>True if the XML is a valid Playlist V2 format; otherwise, false.</returns>
     public static bool IsValidPlaylist(string xmlContent)
     {
-        if (string.IsNullOrWhiteSpace(xmlContent))
-            return false;
         if (string.IsNullOrWhiteSpace(xmlContent))
             return false;
         try
