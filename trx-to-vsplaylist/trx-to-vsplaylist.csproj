@@ -19,8 +19,13 @@
     <!-- Self-contained packages for common platforms (no .NET runtime required).
          https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools -->
     <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
-    <ToolPackageRuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</ToolPackageRuntimeIdentifiers>
-    <!-- The top-level pointer package has no binary content; suppress empty snupkg creation -->
+    <!-- Derive tool RIDs from RuntimeIdentifiers to keep them in sync -->
+    <ToolPackageRuntimeIdentifiers>$(RuntimeIdentifiers)</ToolPackageRuntimeIdentifiers>
+  </PropertyGroup>
+
+  <!-- The top-level pointer package has no binary content; suppress empty snupkg only for that build.
+       RID-specific packages (RuntimeIdentifier is set) retain symbols from Directory.Build.props. -->
+  <PropertyGroup Condition="'$(RuntimeIdentifier)' == ''">
     <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
   

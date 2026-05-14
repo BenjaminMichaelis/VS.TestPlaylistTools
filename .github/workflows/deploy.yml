@@ -80,7 +80,8 @@ jobs:
           # This ordering is required: the top-level package references the RID packages,
           # so they must exist on the feed first.
           # https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools#publish-your-tool
-          foreach ($rid in @('win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64', 'osx-arm64')) {
-            dotnet nuget push "trx-to-vsplaylist.$rid.$tagVersion.nupkg" --source $source --api-key $apiKey --skip-duplicate
+          # Discover packages dynamically so the workflow stays in sync with the csproj RID list.
+          Get-ChildItem "trx-to-vsplaylist.*.*.nupkg" | Where-Object { $_.Name -notmatch "^trx-to-vsplaylist\.\d" } | ForEach-Object {
+            dotnet nuget push $_.Name --source $source --api-key $apiKey --skip-duplicate
           }
           dotnet nuget push trx-to-vsplaylist.$tagVersion.nupkg --source $source --api-key $apiKey --skip-duplicate
