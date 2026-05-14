@@ -96,8 +96,15 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
             if (!xmlReader.IsStartElement("Playlist"))
                 throw new InvalidDataException("Root element must be 'Playlist'.");
-            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
+                return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+            }
+            catch (XmlException ex)
+            {
+                throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
+            }
         }
 
         /// <summary>

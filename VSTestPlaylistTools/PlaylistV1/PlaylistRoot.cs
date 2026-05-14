@@ -48,7 +48,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
 
             foreach (string testName in testNames)
             {
-                Tests.Add(new AddElement(testName ?? string.Empty));
+                AddTest(testName);
             }
         }
 
