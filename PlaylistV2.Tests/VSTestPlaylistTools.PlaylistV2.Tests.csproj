@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PlaylistV2\VSTestPlaylistTools.V2Playlist.csproj" />
+    <ProjectReference Include="..\VSTestPlaylistTools\VSTestPlaylistTools.csproj" />
   </ItemGroup>
 
   <ItemGroup>

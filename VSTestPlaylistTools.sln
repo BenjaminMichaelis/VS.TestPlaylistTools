@@ -20,10 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.PlaylistV1.Tests", "PlaylistV1.Tests\VSTestPlaylistTools.PlaylistV1.Tests.csproj", "{79DAC6AF-626A-406E-89D0-1B32B109085B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.V1Playlist", "PlaylistV1\VSTestPlaylistTools.V1Playlist.csproj", "{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.V2Playlist", "PlaylistV2\VSTestPlaylistTools.V2Playlist.csproj", "{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSTestPlaylistTools.PlaylistV2.Tests", "PlaylistV2.Tests\VSTestPlaylistTools.PlaylistV2.Tests.csproj", "{B87DFF8E-81E5-4AA7-9629-C888535F1862}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "trx-to-vsplaylist", "trx-to-vsplaylist\trx-to-vsplaylist.csproj", "{EB8479EC-087C-A7CB-8F1A-48CCD42CED7A}"
@@ -52,14 +48,6 @@ Global
 		{79DAC6AF-626A-406E-89D0-1B32B109085B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79DAC6AF-626A-406E-89D0-1B32B109085B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79DAC6AF-626A-406E-89D0-1B32B109085B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AC81FC83-6AFE-235E-8A11-4A9C2D15FC2D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{64DD3BD9-6BB2-4F90-98F6-5EC1935CCF3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B87DFF8E-81E5-4AA7-9629-C888535F1862}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B87DFF8E-81E5-4AA7-9629-C888535F1862}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B87DFF8E-81E5-4AA7-9629-C888535F1862}.Release|Any CPU.ActiveCfg = Release|Any CPU
