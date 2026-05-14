@@ -1,0 +1,19 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="NuGet.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="PlaylistV1.Tests/VSTestPlaylistTools.PlaylistV1.Tests.csproj" />
+  <Project Path="PlaylistV2.Tests/VSTestPlaylistTools.PlaylistV2.Tests.csproj" />
+  <Project Path="trx-to-vsplaylist.Tests/trx-to-vsplaylist.Tests.csproj" />
+  <Project Path="trx-to-vsplaylist/trx-to-vsplaylist.csproj" />
+  <Project Path="VSTestPlaylistTools.Tests/VSTestPlaylistTools.Tests.csproj" />
+  <Project Path="VSTestPlaylistTools.TrxToPlaylistConverter.Tests/VSTestPlaylistTools.TrxToPlaylistConverter.Tests.csproj" />
+  <Project Path="VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj" />
+  <Project Path="VSTestPlaylistTools/VSTestPlaylistTools.csproj" />
+</Solution>
