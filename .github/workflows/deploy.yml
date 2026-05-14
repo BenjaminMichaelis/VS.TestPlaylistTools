@@ -50,20 +50,25 @@ jobs:
       name: "Production"
       url: "https://www.nuget.org/packages/VS.TestPlaylistTools"
     name: Push NuGets
+    permissions:
+      id-token: write   # Required for OIDC token (NuGet trusted publishing)
+      contents: read
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: NuGet
+
+      - name: NuGet login (OIDC)
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}  # nuget.org profile name (NOT email)
 
       - name: Push NuGet
         run: |
           $tagVersion = "${{ github.ref }}".substring(11)
-          echo "::set-output name=TAG_VERSION::$tagVersion"
-          dotnet nuget push VSTestPlaylistTools.V1Playlist.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push VSTestPlaylistTools.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push VSTestPlaylistTools.V2Playlist.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push VSTestPlaylistTools.TrxToPlaylistConverter.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push trx-to-vsplaylist.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
-        id: tag-version
+          dotnet nuget push VSTestPlaylistTools.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push VSTestPlaylistTools.TrxToPlaylistConverter.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
+          dotnet nuget push trx-to-vsplaylist.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
