@@ -30,18 +30,29 @@ public static class PlaylistV2Parser
     public static PlaylistRoot FromStream(TextReader reader)
     {
         if (reader is null) throw new ArgumentNullException(nameof(reader));
-        using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
+        try
         {
-            CloseInput = false
-        });
+            using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
+            {
+                CloseInput = false
+            });
 
-        if (!xmlReader.IsStartElement("Playlist"))
-        {
-            throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
+            if (!xmlReader.IsStartElement("Playlist"))
+            {
+                throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
+            }
+
+            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
+            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
         }
-
-        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-        return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+        catch (XmlException ex)
+        {
+            throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+        {
+            throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
+        }
     }
 
     /// <summary>
@@ -81,6 +92,10 @@ public static class PlaylistV2Parser
         catch (XmlException ex)
         {
             throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+        {
+            throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
         }
     }
 

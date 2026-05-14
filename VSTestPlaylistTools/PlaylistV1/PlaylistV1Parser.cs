@@ -82,6 +82,10 @@ namespace VS.TestPlaylistTools.PlaylistV1
             {
                 throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
             }
+            catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+            {
+                throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
+            }
         }
 
         /// <summary>
@@ -104,6 +108,10 @@ namespace VS.TestPlaylistTools.PlaylistV1
             catch (XmlException ex)
             {
                 throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
+            }
+            catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+            {
+                throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
             }
         }
 

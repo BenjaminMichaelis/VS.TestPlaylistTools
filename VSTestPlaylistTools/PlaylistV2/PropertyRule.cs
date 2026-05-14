@@ -35,6 +35,7 @@ public class PropertyRule : Rule
         get => PropertyTypeToXmlNameMap.TryGetValue(Type, out string? xmlName) ? xmlName : string.Empty;
         set
         {
+            if (value is null) throw new ArgumentNullException(nameof(value));
             if (!XmlNameToPropertyTypeMap.TryGetValue(value, out TestPropertyType propertyType))
                 throw new InvalidDataException($"Unknown property type: '{value}'");
             Type = propertyType;
