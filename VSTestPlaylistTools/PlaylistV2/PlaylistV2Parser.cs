@@ -53,6 +53,10 @@ public static class PlaylistV2Parser
         {
             throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
         }
+        catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
+        {
+            throw ex.InnerException;
+        }
     }
 
     /// <summary>
@@ -96,6 +100,10 @@ public static class PlaylistV2Parser
         catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
         {
             throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
+        {
+            throw ex.InnerException;
         }
     }
 

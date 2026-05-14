@@ -32,8 +32,14 @@ namespace VS.TestPlaylistTools
                     IgnoreWhitespace = true
                 });
 
-                if (!xmlReader.ReadToFollowing("Playlist"))
-                    throw new InvalidDataException("Root <Playlist> element not found.");
+                // Advance to first element and validate it is the root <Playlist> element.
+                // MoveToContent() positions on the first non-whitespace/comment node;
+                // we then verify it is an Element at depth 0 named "Playlist" rather than
+                // using ReadToFollowing() which would accept a nested <Playlist> child.
+                if (xmlReader.MoveToContent() != XmlNodeType.Element
+                    || xmlReader.Depth != 0
+                    || xmlReader.LocalName != "Playlist")
+                    throw new InvalidDataException("Root element must be <Playlist>.");
 
                 string? version = xmlReader.GetAttribute("Version");
                 if (string.IsNullOrWhiteSpace(version))
