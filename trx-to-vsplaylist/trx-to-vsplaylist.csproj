@@ -19,9 +19,9 @@
     <!-- Self-contained packages for common platforms (no .NET runtime required).
          https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools
          RuntimeIdentifiers drives cross-compilation of the 6 explicit RID packages.
-         ToolPackageRuntimeIdentifiers adds the 'any' CoreCLR fallback so users on
-         unlisted platforms (linux-musl, win-arm32, FreeBSD, etc.) can still install
-         the tool. The 'any' package is produced separately via 'dotnet pack -r any'. -->
+         'any' is included as a portable CoreCLR fallback (not self-contained) for
+         unlisted platforms (linux-musl, win-arm32, FreeBSD, etc.); all 8 packages
+         are produced by a single 'dotnet pack' invocation. -->
     <RuntimeIdentifiers>any;win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <ToolPackageRuntimeIdentifiers>$(RuntimeIdentifiers)</ToolPackageRuntimeIdentifiers>
   </PropertyGroup>
