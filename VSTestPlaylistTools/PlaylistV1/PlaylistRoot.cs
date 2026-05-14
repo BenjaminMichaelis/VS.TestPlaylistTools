@@ -7,7 +7,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
     /// Represents a Visual Studio Test Playlist Version 1.0
     /// </summary>
     [XmlRoot("Playlist")]
-    public class PlaylistRoot
+    public class PlaylistRoot : IPlaylistRoot
     {
         /// <summary>
         /// The version of the playlist format. Always "1.0" for V1 playlists.
@@ -48,7 +48,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
 
             foreach (string testName in testNames)
             {
-                Tests.Add(new AddElement(testName ?? string.Empty));
+                AddTest(testName);
             }
         }
 

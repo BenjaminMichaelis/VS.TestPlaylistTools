@@ -16,6 +16,7 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromString(string xml)
     {
+        if (xml is null) throw new ArgumentNullException(nameof(xml));
         using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
         using StreamReader reader = new StreamReader(stream);
         return FromStream(reader);
@@ -28,18 +29,34 @@ public static class PlaylistV2Parser
     /// <returns>The parsed PlaylistRoot object.</returns>
     public static PlaylistRoot FromStream(TextReader reader)
     {
-        using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
+        if (reader is null) throw new ArgumentNullException(nameof(reader));
+        try
         {
-            CloseInput = false
-        });
+            using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
+            {
+                CloseInput = false
+            });
 
-        if (!xmlReader.IsStartElement("Playlist"))
-        {
-            throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
+            if (!xmlReader.IsStartElement("Playlist"))
+            {
+                throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
+            }
+
+            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
+            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
         }
-
-        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-        return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+        catch (XmlException ex)
+        {
+            throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+        {
+            throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
+        {
+            throw ex.InnerException;
+        }
     }
 
     /// <summary>
@@ -50,8 +67,15 @@ public static class PlaylistV2Parser
     public static PlaylistRoot FromFile(string filePath)
     {
         if (filePath is null) throw new ArgumentNullException(nameof(filePath));
-        using StreamReader reader = new StreamReader(filePath, Encoding.UTF8);
-        return FromStream(reader);
+        try
+        {
+            using StreamReader reader = new StreamReader(filePath, Encoding.UTF8);
+            return FromStream(reader);
+        }
+        catch (FileNotFoundException ex)
+        {
+            throw new FileNotFoundException($"Playlist file not found: {filePath}", filePath, ex);
+        }
     }
 
     /// <summary>
@@ -64,8 +88,23 @@ public static class PlaylistV2Parser
         if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
         if (!xmlReader.IsStartElement("Playlist"))
             throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
-        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-        return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+        try
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
+            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+        }
+        catch (XmlException ex)
+        {
+            throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+        {
+            throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
+        }
+        catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
+        {
+            throw ex.InnerException;
+        }
     }
 
     /// <summary>
@@ -75,8 +114,6 @@ public static class PlaylistV2Parser
     /// <returns>True if the XML is a valid Playlist V2 format; otherwise, false.</returns>
     public static bool IsValidPlaylist(string xmlContent)
     {
-        if (string.IsNullOrWhiteSpace(xmlContent))
-            return false;
         if (string.IsNullOrWhiteSpace(xmlContent))
             return false;
         try

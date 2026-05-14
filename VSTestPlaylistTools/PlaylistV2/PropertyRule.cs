@@ -33,9 +33,13 @@ public class PropertyRule : Rule
     public string Name
     {
         get => PropertyTypeToXmlNameMap.TryGetValue(Type, out string? xmlName) ? xmlName : string.Empty;
-        set => Type = XmlNameToPropertyTypeMap.TryGetValue(value, out TestPropertyType propertyType)
-            ? propertyType
-            : TestPropertyType.Solution;
+        set
+        {
+            if (value is null) throw new ArgumentNullException(nameof(value));
+            if (!XmlNameToPropertyTypeMap.TryGetValue(value, out TestPropertyType propertyType))
+                throw new InvalidDataException($"Unknown property type: '{value}'");
+            Type = propertyType;
+        }
     }
 
     /// <summary>
@@ -91,11 +95,12 @@ public class PropertyRule : Rule
     }
 
     /// <summary>
-    /// Creates a Trait property rule with the specified trait name
+    /// Creates a Trait property rule matching by trait value.
     /// </summary>
-    public static PropertyRule Trait(string name)
+    /// <param name="traitValue">The value of the trait to match (e.g. "Integration").</param>
+    public static PropertyRule Trait(string traitValue)
     {
-        return new PropertyRule(TestPropertyType.Trait, name);
+        return new PropertyRule(TestPropertyType.Trait, traitValue);
     }
 
     /// <summary>
