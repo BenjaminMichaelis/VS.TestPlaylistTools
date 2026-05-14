@@ -17,6 +17,7 @@ namespace VS.TestPlaylistTools
         /// <param name="filePath">Path to the playlist file.</param>
         /// <returns>Parsed playlist as <see cref="IPlaylistRoot"/> (either <see cref="PlaylistV1.PlaylistRoot"/> or <see cref="PlaylistV2.PlaylistRoot"/>).</returns>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="filePath"/> is null.</exception>
+        /// <exception cref="FileNotFoundException">Thrown when the playlist file cannot be found.</exception>
         /// <exception cref="InvalidDataException">Thrown when the file is not a recognized playlist format.</exception>
         /// <exception cref="NotSupportedException">Thrown when the playlist version is not supported.</exception>
         public static IPlaylistRoot Load(string filePath)
