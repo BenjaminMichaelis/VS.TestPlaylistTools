@@ -70,6 +70,17 @@ jobs:
       - name: Push NuGet
         run: |
           $tagVersion = "${{ github.ref }}".substring(11)
-          dotnet nuget push VSTestPlaylistTools.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push VSTestPlaylistTools.TrxToPlaylistConverter.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
-          dotnet nuget push trx-to-vsplaylist.$tagVersion.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.login.outputs.NUGET_API_KEY }} --skip-duplicate
+          $source = "https://api.nuget.org/v3/index.json"
+          $apiKey = "${{ steps.login.outputs.NUGET_API_KEY }}"
+
+          dotnet nuget push VSTestPlaylistTools.$tagVersion.nupkg --source $source --api-key $apiKey --skip-duplicate
+          dotnet nuget push VSTestPlaylistTools.TrxToPlaylistConverter.$tagVersion.nupkg --source $source --api-key $apiKey --skip-duplicate
+
+          # Push RID-specific packages before the top-level pointer package.
+          # This ordering is required: the top-level package references the RID packages,
+          # so they must exist on the feed first.
+          # https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools#publish-your-tool
+          foreach ($rid in @('win-x64', 'win-arm64', 'linux-x64', 'linux-arm64', 'osx-x64', 'osx-arm64')) {
+            dotnet nuget push "trx-to-vsplaylist.$rid.$tagVersion.nupkg" --source $source --api-key $apiKey --skip-duplicate
+          }
+          dotnet nuget push trx-to-vsplaylist.$tagVersion.nupkg --source $source --api-key $apiKey --skip-duplicate

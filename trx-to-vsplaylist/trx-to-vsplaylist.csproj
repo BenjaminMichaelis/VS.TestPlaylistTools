@@ -9,12 +9,19 @@
   <!-- 
     For packaging as a dotnet global tool 
     https://learn.microsoft.com/dotnet/core/tools/global-tools-how-to-create
+    https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools
   -->
   
   <PropertyGroup>
     <PackageId>trx-to-vsplaylist</PackageId>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>trx-to-vsplaylist</ToolCommandName>
+    <!-- Self-contained packages for common platforms (no .NET runtime required).
+         https://learn.microsoft.com/dotnet/core/tools/rid-specific-tools -->
+    <RuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <ToolPackageRuntimeIdentifiers>win-x64;win-arm64;linux-x64;linux-arm64;osx-x64;osx-arm64</ToolPackageRuntimeIdentifiers>
+    <!-- The top-level pointer package has no binary content; suppress empty snupkg creation -->
+    <IncludeSymbols>false</IncludeSymbols>
   </PropertyGroup>
   
     <ItemGroup>
