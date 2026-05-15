@@ -32,7 +32,7 @@ public static class PlaylistV2Builder
     {
         if (playlist is null) throw new ArgumentNullException(nameof(playlist));
         if (filePath is null) throw new ArgumentNullException(nameof(filePath));
-        string directory = Path.GetDirectoryName(filePath);
+        string? directory = Path.GetDirectoryName(filePath);
         if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
         {
             Directory.CreateDirectory(directory);

@@ -46,7 +46,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
             // Ensure directory exists
-            string directory = Path.GetDirectoryName(filePath);
+            string? directory = Path.GetDirectoryName(filePath);
             if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
