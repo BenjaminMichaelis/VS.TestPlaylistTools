@@ -1,4 +1,3 @@
-using System.Text;
 using System.Xml;
 
 namespace VS.TestPlaylistTools.PlaylistV1
@@ -19,8 +18,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         {
             if (xmlContent is null) throw new ArgumentNullException(nameof(xmlContent));
 
-            using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlContent));
-            using StreamReader reader = new StreamReader(stream);
+            using TextReader reader = PlaylistXmlHelper.StringToReader(xmlContent);
             return FromStream(reader);
         }
 

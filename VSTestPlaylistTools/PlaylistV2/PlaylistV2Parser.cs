@@ -16,8 +16,7 @@ public static class PlaylistV2Parser
     public static PlaylistRoot FromString(string xml)
     {
         if (xml is null) throw new ArgumentNullException(nameof(xml));
-        using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xml));
-        using StreamReader reader = new StreamReader(stream);
+        using TextReader reader = PlaylistXmlHelper.StringToReader(xml);
         return FromStream(reader);
     }
 

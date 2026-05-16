@@ -22,12 +22,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
                 throw new FileNotFoundException($"TRX file not found: {trxFilePath}", trxFilePath);
 
             IReadOnlyList<TrxTestResult> allResults = TrxFileParser.Parse(trxFilePath);
-
-            IEnumerable<TrxTestResult> filteredResults = allResults;
-            if (outcomes != null && outcomes.Length > 0)
-                filteredResults = allResults.Where(r => outcomes.Contains(r.Outcome));
-
-            List<string> testNames = filteredResults.Select(r => r.FullyQualifiedTestName).ToList();
+            List<string> testNames = FilterResults(allResults, outcomes).Select(r => r.FullyQualifiedTestName).ToList();
             return PlaylistV1Builder.Create(testNames);
         }
 
@@ -59,11 +54,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
 
                 IReadOnlyList<TrxTestResult> allResults = TrxFileParser.Parse(trxFilePath);
 
-                IEnumerable<TrxTestResult> filteredResults = allResults;
-                if (outcomes != null && outcomes.Length > 0)
-                    filteredResults = allResults.Where(r => outcomes.Contains(r.Outcome));
-
-                foreach (TrxTestResult result in filteredResults)
+                foreach (TrxTestResult result in FilterResults(allResults, outcomes))
                     uniqueTestNames.Add(result.FullyQualifiedTestName);
             }
 
@@ -123,6 +114,12 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         {
             PlaylistRoot playlist = ConvertMultipleTrxToPlaylist(trxFilePaths, outcomes);
             return PlaylistV1Builder.ToXmlString(playlist);
+        }
+        private static IEnumerable<TrxTestResult> FilterResults(IReadOnlyList<TrxTestResult> results, TestOutcome[] outcomes)
+        {
+            if (outcomes == null || outcomes.Length == 0)
+                return results;
+            return results.Where(r => outcomes.Contains(r.Outcome));
         }
     }
 }

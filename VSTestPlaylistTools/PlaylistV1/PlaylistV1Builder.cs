@@ -44,13 +44,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (playlist is null) throw new ArgumentNullException(nameof(playlist));
             if (filePath is null) throw new ArgumentNullException(nameof(filePath));
 
-            // Ensure directory exists
-            string? directory = Path.GetDirectoryName(filePath);
-            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-            {
-                Directory.CreateDirectory(directory);
-            }
-
+            PlaylistXmlHelper.EnsureDirectory(filePath);
             using StreamWriter writer = new StreamWriter(filePath, false, Encoding.UTF8);
             WriteToTextWriter(playlist, writer);
         }
