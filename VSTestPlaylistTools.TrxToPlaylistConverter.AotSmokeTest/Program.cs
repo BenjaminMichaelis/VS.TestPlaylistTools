@@ -62,6 +62,43 @@ if (v2Roundtrip.Rules.Count != 1)
     return 5;
 }
 
+// --- Converter: exercise TRX parsing path with a real TRX file ---
+
+string trxContent = """
+    <?xml version="1.0" encoding="UTF-8"?>
+    <TestRun id="run1" name="TestRun" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+      <TestDefinitions>
+        <UnitTest name="TestMethod1" id="test1">
+          <TestMethod className="MyNamespace.MyClass" name="TestMethod1" />
+        </UnitTest>
+        <UnitTest name="TestMethod2" id="test2">
+          <TestMethod className="MyNamespace.MyClass" name="TestMethod2" />
+        </UnitTest>
+      </TestDefinitions>
+      <Results>
+        <UnitTestResult testId="test1" testName="TestMethod1" outcome="Passed" />
+        <UnitTestResult testId="test2" testName="TestMethod2" outcome="Failed" />
+      </Results>
+    </TestRun>
+    """;
+
+string trxPath = Path.GetTempFileName() + ".trx";
+try
+{
+    File.WriteAllText(trxPath, trxContent);
+    var converter2 = new TrxToPlaylistConverter();
+    string playlistXml = converter2.ConvertTrxToPlaylistXml(trxPath, TestOutcome.Failed);
+    if (!playlistXml.Contains("MyClass.TestMethod2"))
+    {
+        Console.Error.WriteLine($"FAIL: TRX parse smoke test - expected MyClass.TestMethod2 in output, got: {playlistXml}");
+        return 7;
+    }
+}
+finally
+{
+    File.Delete(trxPath);
+}
+
 // --- Converter: exercise code path (FileNotFoundException expected) ---
 
 var converter = new TrxToPlaylistConverter();

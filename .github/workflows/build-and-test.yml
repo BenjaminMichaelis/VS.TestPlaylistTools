@@ -68,7 +68,7 @@ jobs:
           global-json-file: "./global.json"
 
       - name: Restore dependencies
-        run: dotnet restore VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj
+        run: dotnet restore VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj -r linux-x64
 
       - name: Publish AOT smoke test
         run: dotnet publish VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj -c Release -r linux-x64 --no-restore
@@ -79,6 +79,7 @@ jobs:
       - name: Verify nupkg TFMs
         shell: bash
         run: |
+          dotnet restore VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj
           dotnet pack VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj -c Release -o /tmp/pack-out --no-restore
           NUPKG=$(ls /tmp/pack-out/*.nupkg | head -1)
           unzip -q "$NUPKG" -d /tmp/nupkg-contents

@@ -40,6 +40,10 @@ internal static class PlaylistV2Serializer
                 xmlWriter.WriteAttributeString("Value", propRule.Value);
             xmlWriter.WriteEndElement();
         }
+        else
+        {
+            throw new InvalidOperationException($"Unsupported rule type: {rule.GetType().FullName}. Only BooleanRule and PropertyRule are supported.");
+        }
     }
 
     internal static PlaylistRoot ReadPlaylist(XmlReader xmlReader)

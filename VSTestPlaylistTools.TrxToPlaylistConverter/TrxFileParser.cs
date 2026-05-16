@@ -45,9 +45,8 @@ internal static class TrxFileParser
                     continue;
 
                 string? outcomeStr = unitTestResult.Attribute("outcome")?.Value;
-                TestOutcome outcome = Enum.TryParse(outcomeStr, ignoreCase: true, out TestOutcome parsed)
-                    ? parsed
-                    : TestOutcome.NotExecuted;
+                if (!Enum.TryParse(outcomeStr, ignoreCase: true, out TestOutcome outcome))
+                    continue;
 
                 results.Add(new TrxTestResult(fqn, outcome));
             }

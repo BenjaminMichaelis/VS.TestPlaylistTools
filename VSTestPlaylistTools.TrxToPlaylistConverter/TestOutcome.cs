@@ -10,5 +10,12 @@ public enum TestOutcome
     NotExecuted,
     Inconclusive,
     Timeout,
-    Pending
+    Pending,
+    Error,
+    Aborted,
+    NotRunnable,
+    Warning,
+    Completed,
+    InProgress,
+    Disconnected
 }
