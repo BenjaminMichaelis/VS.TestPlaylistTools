@@ -27,7 +27,7 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
         public void ConvertTrxToPlaylist_NoFailuresButOutcomeFilterForAllTestOutcomesExceptSuccess_NoTests(string trxFilePath)
         {
             TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
-            TrxLib.TestOutcome[] allOutcomesExceptPassed = Enum.GetValues<TrxLib.TestOutcome>().Where(o => o != TrxLib.TestOutcome.Passed).ToArray();
+            TrxToPlaylist.TestOutcome[] allOutcomesExceptPassed = Enum.GetValues<TrxToPlaylist.TestOutcome>().Where(o => o != TrxToPlaylist.TestOutcome.Passed).ToArray();
             VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, allOutcomesExceptPassed);
 
             Assert.NotNull(playlist);
@@ -39,7 +39,7 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
         public void ConvertTrxToPlaylistFile_NoFailuresButOutcomeFilterOnlyPassed_AllTests(string trxFilePath)
         {
             TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
-            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, TrxLib.TestOutcome.Passed);
+            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, TrxToPlaylist.TestOutcome.Passed);
 
             Assert.NotNull(playlist);
             Assert.NotEmpty(playlist.Tests);
@@ -98,7 +98,7 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
             TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
             string trxFilePath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
 
-            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, TrxLib.TestOutcome.Failed);
+            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, TrxToPlaylist.TestOutcome.Failed);
 
             Assert.NotNull(playlist);
             Assert.Single(playlist.Tests);
@@ -120,7 +120,7 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
             TrxToPlaylist.TrxToPlaylistConverter converter = new VSTestPlaylistTools.TrxToPlaylist.TrxToPlaylistConverter();
             string trxFilePath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "OneTestFailure.trx");
 
-            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, TrxLib.TestOutcome.Passed);
+            VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertTrxToPlaylist(trxFilePath, TrxToPlaylist.TestOutcome.Passed);
 
             Assert.NotNull(playlist);
 
@@ -194,7 +194,7 @@ namespace VSTestPlaylistTools.TrxToPlaylistConverter.Tests
 
             VS.TestPlaylistTools.PlaylistV1.PlaylistRoot playlist = converter.ConvertMultipleTrxToPlaylist(
                 new[] { trxFile1, trxFile2 },
-                TrxLib.TestOutcome.Failed);
+                TrxToPlaylist.TestOutcome.Failed);
 
             Assert.NotNull(playlist);
 
