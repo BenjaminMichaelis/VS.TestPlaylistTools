@@ -1,6 +1,5 @@
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV2;
 
@@ -34,28 +33,16 @@ public static class PlaylistV2Parser
         {
             using XmlReader xmlReader = XmlReader.Create(reader, new XmlReaderSettings
             {
-                CloseInput = false
+                CloseInput = false,
+                IgnoreWhitespace = true,
+                IgnoreComments = true
             });
 
-            if (!xmlReader.IsStartElement("Playlist"))
-            {
-                throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
-            }
-
-            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+            return PlaylistV2Serializer.ReadPlaylist(xmlReader);
         }
         catch (XmlException ex)
         {
             throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
-        }
-        catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
-        {
-            throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
-        }
-        catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
-        {
-            throw ex.InnerException;
         }
     }
 
@@ -86,24 +73,15 @@ public static class PlaylistV2Parser
     public static PlaylistRoot FromXmlReader(XmlReader xmlReader)
     {
         if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
-        if (!xmlReader.IsStartElement("Playlist"))
-            throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
         try
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-            return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+            if (!xmlReader.IsStartElement("Playlist"))
+                throw new InvalidDataException("Invalid playlist format: Root element must be 'Playlist'");
+            return PlaylistV2Serializer.ReadPlaylist(xmlReader);
         }
         catch (XmlException ex)
         {
             throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
-        }
-        catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
-        {
-            throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
-        }
-        catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
-        {
-            throw ex.InnerException;
         }
     }
 

@@ -55,3 +55,33 @@ jobs:
   
       - name: Test
         run: dotnet test --no-build --configuration Release --verbosity normal
+
+  aot-compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: "./global.json"
+
+      - name: Restore dependencies
+        run: dotnet restore VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj
+
+      - name: Publish AOT smoke test
+        run: dotnet publish VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj -c Release -r linux-x64 --no-restore
+
+      - name: Run AOT smoke test
+        run: ./VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/bin/Release/net10.0/linux-x64/publish/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest
+
+      - name: Verify nupkg TFMs
+        run: |
+          dotnet pack VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj -c Release -o /tmp/pack-out --no-restore
+          NUPKG=$(ls /tmp/pack-out/*.nupkg | head -1)
+          unzip -q "$NUPKG" -d /tmp/nupkg-contents
+          test -d /tmp/nupkg-contents/lib/netstandard2.1 || (echo "Missing lib/netstandard2.1" && exit 1)
+          test -d /tmp/nupkg-contents/lib/net8.0         || (echo "Missing lib/net8.0" && exit 1)
+          test -d /tmp/nupkg-contents/lib/net10.0        || (echo "Missing lib/net10.0" && exit 1)
+          echo "nupkg TFM check passed: netstandard2.1, net8.0, net10.0 all present"

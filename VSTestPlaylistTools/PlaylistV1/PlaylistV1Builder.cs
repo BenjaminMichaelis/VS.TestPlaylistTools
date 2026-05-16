@@ -1,6 +1,5 @@
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV1
 {
@@ -81,12 +80,17 @@ namespace VS.TestPlaylistTools.PlaylistV1
             if (playlist is null) throw new ArgumentNullException(nameof(playlist));
             if (xmlWriter is null) throw new ArgumentNullException(nameof(xmlWriter));
 
-            // Create XML serializer namespaces to avoid default namespaces
-            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-            namespaces.Add(string.Empty, string.Empty);
+            xmlWriter.WriteStartElement("Playlist");
+            xmlWriter.WriteAttributeString("Version", "1.0");
 
-            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-            serializer.Serialize(xmlWriter, playlist, namespaces);
+            foreach (AddElement test in playlist.Tests)
+            {
+                xmlWriter.WriteStartElement("Add");
+                xmlWriter.WriteAttributeString("Test", test.Test);
+                xmlWriter.WriteEndElement();
+            }
+
+            xmlWriter.WriteEndElement();
         }
 
         /// <summary>

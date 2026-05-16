@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
 /// Represents the root of a V2 format playlist
 /// </summary>
-[XmlRoot("Playlist")]
 public class PlaylistRoot : IPlaylistRoot
 {
     /// <summary>
     /// The playlist version (always "2.0" for V2 format)
     /// </summary>
-    [XmlAttribute]
     public string Version
     {
         get => _version;
@@ -32,8 +29,6 @@ public class PlaylistRoot : IPlaylistRoot
     /// <summary>
     /// The rules contained in this playlist
     /// </summary>
-    [XmlElement("Property", Type = typeof(PropertyRule))]
-    [XmlElement("Rule", Type = typeof(BooleanRule))]
     public List<Rule> Rules { get; } = [];
 
     /// <summary>
@@ -73,10 +68,6 @@ public class PlaylistRoot : IPlaylistRoot
             Indent = true
         });
 
-        XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-        namespaces.Add(string.Empty, string.Empty);
-
-        XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-        serializer.Serialize(xmlWriter, this, namespaces);
+        PlaylistV2Serializer.WritePlaylist(xmlWriter, this);
     }
 }

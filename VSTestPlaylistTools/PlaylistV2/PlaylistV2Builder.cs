@@ -58,10 +58,7 @@ public static class PlaylistV2Builder
     {
         if (playlist is null) throw new ArgumentNullException(nameof(playlist));
         if (xmlWriter is null) throw new ArgumentNullException(nameof(xmlWriter));
-        System.Xml.Serialization.XmlSerializerNamespaces namespaces = new System.Xml.Serialization.XmlSerializerNamespaces();
-        namespaces.Add(string.Empty, string.Empty);
-        System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(PlaylistRoot));
-        serializer.Serialize(xmlWriter, playlist, namespaces);
+        PlaylistV2Serializer.WritePlaylist(xmlWriter, playlist);
     }
 
     /// <summary>

@@ -1,5 +1,3 @@
-using System.Xml.Serialization;
-
 namespace VS.TestPlaylistTools.PlaylistV1
 {
     /// <summary>
@@ -10,7 +8,6 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <summary>
         /// The fully qualified name of the test.
         /// </summary>
-        [XmlAttribute("Test")]
         public string? Test { get; set; }
 
         /// <summary>
