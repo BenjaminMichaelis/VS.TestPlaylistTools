@@ -77,6 +77,7 @@ jobs:
         run: ./VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/bin/Release/net10.0/linux-x64/publish/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest
 
       - name: Verify nupkg TFMs
+        shell: bash
         run: |
           dotnet pack VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj -c Release -o /tmp/pack-out --no-restore
           NUPKG=$(ls /tmp/pack-out/*.nupkg | head -1)
