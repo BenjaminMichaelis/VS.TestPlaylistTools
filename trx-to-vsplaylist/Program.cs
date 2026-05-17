@@ -118,7 +118,8 @@ public sealed class Program
                 List<TestOutcome> parsed = new List<TestOutcome>();
                 foreach (string outcomeStr in outcomesRaw)
                 {
-                    if (Enum.TryParse<TestOutcome>(outcomeStr, ignoreCase: true, out TestOutcome outcome))
+                    if (Enum.TryParse<TestOutcome>(outcomeStr, ignoreCase: true, out TestOutcome outcome) &&
+                        Enum.IsDefined(typeof(TestOutcome), outcome))
                         parsed.Add(outcome);
                     else
                         throw new ArgumentException($"Invalid outcome: {outcomeStr}");
