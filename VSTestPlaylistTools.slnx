@@ -13,6 +13,7 @@
   <Project Path="trx-to-vsplaylist.Tests/trx-to-vsplaylist.Tests.csproj" />
   <Project Path="trx-to-vsplaylist/trx-to-vsplaylist.csproj" />
   <Project Path="VSTestPlaylistTools.Tests/VSTestPlaylistTools.Tests.csproj" />
+  <Project Path="VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj" />
   <Project Path="VSTestPlaylistTools.TrxToPlaylistConverter.Tests/VSTestPlaylistTools.TrxToPlaylistConverter.Tests.csproj" />
   <Project Path="VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj" />
   <Project Path="VSTestPlaylistTools/VSTestPlaylistTools.csproj" />

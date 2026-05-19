@@ -21,23 +21,8 @@ namespace VSTestPlaylistTools.TrxToPlaylist
             if (!File.Exists(trxFilePath))
                 throw new FileNotFoundException($"TRX file not found: {trxFilePath}", trxFilePath);
 
-            // Parse the TRX file using TrxLib
-            var testRun = TrxLib.TrxParser.Parse(new FileInfo(trxFilePath));
-
-            // Get the results
-            List<TrxLib.TestResult> allResults = [.. testRun];
-
-            // Filter by outcome if specified
-            IEnumerable<TrxLib.TestResult> filteredResults = allResults;
-            if (outcomes != null && outcomes.Length > 0)
-            {
-                filteredResults = allResults.Where(r => outcomes.Contains(r.Outcome));
-            }
-
-            // Extract test names
-            List<string> testNames = filteredResults.Select(r => r.FullyQualifiedTestName).ToList();
-
-            // Create a playlist
+            TrxLib.TestResultSet allResults = TrxLib.TrxParser.Parse(new FileInfo(trxFilePath));
+            List<string> testNames = FilterResults(allResults, outcomes).Select(r => r.FullyQualifiedTestName).ToList();
             return PlaylistV1Builder.Create(testNames);
         }
 
@@ -49,8 +34,8 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <returns>A PlaylistRoot object containing the filtered and de-duplicated tests.</returns>
         public PlaylistRoot ConvertMultipleTrxToPlaylist(IEnumerable<string> trxFilePaths, params TrxLib.TestOutcome[] outcomes)
         {
-        if (trxFilePaths == null)
-            throw new ArgumentNullException(nameof(trxFilePaths));
+            if (trxFilePaths == null)
+                throw new ArgumentNullException(nameof(trxFilePaths));
 
             string[] filesArray = trxFilePaths.ToArray();
             if (filesArray.Length == 0)
@@ -67,24 +52,10 @@ namespace VSTestPlaylistTools.TrxToPlaylist
                 if (!File.Exists(trxFilePath))
                     throw new FileNotFoundException($"TRX file not found: {trxFilePath}", trxFilePath);
 
-                // Parse the TRX file using TrxLib
-                var testRun = TrxLib.TrxParser.Parse(new FileInfo(trxFilePath));
+                TrxLib.TestResultSet allResults = TrxLib.TrxParser.Parse(new FileInfo(trxFilePath));
 
-                // Get the results
-                List<TrxLib.TestResult> allResults = [.. testRun];
-
-                // Filter by outcome if specified
-                IEnumerable<TrxLib.TestResult> filteredResults = allResults;
-                if (outcomes != null && outcomes.Length > 0)
-                {
-                    filteredResults = allResults.Where(r => outcomes.Contains(r.Outcome));
-                }
-
-                // Add test names to the set (duplicates are automatically ignored)
-                foreach (var result in filteredResults)
-                {
+                foreach (TrxLib.TestResult result in FilterResults(allResults, outcomes))
                     uniqueTestNames.Add(result.FullyQualifiedTestName);
-                }
             }
 
             // Create a playlist with the de-duplicated test names
@@ -143,6 +114,14 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         {
             PlaylistRoot playlist = ConvertMultipleTrxToPlaylist(trxFilePaths, outcomes);
             return PlaylistV1Builder.ToXmlString(playlist);
+        }
+
+        private static IEnumerable<TrxLib.TestResult> FilterResults(IEnumerable<TrxLib.TestResult> results, TrxLib.TestOutcome[] outcomes)
+        {
+            if (outcomes == null || outcomes.Length == 0)
+                return results;
+
+            return results.Where(r => outcomes.Contains(r.Outcome));
         }
     }
 }

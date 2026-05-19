@@ -1,5 +1,3 @@
-using System.Xml.Serialization;
-
 namespace VS.TestPlaylistTools.PlaylistV2;
 
 /// <summary>
@@ -29,7 +27,6 @@ public class PropertyRule : Rule
     /// <summary>
     /// The property name for XML serialization
     /// </summary>
-    [XmlAttribute(AttributeName = "Name")]
     public string Name
     {
         get => PropertyTypeToXmlNameMap.TryGetValue(Type, out string? xmlName) ? xmlName : string.Empty;
@@ -43,15 +40,13 @@ public class PropertyRule : Rule
     }
 
     /// <summary>
-    /// The property type (not serialized to XML)
+    /// The property type
     /// </summary>
-    [XmlIgnore]
     public TestPropertyType Type { get; private set; }
 
     /// <summary>
     /// The property value
     /// </summary>
-    [XmlAttribute(AttributeName = "Value")]
     public string? Value { get; set; }
 
     /// <summary>

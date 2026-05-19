@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV2;
 
@@ -13,20 +12,16 @@ public class BooleanRule : Rule
     /// <summary>
     /// Optional name for the rule
     /// </summary>
-    [XmlAttribute(AttributeName = "Name")]
     public string? Name { get; set; }
 
     /// <summary>
     /// The matching behavior (All, Any, or Not)
     /// </summary>
-    [XmlAttribute(AttributeName = "Match")]
     public BooleanRuleKind Match { get; set; }
 
     /// <summary>
     /// Child rules contained within this boolean rule
     /// </summary>
-    [XmlElement("Property", Type = typeof(PropertyRule))]
-    [XmlElement("Rule", Type = typeof(BooleanRule))]
     public List<Rule> Rules { get; } = [];
 
     /// <summary>

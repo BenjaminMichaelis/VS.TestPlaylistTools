@@ -1,18 +1,15 @@
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV1
 {
     /// <summary>
     /// Represents a Visual Studio Test Playlist Version 1.0
     /// </summary>
-    [XmlRoot("Playlist")]
     public class PlaylistRoot : IPlaylistRoot
     {
         /// <summary>
         /// The version of the playlist format. Always "1.0" for V1 playlists.
         /// </summary>
-        [XmlAttribute("Version")]
         public string Version
         {
             get => _version;
@@ -28,7 +25,6 @@ namespace VS.TestPlaylistTools.PlaylistV1
         /// <summary>
         /// The collection of tests to be included in this playlist.
         /// </summary>
-        [XmlElement("Add")]
         public List<AddElement> Tests { get; set; } = [];
 
         /// <summary>
@@ -104,11 +100,17 @@ namespace VS.TestPlaylistTools.PlaylistV1
                 Indent = true
             });
 
-            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-            namespaces.Add(string.Empty, string.Empty);
+            xmlWriter.WriteStartElement("Playlist");
+            xmlWriter.WriteAttributeString("Version", _version);
 
-            XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-            serializer.Serialize(xmlWriter, this, namespaces);
+            foreach (AddElement test in Tests)
+            {
+                xmlWriter.WriteStartElement("Add");
+                xmlWriter.WriteAttributeString("Test", test.Test);
+                xmlWriter.WriteEndElement();
+            }
+
+            xmlWriter.WriteEndElement();
         }
     }
 }

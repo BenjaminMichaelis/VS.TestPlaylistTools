@@ -118,7 +118,8 @@ public sealed class Program
                 List<TrxLib.TestOutcome> parsed = new List<TrxLib.TestOutcome>();
                 foreach (string outcomeStr in outcomesRaw)
                 {
-                    if (Enum.TryParse<TrxLib.TestOutcome>(outcomeStr, ignoreCase: true, out TrxLib.TestOutcome outcome))
+                    if (Enum.TryParse<TrxLib.TestOutcome>(outcomeStr, ignoreCase: true, out TrxLib.TestOutcome outcome) &&
+                        Enum.IsDefined(typeof(TrxLib.TestOutcome), outcome))
                         parsed.Add(outcome);
                     else
                         throw new ArgumentException($"Invalid outcome: {outcomeStr}");

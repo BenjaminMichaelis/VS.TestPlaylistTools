@@ -128,6 +128,17 @@ public class ProgramTests
     }
 
     [Fact]
+    public async Task Invoke_WithNumericOutcomeValue_ReturnsFailure()
+    {
+        using StringWriter stdOut = new();
+        string trxFilePath = Path.Combine(IntelliTect.Multitool.RepositoryPaths.GetDefaultRepoRoot(), "VSTestPlaylistTools.TrxToPlaylistConverter.Tests", "SampleTrxFiles", "Success", "AllTestsPass.trx");
+
+        int exitCode = await Invoke($"convert \"{trxFilePath}\" --outcome 999", stdOut);
+
+        Assert.Equal(1, exitCode);
+    }
+
+    [Fact]
     public async Task Invoke_WithSuccessTrxFileNoOutputPath_CreatesPlaylistWithDefaultName()
     {
         // Get a TRX file path for testing

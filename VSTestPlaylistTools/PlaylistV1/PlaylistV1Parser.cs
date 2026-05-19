@@ -1,6 +1,4 @@
-using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace VS.TestPlaylistTools.PlaylistV1
 {
@@ -20,8 +18,7 @@ namespace VS.TestPlaylistTools.PlaylistV1
         {
             if (xmlContent is null) throw new ArgumentNullException(nameof(xmlContent));
 
-            using MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(xmlContent));
-            using StreamReader reader = new StreamReader(stream);
+            using TextReader reader = PlaylistXmlHelper.StringToReader(xmlContent);
             return FromStream(reader);
         }
 
@@ -66,29 +63,11 @@ namespace VS.TestPlaylistTools.PlaylistV1
                     IgnoreComments = true
                 });
 
-                // Validate that this is a Playlist element
-                if (!xmlReader.IsStartElement("Playlist"))
-                {
-                    throw new InvalidDataException("Root element must be 'Playlist'.");
-                }
-
-                // Use XML serialization to deserialize the playlist
-                XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-                PlaylistRoot playlist = (PlaylistRoot)serializer.Deserialize(xmlReader)!;
-
-                return playlist;
+                return ParseFromXmlReader(xmlReader);
             }
             catch (XmlException ex)
             {
                 throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
-            }
-            catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
-            {
-                throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
-            }
-            catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
-            {
-                throw ex.InnerException;
             }
         }
 
@@ -102,25 +81,66 @@ namespace VS.TestPlaylistTools.PlaylistV1
         public static PlaylistRoot FromXmlReader(XmlReader xmlReader)
         {
             if (xmlReader is null) throw new ArgumentNullException(nameof(xmlReader));
-            if (!xmlReader.IsStartElement("Playlist"))
-                throw new InvalidDataException("Root element must be 'Playlist'.");
             try
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(PlaylistRoot));
-                return (PlaylistRoot)serializer.Deserialize(xmlReader)!;
+                if (!xmlReader.IsStartElement("Playlist"))
+                    throw new InvalidDataException("Root element must be 'Playlist'.");
+                return ParseFromXmlReader(xmlReader);
             }
             catch (XmlException ex)
             {
                 throw new InvalidDataException($"Invalid XML format: {ex.Message}", ex);
             }
-            catch (InvalidOperationException ex) when (ex.InnerException is XmlException innerXml)
+        }
+
+        private static PlaylistRoot ParseFromXmlReader(XmlReader xmlReader)
+        {
+            // Move to content (skip XML declaration etc.)
+            xmlReader.MoveToContent();
+
+            if (!xmlReader.IsStartElement("Playlist"))
+                throw new InvalidDataException("Root element must be 'Playlist'.");
+
+            string? version = xmlReader.GetAttribute("Version");
+
+            var playlist = new PlaylistRoot();
+            if (version != null)
+                playlist.Version = version;
+
+            if (!xmlReader.IsEmptyElement)
             {
-                throw new InvalidDataException($"Invalid XML format: {innerXml.Message}", ex);
+                xmlReader.ReadStartElement("Playlist");
+
+                while (xmlReader.NodeType != XmlNodeType.EndElement && xmlReader.NodeType != XmlNodeType.None)
+                {
+                    if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "Add")
+                    {
+                        string? testName = xmlReader.GetAttribute("Test");
+                        if (!string.IsNullOrWhiteSpace(testName))
+                            playlist.Tests.Add(new AddElement(testName));
+
+                        if (xmlReader.IsEmptyElement)
+                            xmlReader.Read();
+                        else
+                        {
+                            xmlReader.ReadStartElement();
+                            xmlReader.ReadEndElement();
+                        }
+                    }
+                    else
+                    {
+                        xmlReader.Skip();
+                    }
+                }
+
+                xmlReader.ReadEndElement();
             }
-            catch (InvalidOperationException ex) when (ex.InnerException is InvalidDataException)
+            else
             {
-                throw ex.InnerException;
+                xmlReader.Read();
             }
+
+            return playlist;
         }
 
         /// <summary>
