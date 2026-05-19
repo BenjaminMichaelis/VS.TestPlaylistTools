@@ -32,7 +32,7 @@ A collection of .NET libraries and tools for creating, parsing, and manipulating
 
 `dotnet add package VSTestPlaylistTools`
 
-```
+```csharp
 using VS.TestPlaylistTools.PlaylistV2;
 
 var playlist = new PlaylistRoot();
@@ -40,7 +40,7 @@ playlist.Rules.Add(
     BooleanRule.Any(
         "MyTests",
         PropertyRule.Namespace("MyNamespace"),
-        PropertyRule.Trait("Category", "Integration")));
+        PropertyRule.Trait("Integration"))); // matches tests with trait value "Integration"
 
 PlaylistV2Builder.SaveToFile(playlist, "MyPlaylist.playlist");
 ```
@@ -49,16 +49,38 @@ PlaylistV2Builder.SaveToFile(playlist, "MyPlaylist.playlist");
 
 `dotnet add package VSTestPlaylistTools`
 
-```
+```csharp
 using VS.TestPlaylistTools.PlaylistV1;
 
 var playlist = PlaylistV1Builder.Create(["MyTest.FullyQualifiedName"]);
 PlaylistV1Builder.SaveToFile(playlist, "MyPlaylist.playlist");
 ```
 
+### Parsing a V2 Playlist
+
+```csharp
+using VS.TestPlaylistTools.PlaylistV2;
+
+var playlist = PlaylistV2Parser.FromFile("MyPlaylist.playlist");
+foreach (var rule in playlist.Rules)
+    Console.WriteLine(rule);
+```
+
+### Loading a Playlist (auto-detect V1 or V2)
+
+Use `PlaylistLoader` when you don't know the playlist version ahead of time:
+
+```csharp
+using VS.TestPlaylistTools;
+
+// Returns IPlaylistRoot — works with both V1 and V2 files
+IPlaylistRoot playlist = PlaylistLoader.Load("MyPlaylist.playlist");
+Console.WriteLine($"Version: {playlist.Version}");
+```
+
 ## 📚 Documentation
 
-- [PlaylistV2 API Source](./VSTestPlaylistTools/PlaylistV2)
+- [PlaylistV2 API Documentation](./VSTestPlaylistTools/PlaylistV2/README.md)
 - [PlaylistV1 Documentation](./PlaylistV1/README.md)
 - [TRX Converter CLI Documentation](./trx-to-vsplaylist/README.md)
 - [Sample Playlists](./PlaylistV2.Tests/SamplePlaylists)
