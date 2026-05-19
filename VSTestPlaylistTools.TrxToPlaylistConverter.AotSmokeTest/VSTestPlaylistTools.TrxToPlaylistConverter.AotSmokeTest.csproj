@@ -10,7 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\VSTestPlaylistTools.TrxToPlaylistConverter\VSTestPlaylistTools.TrxToPlaylistConverter.csproj" />
+    <ProjectReference Include="..\VSTestPlaylistTools.TrxToPlaylistConverter\VSTestPlaylistTools.TrxToPlaylistConverter.csproj"
+                      SetTargetFramework="TargetFramework=net10.0" />
   </ItemGroup>
 
 </Project>
