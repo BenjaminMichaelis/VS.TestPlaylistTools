@@ -1,38 +1,38 @@
-# PlaylistV1 - Visual Studio Test Playlist V1 Parser and Builder
+# PlaylistV1 - Visual Studio Test Playlist V1 parser and builder
 
-This folder contains a clean implementation of a parser and builder for Visual Studio Test Playlist Version 1.0 format.
+This folder documents the V1 API exposed from the `VSTestPlaylistTools` package.
 
 ## Overview
 
-The PlaylistV1 implementation provides functionality to:
+The V1 API provides functionality to:
 - Parse Visual Studio Test Playlist V1.0 XML files
 - Create and build new playlist files programmatically
 - Validate playlist file format
-- Perform round-trip conversions (parse and regenerate identical XML)
+- Perform round-trip conversions (parse and regenerate XML)
 
-## Usage Examples
+## Usage examples
 
-### Parsing a Playlist File
+### Parsing a playlist file
 
 ```csharp
-using PlaylistV1;
+using VS.TestPlaylistTools.PlaylistV1;
 
 // Parse from file
-var playlist = PlaylistV1Parser.ParseFromFile("myplaylist.playlist");
+var playlist = PlaylistV1Parser.FromFile("myplaylist.playlist");
 Console.WriteLine($"Found {playlist.TestCount} tests");
 
 // Parse from string
 string xmlContent = "<Playlist Version=\"1.0\"><Add Test=\"MyTest\" /></Playlist>";
-var playlist2 = PlaylistV1Parser.ParseFromString(xmlContent);
+var playlist2 = PlaylistV1Parser.FromString(xmlContent);
 ```
 
-### Building a Playlist
+### Building a playlist
 
 ```csharp
-using PlaylistV1;
+using VS.TestPlaylistTools.PlaylistV1;
 
 // Create a simple playlist
-var playlist = PlaylistV1Builder.Create("Test1", "Test2", "Test3");
+var playlist = PlaylistV1Builder.Create(["Test1", "Test2", "Test3"]);
 
 // Use fluent builder pattern
 var playlist2 = PlaylistV1Builder.CreateBuilder()
@@ -48,10 +48,12 @@ string xml = PlaylistV1Builder.ToXmlString(playlist);
 PlaylistV1Builder.SaveToFile(playlist, "output.playlist");
 ```
 
-### Working with Playlist Objects
+### Working with playlist objects
 
 ```csharp
-var playlist = new PlaylistV1.Models.PlaylistV1();
+using VS.TestPlaylistTools.PlaylistV1;
+
+var playlist = new PlaylistRoot();
 
 // Add tests
 playlist.AddTest("MyTest1");
@@ -64,7 +66,7 @@ playlist.RemoveTest("MyTest1");
 Console.WriteLine($"Playlist contains {playlist.TestCount} tests");
 ```
 
-## XML Format
+## XML format
 
 The V1 playlist format is simple and consists of:
 
@@ -72,11 +74,10 @@ The V1 playlist format is simple and consists of:
 <Playlist Version="1.0">
     <Add Test="FullyQualifiedTestName1" />
     <Add Test="FullyQualifiedTestName2" />
-    <!-- ... more tests ... -->
 </Playlist>
 ```
 
 Key characteristics:
 - Root element is `<Playlist>` with `Version="1.0"`
 - Each test is represented by an `<Add>` element with a `Test` attribute
-- Test names should be fully qualified (e.g., `Namespace.Class.Method`)
+- Test names should be fully qualified (for example: `Namespace.Class.Method`)
