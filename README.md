@@ -16,9 +16,12 @@ A collection of .NET libraries and tools for creating, parsing, and manipulating
 
 ## AOT compatibility status
 
-- `VSTestPlaylistTools` multi-targets `netstandard2.1`, `net8.0`, and `net10.0`, while `VSTestPlaylistTools.TrxToPlaylistConverter` targets `netstandard2.1`, `net8.0`, and `net10.0`.
-- Both `VSTestPlaylistTools` and `VSTestPlaylistTools.TrxToPlaylistConverter` enable `IsAotCompatible` on their `net10.0` / `net8.0+` targets.
-- All `XmlSerializer` usage has been replaced with manual `XmlWriter`/`XmlReader` throughout `VSTestPlaylistTools`, making the package fully AOT-compatible on supported target frameworks.
+Both `VSTestPlaylistTools` and `VSTestPlaylistTools.TrxToPlaylistConverter` are **fully AOT-compatible**:
+
+- Both multi-target `netstandard2.1`, `net8.0`, and `net10.0`
+- Both enable `IsAotCompatible=true` on their `net8.0+` targets (AOT support requires .NET 8 or later)
+- All `XmlSerializer` usage has been replaced with manual `XmlWriter`/`XmlReader` throughout both packages
+- Both packages pass full AOT publishing and smoke testing in CI
 
 ## Quick Start
 
