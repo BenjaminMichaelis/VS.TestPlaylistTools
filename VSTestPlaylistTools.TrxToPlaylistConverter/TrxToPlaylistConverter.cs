@@ -13,7 +13,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <param name="trxFilePath">Path to the TRX file to convert.</param>
         /// <param name="outcomes">Optional filter for test outcomes to include. If not specified, all tests are included.</param>
         /// <returns>A PlaylistRoot object containing the filtered tests.</returns>
-        public PlaylistRoot ConvertTrxToPlaylist(string trxFilePath, params TestOutcome[] outcomes)
+        public PlaylistRoot ConvertTrxToPlaylist(string trxFilePath, params TrxLib.TestOutcome[] outcomes)
         {
             if (string.IsNullOrEmpty(trxFilePath))
                 throw new ArgumentNullException(nameof(trxFilePath));
@@ -21,7 +21,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
             if (!File.Exists(trxFilePath))
                 throw new FileNotFoundException($"TRX file not found: {trxFilePath}", trxFilePath);
 
-            IReadOnlyList<TrxTestResult> allResults = TrxFileParser.Parse(trxFilePath);
+            TrxLib.TestResultSet allResults = TrxLib.TrxParser.Parse(new FileInfo(trxFilePath));
             List<string> testNames = FilterResults(allResults, outcomes).Select(r => r.FullyQualifiedTestName).ToList();
             return PlaylistV1Builder.Create(testNames);
         }
@@ -32,10 +32,10 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <param name="trxFilePaths">Paths to the TRX files to convert.</param>
         /// <param name="outcomes">Optional filter for test outcomes to include. If not specified, all tests are included.</param>
         /// <returns>A PlaylistRoot object containing the filtered and de-duplicated tests.</returns>
-        public PlaylistRoot ConvertMultipleTrxToPlaylist(IEnumerable<string> trxFilePaths, params TestOutcome[] outcomes)
+        public PlaylistRoot ConvertMultipleTrxToPlaylist(IEnumerable<string> trxFilePaths, params TrxLib.TestOutcome[] outcomes)
         {
-        if (trxFilePaths == null)
-            throw new ArgumentNullException(nameof(trxFilePaths));
+            if (trxFilePaths == null)
+                throw new ArgumentNullException(nameof(trxFilePaths));
 
             string[] filesArray = trxFilePaths.ToArray();
             if (filesArray.Length == 0)
@@ -52,9 +52,9 @@ namespace VSTestPlaylistTools.TrxToPlaylist
                 if (!File.Exists(trxFilePath))
                     throw new FileNotFoundException($"TRX file not found: {trxFilePath}", trxFilePath);
 
-                IReadOnlyList<TrxTestResult> allResults = TrxFileParser.Parse(trxFilePath);
+                TrxLib.TestResultSet allResults = TrxLib.TrxParser.Parse(new FileInfo(trxFilePath));
 
-                foreach (TrxTestResult result in FilterResults(allResults, outcomes))
+                foreach (TrxLib.TestResult result in FilterResults(allResults, outcomes))
                     uniqueTestNames.Add(result.FullyQualifiedTestName);
             }
 
@@ -68,7 +68,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <param name="trxFilePath">Path to the TRX file to convert.</param>
         /// <param name="playlistFilePath">Path where the playlist file should be saved.</param>
         /// <param name="outcomes">Optional filter for test outcomes to include. If not specified, all tests are included.</param>
-        public void ConvertTrxToPlaylistFile(string trxFilePath, string playlistFilePath, params TestOutcome[] outcomes)
+        public void ConvertTrxToPlaylistFile(string trxFilePath, string playlistFilePath, params TrxLib.TestOutcome[] outcomes)
         {
             if (string.IsNullOrEmpty(playlistFilePath))
                 throw new ArgumentNullException(nameof(playlistFilePath));
@@ -83,7 +83,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <param name="trxFilePaths">Paths to the TRX files to convert.</param>
         /// <param name="playlistFilePath">Path where the playlist file should be saved.</param>
         /// <param name="outcomes">Optional filter for test outcomes to include. If not specified, all tests are included.</param>
-        public void ConvertMultipleTrxToPlaylistFile(IEnumerable<string> trxFilePaths, string playlistFilePath, params TestOutcome[] outcomes)
+        public void ConvertMultipleTrxToPlaylistFile(IEnumerable<string> trxFilePaths, string playlistFilePath, params TrxLib.TestOutcome[] outcomes)
         {
             if (string.IsNullOrEmpty(playlistFilePath))
                 throw new ArgumentNullException(nameof(playlistFilePath));
@@ -98,7 +98,7 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <param name="trxFilePath">Path to the TRX file to convert.</param>
         /// <param name="outcomes">Optional filter for test outcomes to include. If not specified, all tests are included.</param>
         /// <returns>An XML string representation of the playlist.</returns>
-        public string ConvertTrxToPlaylistXml(string trxFilePath, params TestOutcome[] outcomes)
+        public string ConvertTrxToPlaylistXml(string trxFilePath, params TrxLib.TestOutcome[] outcomes)
         {
             PlaylistRoot playlist = ConvertTrxToPlaylist(trxFilePath, outcomes);
             return PlaylistV1Builder.ToXmlString(playlist);
@@ -110,15 +110,17 @@ namespace VSTestPlaylistTools.TrxToPlaylist
         /// <param name="trxFilePaths">Paths to the TRX files to convert.</param>
         /// <param name="outcomes">Optional filter for test outcomes to include. If not specified, all tests are included.</param>
         /// <returns>An XML string representation of the playlist.</returns>
-        public string ConvertMultipleTrxToPlaylistXml(IEnumerable<string> trxFilePaths, params TestOutcome[] outcomes)
+        public string ConvertMultipleTrxToPlaylistXml(IEnumerable<string> trxFilePaths, params TrxLib.TestOutcome[] outcomes)
         {
             PlaylistRoot playlist = ConvertMultipleTrxToPlaylist(trxFilePaths, outcomes);
             return PlaylistV1Builder.ToXmlString(playlist);
         }
-        private static IEnumerable<TrxTestResult> FilterResults(IReadOnlyList<TrxTestResult> results, TestOutcome[] outcomes)
+
+        private static IEnumerable<TrxLib.TestResult> FilterResults(IEnumerable<TrxLib.TestResult> results, TrxLib.TestOutcome[] outcomes)
         {
             if (outcomes == null || outcomes.Length == 0)
                 return results;
+
             return results.Where(r => outcomes.Contains(r.Outcome));
         }
     }

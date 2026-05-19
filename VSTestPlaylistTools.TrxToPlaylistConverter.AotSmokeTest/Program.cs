@@ -87,7 +87,7 @@ try
 {
     File.WriteAllText(trxPath, trxContent);
     var converter2 = new TrxToPlaylistConverter();
-    string playlistXml = converter2.ConvertTrxToPlaylistXml(trxPath, TestOutcome.Failed);
+    string playlistXml = converter2.ConvertTrxToPlaylistXml(trxPath, TrxLib.TestOutcome.Failed);
     if (!playlistXml.Contains("MyClass.TestMethod2"))
     {
         Console.Error.WriteLine($"FAIL: TRX parse smoke test - expected MyClass.TestMethod2 in output, got: {playlistXml}");

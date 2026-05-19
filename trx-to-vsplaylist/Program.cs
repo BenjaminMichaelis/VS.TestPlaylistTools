@@ -112,14 +112,14 @@ public sealed class Program
                     throw new FileNotFoundException($"TRX file not found: {trxFile}");
             }
 
-            TestOutcome[]? outcomes = null;
+            TrxLib.TestOutcome[]? outcomes = null;
             if (outcomesRaw is { Length: > 0 })
             {
-                List<TestOutcome> parsed = new List<TestOutcome>();
+                List<TrxLib.TestOutcome> parsed = new List<TrxLib.TestOutcome>();
                 foreach (string outcomeStr in outcomesRaw)
                 {
-                    if (Enum.TryParse<TestOutcome>(outcomeStr, ignoreCase: true, out TestOutcome outcome) &&
-                        Enum.IsDefined(typeof(TestOutcome), outcome))
+                    if (Enum.TryParse<TrxLib.TestOutcome>(outcomeStr, ignoreCase: true, out TrxLib.TestOutcome outcome) &&
+                        Enum.IsDefined(typeof(TrxLib.TestOutcome), outcome))
                         parsed.Add(outcome);
                     else
                         throw new ArgumentException($"Invalid outcome: {outcomeStr}");
