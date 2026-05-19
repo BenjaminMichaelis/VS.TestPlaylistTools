@@ -1,4 +1,4 @@
-﻿# VS.TestPlaylistTools
+# VS.TestPlaylistTools
 
 A collection of .NET libraries and tools for creating, parsing, and manipulating Visual Studio test playlist files.
 
@@ -11,8 +11,8 @@ A collection of .NET libraries and tools for creating, parsing, and manipulating
 
 ### Libraries
 
-- **[VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools)** - Unified library with playlist loading utilities
-- **[VSTestPlaylistTools.TrxToPlaylistConverter](https://www.nuget.org/packages/VSTestPlaylistTools.TrxToPlaylistConverter)** - Convert TRX test results to playlists
+- **[VSTestPlaylistTools](https://www.nuget.org/packages/VSTestPlaylistTools)** - Playlist V1/V2 types, builders/parsers, and unified loading utilities
+- **[VSTestPlaylistTools.TrxToPlaylistConverter](https://www.nuget.org/packages/VSTestPlaylistTools.TrxToPlaylistConverter)** - Library for converting TRX test results to V1 playlists
 
 ## Quick Start
 
@@ -22,36 +22,45 @@ A collection of .NET libraries and tools for creating, parsing, and manipulating
 
 ### Converting a TRX file to a VS Playlist
 
-`trx-to-vsplaylist input.trx -o output.playlist`
+`trx-to-vsplaylist convert input.trx -o output.playlist`
 
 ### Convert failed tests only
 
-`trx-to-vsplaylist input.trx -o failed.playlist --failed-only`
+`trx-to-vsplaylist convert input.trx -o failed.playlist --outcome Failed`
 
-### Using the V2 Playlist Library
+### Using the V2 Playlist API
 
-`dotnet add package VSTestPlaylistTools.V2Playlist`
+`dotnet add package VSTestPlaylistTools`
 
 ```
 using VS.TestPlaylistTools.PlaylistV2;
-// Create a playlist with rules var playlist = new PlaylistRoot(); playlist.Rules.Add(BooleanRule.Any("MyTests", PropertyRule.Namespace("MyNamespace"), PropertyRule.Trait("Category", "Integration") ));
-// Save to file playlist.SaveToFile("MyPlaylist.playlist");
+
+var playlist = new PlaylistRoot();
+playlist.Rules.Add(
+    BooleanRule.Any(
+        "MyTests",
+        PropertyRule.Namespace("MyNamespace"),
+        PropertyRule.Trait("Category", "Integration")));
+
+PlaylistV2Builder.SaveToFile(playlist, "MyPlaylist.playlist");
 ```
 
-### Using the V1 Playlist Library
+### Using the V1 Playlist API
 
-`dotnet add package VSTestPlaylistTools.V1Playlist`
+`dotnet add package VSTestPlaylistTools`
 
 ```
 using VS.TestPlaylistTools.PlaylistV1;
-// Create a simple V1 playlist var playlist = new Playlist(); playlist.AddTest("MyTest.FullyQualifiedName"); playlist.SaveToFile("MyPlaylist.playlist");
+
+var playlist = PlaylistV1Builder.Create(["MyTest.FullyQualifiedName"]);
+PlaylistV1Builder.SaveToFile(playlist, "MyPlaylist.playlist");
 ```
 
 ## 📚 Documentation
 
-- [PlaylistV2 Documentation](./PlaylistV2/README.md)
+- [PlaylistV2 API Source](./VSTestPlaylistTools/PlaylistV2)
 - [PlaylistV1 Documentation](./PlaylistV1/README.md)
-- [TRX Converter Documentation](./VSTestPlaylistTools.TrxToPlaylistConverter/README.md)
+- [TRX Converter CLI Documentation](./trx-to-vsplaylist/README.md)
 - [Sample Playlists](./PlaylistV2.Tests/SamplePlaylists)
 
 ## 🤝 Contributing
