@@ -54,6 +54,8 @@ jobs:
       id-token: write   # Required for OIDC token (NuGet trusted publishing)
       contents: read
       actions: read     # Required for actions/download-artifact
+      attestations: write
+      artifact-metadata: write
 
     steps:
       - name: Download artifact from build job
@@ -66,6 +68,12 @@ jobs:
         uses: NuGet/login@v1
         with:
           user: ${{ secrets.NUGET_USER }}  # nuget.org profile name (NOT email)
+
+      - name: Attest NuGet packages (best effort)
+        continue-on-error: true
+        uses: actions/attest@v4
+        with:
+          subject-path: '${{ github.workspace }}/*.nupkg'
 
       - name: Push NuGet
         run: |
