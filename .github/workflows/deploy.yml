@@ -4,16 +4,114 @@ on:
   release:
     types: [created]
   workflow_dispatch:
+  schedule:
+    - cron: '5 10 * * *'
+
+permissions:
+  contents: read
 
 defaults:
   run:
     shell: pwsh
 
 jobs:
-  build-and-test:
+  check-for-changes:
     runs-on: ubuntu-latest
+    outputs:
+      changes: ${{ steps.check.outputs.changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Check for changes
+        id: check
+        run: |
+          if ($env:GITHUB_EVENT_NAME -in @('release', 'workflow_dispatch')) {
+            Write-Host "Event '$env:GITHUB_EVENT_NAME' detected - forcing build and deployment."
+            "changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          } else {
+            try {
+              # This repo publishes 3 packages that share one version. If any of them is
+              # behind the latest commit, we still build/publish a nightly preview so the
+              # CLI tool preview reflects the latest underlying library changes too.
+              $packageIds = @(
+                "vstestplaylisttools",
+                "vstestplaylisttools.trxtoplaylistconverter",
+                "trx-to-vsplaylist"
+              )
+
+              $latestCommitDate = [DateTimeOffset]::Parse((git log -1 --format=%cI)).UtcDateTime
+              Write-Host "Latest commit date (UTC): $latestCommitDate"
+
+              $hasChanges = $false
+
+              foreach ($packageId in $packageIds) {
+                try {
+                  # Get the latest published package metadata from NuGet registration.
+                  # Avoid [System.Version] parsing because prerelease versions are not compatible with that type.
+                  $packageInfo = Invoke-RestMethod -Uri "https://api.nuget.org/v3/registration5-gz-semver2/$packageId/index.json"
+
+                  $registrationPages = @($packageInfo.items)
+                  $registrationItems = @()
+                  foreach ($page in $registrationPages) {
+                    if ($null -ne $page.items) {
+                      $registrationItems += @($page.items)
+                    } elseif ($null -ne $page.'@id') {
+                      $pageResponse = Invoke-RestMethod -Uri $page.'@id'
+                      foreach ($innerPage in @($pageResponse.items)) {
+                        if ($null -ne $innerPage.items) {
+                          $registrationItems += @($innerPage.items)
+                        }
+                      }
+                    }
+                  }
+
+                  $publishedItems = $registrationItems | Where-Object { $null -ne $_.catalogEntry -and $null -ne $_.catalogEntry.published }
+                  if (-not $publishedItems) {
+                    Write-Host "No published versions found for '$packageId' - treating as changed."
+                    $hasChanges = $true
+                    continue
+                  }
+
+                  $latestPublishedItem = $publishedItems | Sort-Object { [DateTimeOffset]::Parse($_.catalogEntry.published).UtcDateTime } | Select-Object -Last 1
+                  $lastPublishedDate = [DateTimeOffset]::Parse($latestPublishedItem.catalogEntry.published).UtcDateTime
+
+                  Write-Host "Latest '$packageId' version: $($latestPublishedItem.catalogEntry.version)"
+                  Write-Host "Last published date (UTC) for '$packageId': $lastPublishedDate"
+
+                  if ($latestCommitDate -gt $lastPublishedDate) {
+                    Write-Host "Repository has changes newer than the last published '$packageId' package"
+                    $hasChanges = $true
+                  }
+                } catch {
+                  Write-Warning "Failed to query NuGet registration feed for '$packageId': $($_.Exception.Message). Treating as changed."
+                  $hasChanges = $true
+                }
+              }
+
+              if ($hasChanges) {
+                "changes=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              } else {
+                Write-Host "No changes since last published packages"
+                "changes=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+              }
+            } catch {
+              Write-Error "Failed to determine NuGet publish state for nightly deploy: $($_.Exception.Message)"
+              throw
+            }
+          }
+
+  build-and-test:
+    if: needs.check-for-changes.outputs.changes == 'true'
+    runs-on: ubuntu-latest
+    needs: check-for-changes
     steps:
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
@@ -25,27 +123,44 @@ jobs:
 
       - name: Set Version
         run: |
+          git fetch --tags
           echo "${{ github.ref }}"
           $tagVersion = "${{ github.ref }}".substring(11)
+          if ("${{ github.event_name }}" -eq "schedule") {
+            $tagVersion = & git describe --tags --abbrev=0
+            # Remove 'v' or 'V' prefix if present for NuGet version compatibility
+            if ($tagVersion.StartsWith("v") -or $tagVersion.StartsWith("V")) {
+              $tagVersion = $tagVersion.Substring(1)
+            }
+            # Increment patch version for scheduled preview releases
+            $versionParts = $tagVersion.Split('.')
+            if ($versionParts.Length -ge 3) {
+              $major = [int]$versionParts[0]
+              $minor = [int]$versionParts[1]
+              $patch = [int]$versionParts[2] + 1
+              $tagVersion = "$major.$minor.$patch"
+            }
+            $tagVersion = "$tagVersion-beta.${{ github.run_number }}"
+          }
           echo "buildVersion=$tagVersion.${{ github.run_number }}" >> $env:GITHUB_ENV
           echo "nugetVersion=$tagVersion" >> $env:GITHUB_ENV
           echo "preRelease=false" >> $env:GITHUB_ENV
 
       - name: Pack
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'schedule'
         run: dotnet pack -p:PackageVersion=${{ env.nugetVersion }} -p:ContinuousIntegrationBuild=True --configuration Release -o ${{ github.workspace }}/PackedNuget
 
       - name: Upload Artifacts
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'schedule'
         uses: actions/upload-artifact@v7
         with:
           name: NuGet
           path: ${{ github.workspace }}/PackedNuget
 
   deploy:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: needs.check-for-changes.outputs.changes == 'true'
     runs-on: ubuntu-latest
-    needs: build-and-test
+    needs: [check-for-changes, build-and-test]
     environment:
       name: "Production"
       url: "https://www.nuget.org/packages/VS.TestPlaylistTools"
@@ -58,6 +173,12 @@ jobs:
       artifact-metadata: write
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v8
         with:
@@ -78,6 +199,22 @@ jobs:
       - name: Push NuGet
         run: |
           $tagVersion = "${{ github.ref }}".substring(11)
+          if ("${{ github.event_name }}" -eq "schedule") {
+            $tagVersion = & git describe --tags --abbrev=0
+            # Remove 'v' or 'V' prefix if present for NuGet version compatibility
+            if ($tagVersion.StartsWith("v") -or $tagVersion.StartsWith("V")) {
+              $tagVersion = $tagVersion.Substring(1)
+            }
+            # Increment patch version for scheduled preview releases
+            $versionParts = $tagVersion.Split('.')
+            if ($versionParts.Length -ge 3) {
+              $major = [int]$versionParts[0]
+              $minor = [int]$versionParts[1]
+              $patch = [int]$versionParts[2] + 1
+              $tagVersion = "$major.$minor.$patch"
+            }
+            $tagVersion = "$tagVersion-beta.${{ github.run_number }}"
+          }
           $source = "https://api.nuget.org/v3/index.json"
           $apiKey = "${{ steps.login.outputs.NUGET_API_KEY }}"
 
