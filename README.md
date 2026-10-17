@@ -126,6 +126,10 @@ packed on its native OS/architecture, while the pointer, portable fallback, and
 musl CoreCLR payloads are packed separately. Tested artifacts are combined with
 the library packages; every payload must publish successfully before the pointer.
 All packages and assembly versions use the same `Version` property.
+Nightly and manual non-tag deployments use the next patch version with a
+`beta.<run-number>` suffix. They pass through the same native builds, stable
+runtime checks, package verification, and consumer smoke tests as tagged releases;
+the resolved version is reused for publishing instead of being recalculated.
 
 On a Windows x64 machine with the Native AOT C++ prerequisites, for example:
 
