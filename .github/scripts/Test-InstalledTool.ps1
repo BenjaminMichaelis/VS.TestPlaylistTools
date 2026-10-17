@@ -17,7 +17,21 @@ foreach ($name in 'NUGET_PACKAGES', 'DOTNET_RUNTIME_ID', 'DOTNET_ROOT', 'DOTNET_
 try {
     $env:NUGET_PACKAGES = Join-Path $root 'cache'
     $config = Join-Path $root 'nuget.config'
-    "<configuration><packageSources><clear/><add key=`"artifacts`" value=`"$([Security.SecurityElement]::Escape($Feed))`"/></packageSources></configuration>" | Set-Content $config
+    # The SDK may acquire an apphost pack for tool shims on ARM hosts.
+    # Only SDK host packs may come from NuGet; our tool must come from this run's artifacts.
+    @"
+<configuration>
+  <packageSources>
+    <clear/>
+    <add key="artifacts" value="$([Security.SecurityElement]::Escape($Feed))"/>
+    <add key="sdk-hosts" value="https://api.nuget.org/v3/index.json"/>
+  </packageSources>
+  <packageSourceMapping>
+    <packageSource key="artifacts"><package pattern="trx-to-vsplaylist"/><package pattern="trx-to-vsplaylist.*"/></packageSource>
+    <packageSource key="sdk-hosts"><package pattern="Microsoft.NETCore.App.Host.*"/></packageSource>
+  </packageSourceMapping>
+</configuration>
+"@ | Set-Content $config
     $tools = Join-Path $root 'tools'
     if ($InstallRuntimeId) { $env:DOTNET_RUNTIME_ID = $InstallRuntimeId }
     else { Remove-Item Env:DOTNET_RUNTIME_ID -ErrorAction SilentlyContinue }
