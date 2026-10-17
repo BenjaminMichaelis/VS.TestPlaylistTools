@@ -2,6 +2,52 @@
 
 A command-line tool for converting TRX test result files into Visual Studio Test Playlist (V1) files. Supports filtering by test outcome, merging multiple TRX files, and combining existing playlists with automatic de-duplication.
 
+## Installation and runtime compatibility
+
+Install using the .NET 10 or newer SDK:
+
+```powershell
+dotnet tool install --global trx-to-vsplaylist
+```
+
+The SDK selects a Native AOT package on Windows x64/ARM64, glibc Linux x64/ARM64,
+and macOS x64/ARM64. Alpine x64/ARM64 has explicit self-contained CoreCLR
+packages. These packages do not require a separately installed managed runtime.
+AOT binaries are built on matching OS/architecture runners; Linux AOT builds use
+Ubuntu 22.04 as their build baseline. Native OS dependencies still apply, including
+the supported system C/C++ libraries and ICU where required; AOT is not a
+statically linked universal executable. Consult the
+[.NET OS prerequisites](https://github.com/dotnet/core/blob/main/Documentation/prereqs.md).
+
+Unlisted platforms use the portable `any` package, which requires .NET 10 or a
+newer compatible stable runtime. `RollForward=Major` prefers the targeted major
+when available and otherwise allows a newer major; .NET 8/9 cannot run this
+net10.0 tool. Compatibility is limited to platforms supported by the runtime.
+An installed native binary failing to launch does not trigger a CoreCLR retry.
+
+CI exercises the actual installed native tool on all six AOT platforms and checks
+musl installation in Alpine. On all six native runner environments, the same
+portable package is exercised against the latest servicing runtime of every
+currently supported stable .NET major >=10. Each test uses an isolated runtime
+root, with host tracing to confirm runtime selection. Stable failures block
+production publication. Next-major preview/RC checks are advisory; prerelease
+roll-forward is enabled only for those checks, not for users by default.
+The runtime matrix is discovered from official release metadata on PRs, releases,
+and weekly scheduled runs; it does not claim coverage of future versions or every
+historical servicing patch.
+
+## Building packages
+
+Use `eng/pack.ps1` from the repository root with `-Mode Pointer`, `-Mode Libraries`,
+or `-Mode Payload -RuntimeIdentifier <rid>` and one shared `-Version`.
+Native payloads require matching build/target operating systems and the
+[Native AOT toolchain prerequisites](https://learn.microsoft.com/dotnet/core/deploying/native-aot/).
+The reusable CI workflow builds native architectures directly rather than relying
+on emulation. A plain pack is no longer sufficient to produce the complete feed.
+Publish every RID payload at the same version before publishing the pointer.
+Native debug files remain in the payload packages; native symbol `.snupkg` files
+are disabled because NuGet.org's symbol server accepts only managed Portable PDBs.
+
 ## Features
 
 - Convert `.trx` test result files to Visual Studio `.playlist` files (V1 format)
