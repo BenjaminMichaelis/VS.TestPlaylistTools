@@ -9,12 +9,21 @@ on:
   pull_request:
     branches: [ main ]
   workflow_dispatch:
+  schedule:
+    - cron: '17 9 * * 1'
 
 defaults:
   run:
     shell: pwsh
 
 jobs:
+  tool-packages:
+    uses: ./.github/workflows/tool-packages.yml
+    with:
+      version: 0.0.0-ci.${{ github.run_id }}.${{ github.run_attempt }}
+    permissions:
+      contents: read
+
   # For GitHub Auto Merge to work it must be enabled on the repo.
   # This can be done with the script here:
   # https://github.com/BenjaminMichaelis/DotnetTemplates/blob/main/SetupRepo.ps1
@@ -76,14 +85,76 @@ jobs:
       - name: Run AOT smoke test
         run: ./VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/bin/Release/net10.0/linux-x64/publish/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest
 
-      - name: Verify nupkg TFMs
-        shell: bash
+  # Combine tested tool artifacts with libraries, then verify consumer-facing package metadata.
+  pack:
+    needs: tool-packages
+    runs-on: ubuntu-latest
+    env:
+      PACKAGE_VERSION: 0.0.0-ci.${{ github.run_id }}.${{ github.run_attempt }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: "./global.json"
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: tool-packages
+          path: ./PackedNuget
+
+      - name: Pack libraries
+        run: ./eng/pack.ps1 -Mode Libraries -Version $env:PACKAGE_VERSION -Output ./PackedNuget
+
+      - name: Verify packages
+        run: ./eng/verify-packages.ps1 -Feed ./PackedNuget -Version $env:PACKAGE_VERSION
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v7
+        with:
+          name: packages
+          path: ./PackedNuget
+
+  # Installs the packed tool from a local feed on each supported RID and launches it, and consumes the
+  # libraries via PackageReference, i.e. tests what users actually install.
+  package-smoke-test:
+    needs: pack
+    name: package-smoke-test (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    env:
+      PACKAGE_VERSION: 0.0.0-ci.${{ github.run_id }}.${{ github.run_attempt }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux-x64,   os: ubuntu-latest,    rid: linux-x64,   library: true }
+          - { name: win-x64,     os: windows-latest,   rid: win-x64,     library: true }
+          - { name: osx-arm64,   os: macos-latest,     rid: osx-arm64,   library: true }
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: "./global.json"
+          # The library consumer also runs on net8.0.
+          dotnet-version: 8.0.x
+
+      - name: Download packages
+        uses: actions/download-artifact@v8
+        with:
+          name: packages
+          path: ./PackedNuget
+
+      - name: Smoke test packages
         run: |
-          dotnet restore VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj
-          dotnet pack VSTestPlaylistTools.TrxToPlaylistConverter/VSTestPlaylistTools.TrxToPlaylistConverter.csproj -c Release -o /tmp/pack-out --no-restore
-          NUPKG=$(ls /tmp/pack-out/*.nupkg | head -1)
-          unzip -q "$NUPKG" -d /tmp/nupkg-contents
-          test -d /tmp/nupkg-contents/lib/netstandard2.1 || (echo "Missing lib/netstandard2.1" && exit 1)
-          test -d /tmp/nupkg-contents/lib/net8.0         || (echo "Missing lib/net8.0" && exit 1)
-          test -d /tmp/nupkg-contents/lib/net10.0        || (echo "Missing lib/net10.0" && exit 1)
-          echo "nupkg TFM check passed: netstandard2.1, net8.0, net10.0 all present"
+          $smokeArgs = @{
+            Feed        = './PackedNuget'
+            Version     = $env:PACKAGE_VERSION
+            ExpectedRid = '${{ matrix.rid }}'
+          }
+          if ('${{ matrix.library }}' -eq 'true') { $smokeArgs.Library = $true }
+          ./eng/smoke-test-packages.ps1 @smokeArgs

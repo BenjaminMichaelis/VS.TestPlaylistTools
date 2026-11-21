@@ -1,0 +1,247 @@
+name: Tool packages
+
+on:
+  workflow_call:
+    inputs:
+      version:
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: pwsh
+
+jobs:
+  prepare:
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.config.outputs.version }}
+      platforms: ${{ steps.config.outputs.platforms }}
+      runtimes: ${{ steps.runtimes.outputs.runtimes }}
+    steps:
+      - uses: actions/checkout@v7
+      - id: config
+        name: Resolve version and native platforms
+        env:
+          PACKAGE_VERSION: ${{ inputs.version }}
+        run: |
+          $version = $env:PACKAGE_VERSION
+          if (-not $version) { $version = "0.0.0-ci.$env:GITHUB_RUN_ID.$env:GITHUB_RUN_ATTEMPT" }
+          if ($version -notmatch '^\d+\.\d+\.\d+(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$') { throw "Invalid version: $version" }
+          "version=$version" >> $env:GITHUB_OUTPUT
+          $platforms = @(
+            @{ os = 'windows-2025'; rid = 'win-x64'; arch = 'X64' },
+            @{ os = 'windows-11-arm'; rid = 'win-arm64'; arch = 'Arm64' },
+            @{ os = 'ubuntu-22.04'; rid = 'linux-x64'; arch = 'X64' },
+            @{ os = 'ubuntu-22.04-arm'; rid = 'linux-arm64'; arch = 'Arm64' },
+            @{ os = 'macos-15-intel'; rid = 'osx-x64'; arch = 'X64' },
+            @{ os = 'macos-15'; rid = 'osx-arm64'; arch = 'Arm64' }
+          )
+          "platforms=$(ConvertTo-Json -InputObject @{include=$platforms} -Compress)" >> $env:GITHUB_OUTPUT
+      - id: runtimes
+        name: Discover supported stable runtimes and next preview
+        run: ./.github/scripts/Get-RuntimeMatrix.ps1
+
+  native:
+    needs: prepare
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.platforms) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Verify native runner architecture
+        env:
+          EXPECTED_ARCH: ${{ matrix.arch }}
+        run: |
+          if ([Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString() -ne $env:EXPECTED_ARCH) {
+            throw "Native runner process architecture must be $env:EXPECTED_ARCH"
+          }
+      - name: Install Linux native prerequisites
+        if: runner.os == 'Linux'
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $true
+          sudo apt-get update -qq
+          sudo apt-get install -y clang zlib1g-dev
+      - name: Pack native payload
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+          TARGET_RID: ${{ matrix.rid }}
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $true
+          ./eng/pack.ps1 -Mode Payload -RuntimeIdentifier $env:TARGET_RID -Version $env:PACKAGE_VERSION -Output packed
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tool-payload-${{ matrix.rid }}
+          path: packed/*
+          if-no-files-found: error
+          overwrite: true
+
+  managed:
+    needs: prepare
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - name: Pack pointer, portable fallback, and existing musl CoreCLR payloads
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $true
+          ./eng/pack.ps1 -Mode Pointer -Version $env:PACKAGE_VERSION -Output packed
+          foreach ($rid in 'any', 'linux-musl-x64', 'linux-musl-arm64') {
+            ./eng/pack.ps1 -Mode Payload -RuntimeIdentifier $rid -Version $env:PACKAGE_VERSION -Output packed
+          }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tool-payload-managed
+          path: packed/*
+          if-no-files-found: error
+          overwrite: true
+
+  inventory:
+    needs: [prepare, native, managed]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: tool-payload-*
+          path: inputs
+      - name: Reject duplicate artifact files before collecting packages
+        run: |
+          $files = @(Get-ChildItem inputs -Recurse -File)
+          if (-not $files.Count) { throw 'No package artifacts downloaded' }
+          $duplicates = @($files | Group-Object Name | Where-Object Count -gt 1)
+          if ($duplicates.Count) { throw "Duplicate artifact files: $($duplicates.Name -join ', ')" }
+          New-Item -ItemType Directory packed | Out-Null
+          $files | Copy-Item -Destination packed
+      - name: Verify complete package inventory, manifests, architectures, and modes
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: ./.github/scripts/Test-ToolPackages.ps1 -Feed packed -Version $env:PACKAGE_VERSION
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tool-packages
+          path: packed/*
+          if-no-files-found: error
+          overwrite: true
+
+  stable:
+    needs: [prepare, inventory]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.platforms) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - uses: actions/download-artifact@v8
+        with:
+          name: tool-packages
+          path: packed
+      - name: Install and exercise the actual native package without a managed runtime
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+          TARGET_RID: ${{ matrix.rid }}
+        run: ./.github/scripts/Test-InstalledTool.ps1 -Feed packed -Version $env:PACKAGE_VERSION -ExpectedRid $env:TARGET_RID
+      - name: Exercise pointer selection of portable fallback on an unlisted RID
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+        run: ./.github/scripts/Test-InstalledTool.ps1 -Feed packed -Version $env:PACKAGE_VERSION -ExpectedRid any -InstallRuntimeId freebsd-x64
+      - name: Test every supported stable runtime in isolation
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+          RUNTIMES: ${{ needs.prepare.outputs.runtimes }}
+        run: |
+          $extension = if ($IsWindows) { 'ps1' } else { 'sh' }
+          $installer = Join-Path $env:RUNNER_TEMP "dotnet-install.$extension"
+          Invoke-WebRequest "https://builds.dotnet.microsoft.com/dotnet/scripts/v1/dotnet-install.$extension" -OutFile $installer
+          foreach ($runtime in ($env:RUNTIMES | ConvertFrom-Json).stable) {
+            ./.github/scripts/Test-PortableRuntime.ps1 -Feed packed -Version $env:PACKAGE_VERSION -RuntimeVersion $runtime -InstallScript $installer
+          }
+
+  preview:
+    needs: [prepare, inventory]
+    if: ${{ fromJSON(needs.prepare.outputs.runtimes).preview[0] != null }}
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.platforms) }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: tool-packages
+          path: packed
+      - name: Test next-major prerelease runtime in isolation (advisory)
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+          RUNTIMES: ${{ needs.prepare.outputs.runtimes }}
+        run: |
+          $extension = if ($IsWindows) { 'ps1' } else { 'sh' }
+          $installer = Join-Path $env:RUNNER_TEMP "dotnet-install.$extension"
+          Invoke-WebRequest "https://builds.dotnet.microsoft.com/dotnet/scripts/v1/dotnet-install.$extension" -OutFile $installer
+          foreach ($runtime in ($env:RUNTIMES | ConvertFrom-Json).preview) {
+            ./.github/scripts/Test-PortableRuntime.ps1 -Feed packed -Version $env:PACKAGE_VERSION -RuntimeVersion $runtime -InstallScript $installer -Preview
+          }
+      - name: Report advisory result
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+          RID: ${{ matrix.rid }}
+        run: '"Next-major preview on $env:RID (advisory): $env:RESULT" >> $env:GITHUB_STEP_SUMMARY'
+
+  musl:
+    needs: [prepare, inventory]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+            rid: linux-musl-x64
+          - os: ubuntu-22.04-arm
+            rid: linux-musl-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/download-artifact@v8
+        with:
+          name: tool-packages
+          path: packed
+      - name: Install and run musl payload in Alpine
+        env:
+          PACKAGE_VERSION: ${{ needs.prepare.outputs.version }}
+          TARGET_RID: ${{ matrix.rid }}
+        run: |
+          $PSNativeCommandUseErrorActionPreference = $true
+          docker run --rm -v "${env:GITHUB_WORKSPACE}:/src:ro" -e "PACKAGE_VERSION=$env:PACKAGE_VERSION" -e "TARGET_RID=$env:TARGET_RID" mcr.microsoft.com/dotnet/sdk:10.0-alpine sh /src/.github/scripts/test-musl.sh
+
+  gate:
+    if: always()
+    needs: [prepare, native, managed, inventory, stable, musl]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Require every production package and supported-stable runtime check
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          $results = $env:RESULTS | ConvertFrom-Json
+          foreach ($job in $results.PSObject.Properties) {
+            if ($job.Value.result -ne 'success') { throw "Required job $($job.Name): $($job.Value.result)" }
+          }
