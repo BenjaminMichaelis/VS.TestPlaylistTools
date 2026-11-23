@@ -18,7 +18,7 @@ A collection of .NET libraries and tools for creating, parsing, and manipulating
 
 Both `VSTestPlaylistTools` and `VSTestPlaylistTools.TrxToPlaylistConverter` are **fully AOT-compatible**:
 
-- Both multi-target `netstandard2.1`, `net8.0`, and `net10.0`
+- Both multi-target `netstandard2.1`, `net8.0`, and `net11.0`
 - Both enable `IsAotCompatible=true` on their `net8.0+` targets (AOT support requires .NET 8 or later)
 - All `XmlSerializer` usage has been replaced with manual `XmlWriter`/`XmlReader` throughout both packages
 - Both packages pass full AOT publishing and smoke testing in CI
@@ -28,13 +28,16 @@ The CLI uses Native AOT for `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`,
 packages remain self-contained CoreCLR builds for Alpine. All eight explicit
 platform packages run without a separately installed .NET runtime.
 
-Unlisted RIDs use a framework-dependent `any` package targeting .NET 10 with
-`RollForward=Major`: it prefers .NET 10 and can use a newer stable major if
-.NET 10 is absent. It cannot run on .NET 8 or 9. Tool installation requires the
-.NET 10+ SDK; native execution does not.
+Unlisted RIDs use a framework-dependent `any` package targeting .NET 11 with
+`RollForward=Major`: it prefers .NET 11 and can use a newer stable major if
+.NET 11 is absent. It cannot run on .NET 10 or earlier. Tool installation requires
+the .NET 11+ SDK; native execution does not.
+
+.NET 11 native and CoreCLR payloads require x86-64-v2 on x64 and LSE on
+Windows ARM64. Older CPUs that do not meet these requirements are unsupported.
 
 CI tests the complete installed CLI, independently of the library AOT smoke
-application. It discovers every supported stable .NET channel >=10 from official
+application. It discovers every supported stable .NET channel >=11 from official
 release metadata and tests the portable package with only that channel's latest
 servicing runtime installed. These checks block releases; next-major preview/RC
 checks are advisory and opt into prerelease runtime selection only in CI.
@@ -48,7 +51,7 @@ not guaranteed by this policy.
 
 `dotnet tool install --global trx-to-vsplaylist`
 
-The tool ships self-contained packages for `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, `linux-musl-x64`, `linux-musl-arm64` (Alpine), `osx-x64` and `osx-arm64`, so no .NET runtime is required on those platforms. Other platforms fall back to a portable package that requires the .NET 10 runtime.
+The tool ships self-contained packages for `win-x64`, `win-arm64`, `linux-x64`, `linux-arm64`, `linux-musl-x64`, `linux-musl-arm64` (Alpine), `osx-x64` and `osx-arm64`, so no .NET runtime is required on those platforms. Other platforms fall back to a portable package that requires .NET 11 or a newer compatible runtime.
 
 ### Converting a TRX file to a VS Playlist
 
@@ -119,6 +122,10 @@ Console.WriteLine($"Version: {playlist.Version}");
 
 Contributions are welcome! Please open issues or submit pull requests on [GitHub](https://github.com/BenjaminMichaelis/VS.TestPlaylistTools).
 
+Build with the .NET 11 SDK selected by `global.json` (11.0.100 or a compatible
+11.0 feature band). The repository explicitly uses C# 15. Library consumers
+retain `netstandard2.1` and `net8.0` support alongside `net11.0`.
+
 ### Package smoke tests
 
 CI and releases share `.github/workflows/tool-packages.yml`: each AOT payload is
@@ -146,7 +153,7 @@ cross-platform package set, run `eng/verify-packages.ps1` for library
 TFMs/dependencies/version parity and `Test-ToolPackages.ps1` without `-Partial`
 for the exact tool inventory, architectures, and deployment modes.
 `eng/smoke-test-packages.ps1 -Library` additionally consumes the library NuGets
-on net8.0 and net10.0.
+on net8.0 and net11.0.
 
 Pass `-InstallRuntimeId freebsd-x64 -ExpectedRid any` to
 `Test-InstalledTool.ps1` to exercise the SDK's portable fallback selection. This

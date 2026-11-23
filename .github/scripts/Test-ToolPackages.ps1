@@ -88,7 +88,7 @@ try {
                 if ($command.Runner -ne 'dotnet' -or $command.EntryPoint -ne "$id.dll" -or
                     $config.runtimeOptions.rollForward -ne 'Major' -or
                     $config.runtimeOptions.framework.name -ne 'Microsoft.NETCore.App' -or
-                    $config.runtimeOptions.tfm -ne 'net10.0') { throw 'Incorrect portable fallback configuration' }
+                    $config.runtimeOptions.tfm -ne 'net11.0') { throw 'Incorrect portable fallback configuration' }
             }
             elseif (-not $config.runtimeOptions.includedFrameworks) { throw "musl payload must remain self-contained: $rid" }
         }

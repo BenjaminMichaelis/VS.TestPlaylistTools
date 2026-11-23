@@ -9,7 +9,7 @@
     `--version` must report the package version and `convert`/`merge` must produce playlists.
 
     Library (-Library): creates a throwaway console app outside the repo that consumes
-    VSTestPlaylistTools.TrxToPlaylistConverter via PackageReference (net8.0 and net10.0), runs the AOT smoke
+    VSTestPlaylistTools.TrxToPlaylistConverter via PackageReference (net8.0 and net11.0), runs the AOT smoke
     test program against it and asserts the transitive VSTestPlaylistTools package resolved to the same version.
 
     Everything runs with an isolated nuget.config and NuGet package cache, so nothing is picked up from
@@ -33,7 +33,7 @@ param(
 
     [switch]$Library,
 
-    [string[]]$LibraryFrameworks = @('net8.0', 'net10.0')
+    [string[]]$LibraryFrameworks = @('net8.0', 'net11.0')
 )
 
 $ErrorActionPreference = 'Stop'

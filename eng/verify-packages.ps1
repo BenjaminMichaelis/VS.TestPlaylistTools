@@ -30,7 +30,7 @@ $repoRoot = Split-Path -Parent $PSScriptRoot
 $toolProject = Join-Path $repoRoot 'trx-to-vsplaylist/trx-to-vsplaylist.csproj'
 $toolId = 'trx-to-vsplaylist'
 $toolCommand = 'trx-to-vsplaylist'
-$libraryTfms = @('netstandard2.1', 'net8.0', 'net10.0')
+$libraryTfms = @('netstandard2.1', 'net8.0', 'net11.0')
 $libraries = [ordered]@{
     'VSTestPlaylistTools'                        = @{ Assemblies = @('VSTestPlaylistTools.dll'); Dependencies = @() }
     'VSTestPlaylistTools.TrxToPlaylistConverter' = @{ Assemblies = @('VSTestPlaylistTools.TrxToPlaylistConverter.dll'); Dependencies = @('VSTestPlaylistTools') }

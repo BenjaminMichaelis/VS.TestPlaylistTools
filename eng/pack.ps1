@@ -42,6 +42,10 @@ if ($Mode -eq 'Libraries') {
     }
 }
 else {
+    if ($Mode -eq 'Pointer') {
+        # .NET 11 otherwise packs host-compatible RID payloads along with the pointer.
+        $arguments += '-p:CreateRidSpecificToolPackages=false'
+    }
     if ($RuntimeIdentifier) { $arguments += @('-r', $RuntimeIdentifier) }
     dotnet pack $tool @arguments
 }

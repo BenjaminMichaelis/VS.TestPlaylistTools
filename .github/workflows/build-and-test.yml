@@ -83,7 +83,7 @@ jobs:
         run: dotnet publish VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest.csproj -c Release -r linux-x64 --no-restore
 
       - name: Run AOT smoke test
-        run: ./VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/bin/Release/net10.0/linux-x64/publish/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest
+        run: ./VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest/bin/Release/net11.0/linux-x64/publish/VSTestPlaylistTools.TrxToPlaylistConverter.AotSmokeTest
 
   # Combine tested tool artifacts with libraries, then verify consumer-facing package metadata.
   pack:
