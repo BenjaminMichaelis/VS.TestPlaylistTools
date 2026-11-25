@@ -5,7 +5,7 @@ $index = Invoke-RestMethod 'https://builds.dotnet.microsoft.com/dotnet/release-m
 $channels = @($index.'releases-index')
 if (-not $channels.Count) { throw 'Official runtime release index is empty' }
 $stable = @($channels | Where-Object {
-    [version]$_.'channel-version' -ge [version]'10.0' -and
+    [version]$_.'channel-version' -ge [version]'11.0' -and
     $_.'support-phase' -in @('active', 'maintenance')
 } | Sort-Object { [version]$_.'channel-version' })
 foreach ($entry in $stable) {
@@ -14,8 +14,8 @@ foreach ($entry in $stable) {
         throw "Invalid stable runtime metadata for $($entry.'channel-version')"
     }
 }
-if (-not $stable.Count -or $stable.'channel-version' -notcontains '10.0') {
-    throw 'Release metadata must contain the supported .NET 10 baseline; review the target framework policy'
+if (-not $stable.Count -or $stable.'channel-version' -notcontains '11.0') {
+    throw 'Release metadata must contain the supported .NET 11 baseline; review the target framework policy'
 }
 $nextMajor = ([version]$stable[-1].'channel-version').Major + 1
 $preview = @($channels | Where-Object {

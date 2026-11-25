@@ -230,7 +230,7 @@ jobs:
           TARGET_RID: ${{ matrix.rid }}
         run: |
           $PSNativeCommandUseErrorActionPreference = $true
-          docker run --rm -v "${env:GITHUB_WORKSPACE}:/src:ro" -e "PACKAGE_VERSION=$env:PACKAGE_VERSION" -e "TARGET_RID=$env:TARGET_RID" mcr.microsoft.com/dotnet/sdk:10.0-alpine sh /src/.github/scripts/test-musl.sh
+          docker run --rm -v "${env:GITHUB_WORKSPACE}:/src:ro" -e "PACKAGE_VERSION=$env:PACKAGE_VERSION" -e "TARGET_RID=$env:TARGET_RID" mcr.microsoft.com/dotnet/sdk:11.0-alpine sh /src/.github/scripts/test-musl.sh
 
   gate:
     if: always()

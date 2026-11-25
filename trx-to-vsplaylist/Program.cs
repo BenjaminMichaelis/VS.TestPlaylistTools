@@ -388,8 +388,7 @@ public sealed class Program
             if (missingFiles.Any())
                 throw new FileNotFoundException($"Playlist file(s) not found: {string.Join(", ", missingFiles)}");
 
-            // Use a HashSet to automatically de-duplicate test names
-            HashSet<string> uniqueTestNames = new(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> uniqueTestNames = [with(StringComparer.OrdinalIgnoreCase)];
 
             foreach (string playlistFile in playlistFiles)
             {
